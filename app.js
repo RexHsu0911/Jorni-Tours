@@ -8,6 +8,7 @@ const port = process.env.PORT || 3000
 app.engine('hbs', engine({ extname: '.hbs' }))
 app.set('view engine', 'hbs')
 
+// 設定 routes 路徑
 app.use(routes)
 
 app.listen(port, () => {
