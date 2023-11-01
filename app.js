@@ -3,6 +3,8 @@ const { engine } = require('express-handlebars')
 const flash = require('connect-flash')
 const session = require('express-session')
 const passport = require('./config/passport')
+const handlebarsHelpers = require('./helpers/handlebars-helpers')
+const { getUser } = require('./helpers/auth-helpers')
 
 const routes = require('./routes')
 
@@ -10,7 +12,11 @@ const app = express()
 const port = process.env.PORT || 3000
 const SESSION_SECRET = 'secret'
 
-app.engine('hbs', engine({ extname: '.hbs' }))
+// 註冊
+app.engine('hbs', engine({
+  extname: '.hbs',
+  helpers: handlebarsHelpers
+}))
 app.set('view engine', 'hbs')
 
 // 使用 Express 內建的 body-parser
@@ -33,9 +39,10 @@ app.use(flash())
 app.use((req, res, next) => {
   res.locals.success_messages = req.flash('success_messages')
   res.locals.error_messages = req.flash('error_messages')
+  res.locals.loginUser = getUser(req) // 讓 view 取得登入中的使用者狀態
   next()
 })
-// 設定 routes 路徑
+// 使用 routes 路徑
 app.use(routes)
 
 app.listen(port, () => {
