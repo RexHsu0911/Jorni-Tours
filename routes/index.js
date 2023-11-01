@@ -8,6 +8,8 @@ const admin = require('./modules/admin')
 const groupTourController = require('../controllers/group-tour-controller')
 const userController = require('../controllers/user-controller')
 
+// 透過 auth.js 登入驗證
+const { authenticated } = require('../middleware/auth')
 const { generalErrorHandler } = require('../middleware/error-handler')
 
 // 設定 admin 路徑
@@ -24,7 +26,7 @@ router.post('/login', passport.authenticate('local', { failureRedirect: '/login'
 router.get('/logout', userController.logout)
 
 // group-tour 路由
-router.get('/group-tours', groupTourController.getGroupTours)
+router.get('/group-tours', authenticated, groupTourController.getGroupTours)
 
 // 設定 fallback 路由
 router.use('/', (req, res) => res.redirect('/group-tours'))

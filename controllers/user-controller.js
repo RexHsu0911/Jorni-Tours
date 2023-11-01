@@ -3,7 +3,7 @@ const { User } = require('../models')
 const bcrypt = require('bcryptjs')
 
 const userController = {
-  getRegister: (req, res, next) => {
+  getRegister: (req, res) => {
     return res.render('register')
   },
   register: (req, res, next) => {
@@ -27,16 +27,16 @@ const userController = {
       })
       .catch(err => next(err))
   },
-  getLogin: (req, res, next) => {
+  getLogin: (req, res) => {
     return res.render('login')
   },
-  login: (req, res, next) => {
+  login: (req, res) => {
     req.flash('success_messages', '成功登入!')
     return res.redirect('/group-tours')
   },
-  logout: (req, res, next) => {
+  logout: (req, res) => {
     req.flash('success_messages', '登出成功!')
-    // 把 user id 對應的 session 清除
+    // Passport 提供的 logout() 把 user id 對應的 session 清除
     req.logout()
     return res.redirect('/login')
   }
