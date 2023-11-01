@@ -26,6 +26,19 @@ const userController = {
         return res.redirect('/login')
       })
       .catch(err => next(err))
+  },
+  getLogin: (req, res, next) => {
+    return res.render('login')
+  },
+  login: (req, res, next) => {
+    req.flash('success_messages', '成功登入!')
+    return res.redirect('/group-tours')
+  },
+  logout: (req, res, next) => {
+    req.flash('success_messages', '登出成功!')
+    // 把 user id 對應的 session 清除
+    req.logout()
+    return res.redirect('/login')
   }
 }
 
