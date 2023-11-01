@@ -7,6 +7,8 @@ const admin = require('./modules/admin')
 const groupTourController = require('../controllers/group-tour-controller')
 const userController = require('../controllers/user-controller')
 
+const { generalErrorHandler } = require('../middleware/error-handler')
+
 // 設定 admin 路徑
 router.use('/admin', admin)
 
@@ -19,5 +21,7 @@ router.get('/group-tours', groupTourController.getGroupTours)
 
 // 設定 fallback 路由
 router.use('/', (req, res) => res.redirect('/group-tours'))
+// 設定 errorhandler 路由
+router.use('/', generalErrorHandler)
 
 module.exports = router
