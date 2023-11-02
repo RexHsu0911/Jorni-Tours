@@ -1,6 +1,7 @@
 const express = require('express')
 const { engine } = require('express-handlebars')
 const flash = require('connect-flash')
+const methodOverride = require('method-override')
 const session = require('express-session')
 const passport = require('./config/passport')
 const handlebarsHelpers = require('./helpers/handlebars-helpers')
@@ -35,6 +36,8 @@ app.use(passport.initialize())
 app.use(passport.session())
 // 使用自訂的快閃訊息並存到 session 裡
 app.use(flash())
+// 設定 _method 支援 PUT 跟 DELETE 這兩個 action
+app.use(methodOverride('_method'))
 // 使用本地變數 res.locals 設定 Flash Message
 app.use((req, res, next) => {
   res.locals.success_messages = req.flash('success_messages')

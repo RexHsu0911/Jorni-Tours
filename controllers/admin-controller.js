@@ -27,18 +27,54 @@ const adminController = {
       canBeCancel
     })
       .then(() => {
-        req.flash('success_messages', 'Group tour was successfully created')
+        req.flash('success_messages', 'Group tour was successfully created!')
         return res.redirect('/admin/group-tours')
       })
       .catch(err => next(err))
   },
   getGroupTour: (req, res, next) => {
-    GroupTour.findByPk(req.params.id, {
+    return GroupTour.findByPk(req.params.id, {
       raw: true
     })
       .then(groupTour => {
         if (!groupTour) throw new Error("Group tour didn't exist!")
         return res.render('admin/group-tour', { groupTour })
+      })
+      .catch(err => next(err))
+  },
+  getGroupTourEdit: (req, res, next) => {
+    return GroupTour.findByPk(req.params.id, {
+      raw: true
+    })
+      .then(groupTour => {
+        if (!groupTour) throw new Error("Group tour didn't exist!")
+        return res.render('admin/edit-group-tour', { groupTour })
+      })
+      .catch(err => next(err))
+  },
+  putGroupTour: (req, res, next) => {
+    const { name, city, departureDate, returnDate, duration, quantity, price, description, canBeCancel } = req.body
+    if (!name) throw new Error('Group tour name is required!')
+
+    return GroupTour.findByPk(req.params.id)
+      .then(groupTour => {
+        if (!groupTour) throw new Error("Group tour didn't exist!")
+
+        return groupTour.update({
+          name,
+          city,
+          departureDate,
+          returnDate,
+          duration,
+          quantity,
+          price,
+          description,
+          canBeCancel
+        })
+      })
+      .then(() => {
+        req.flash('success_messages', 'Group tour was successfully updated!')
+        return res.redirect('/admin/group-tours')
       })
       .catch(err => next(err))
   }

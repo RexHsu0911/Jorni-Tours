@@ -1,0 +1,9 @@
+{{!-- <form> 裡面的 action 不支援 PUT 跟 DELETE，需使用 _method --}}
+<form action="/admin/group-tours/{{groupTour.id}}?_method=PUT" method="POST">
+  <div class="mb-4 text-center">
+    <h1 class="h3 font-weight-normal mb-3">Edit Group Tour</h1>
+  </div>
+
+  {{> admin-group-tour-form}}
+
+</form>

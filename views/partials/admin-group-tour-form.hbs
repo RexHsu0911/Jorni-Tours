@@ -1,0 +1,61 @@
+  <div class="form-row mb-3">
+    <label class="form-label" for="name">Name</label>
+    <input class="form-control" type="text" name="name" id="name" placeholder="Enter name" value="{{groupTour.name}}" required>
+  </div>
+
+  <div class="form-row mb-3">
+    <label class="form-label" for="city">City</label>
+    <input class="form-control" type="text" name="city" id="city" placeholder="Enter city" value="{{groupTour.city}}">
+  </div>
+
+  <div class="form-row mb-3">
+    <label class="form-label" for="departureDate">Departure Date</label>
+    <input class="form-control" type="date" name="departureDate" id="departureDate" value="{{groupTour.departureDate}}">
+  </div>
+
+  <div class="form-row mb-3">
+    <label class="form-label" for="returnDate">Return Date</label>
+    <input class="form-control" type="date" name="returnDate" id="returnDate" value="{{groupTour.returnDate}}">
+  </div>
+
+  <div class="form-row mb-3">
+    <label class="form-label" for="duration">Duration</label>
+    <div class="input-group">
+      <output class="form-control" readonly name="duration" id="duration">{{groupTour.duration}}</output>
+      <span class="input-group-text">Days</span>
+    </div>
+  </div>
+
+  <div class="form-row mb-3">
+    <label class="form-label" for="quantity">Quantity</label>
+    <input class="form-control" type="number" name="quantity" id="quantity" placeholder="Enter quantity" value="{{groupTour.quantity}}">
+  </div>
+
+  <div class="form-row mb-3">
+    <label class="form-label" for="price">Price</label>
+    <div class="input-group">
+      <span class="input-group-text">TWD</span>
+      <input class="form-control" type="number" name="price" id="price" placeholder="Enter price" value="{{groupTour.price}}">
+    </div>
+  </div>
+
+  <div class="form-row mb-3">
+    <label class="form-label" for="description">Description</label>
+    <textarea class="form-control" id="description" name="description" rows="3">{{groupTour.description}}</textarea>
+  </div>
+
+  <div class="form-row mb-3">
+    <label class="form-label" for="image">Image</label>
+    <input class="form-control" type="file" name="image" id="image">
+  </div>
+
+  <div class="form-row mb-3">
+    <label class="form-label" for="canBeCancel">Can Be Cancel</label>
+    <select class="form-select" name="canBeCancel" id="canBeCancel">
+      <option selected>Choose...</option>
+      <option value="true">Yes</option>
+      <option value="false">No</option>
+    </select>
+  </div>
+
+  <button type="submit" class="btn btn-primary">Submit</button>
