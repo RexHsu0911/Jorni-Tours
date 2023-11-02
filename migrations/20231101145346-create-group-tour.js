@@ -16,10 +16,13 @@ module.exports = {
         type: Sequelize.STRING
       },
       departure_date: {
-        type: Sequelize.DATE
+        type: Sequelize.STRING
       },
       return_date: {
-        type: Sequelize.DATE
+        type: Sequelize.STRING
+      },
+      duration: {
+        type: Sequelize.STRING
       },
       description: {
         type: Sequelize.TEXT
@@ -27,21 +30,18 @@ module.exports = {
       image: {
         type: Sequelize.STRING
       },
-      rating: {
-        type: Sequelize.FLOAT
+      quantity: {
+        type: Sequelize.STRING
       },
-      duration: {
-        type: Sequelize.INTEGER
+      price: {
+        type: Sequelize.STRING
       },
       can_be_cancel: {
         type: Sequelize.BOOLEAN,
         defaultValue: false
       },
-      amount: {
-        type: Sequelize.INTEGER
-      },
-      price: {
-        type: Sequelize.INTEGER
+      rating: {
+        type: Sequelize.FLOAT
       },
       user_id: {
         type: Sequelize.INTEGER

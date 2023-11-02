@@ -3,10 +3,10 @@ const router = express.Router()
 
 const adminController = require('../../controllers/admin-controller')
 
-// 透過 auth.js 身分驗證
-const { authenticatedAdmin } = require('../../middleware/auth')
-
-router.get('/group-tours', authenticatedAdmin, adminController.getGroupTours)
+// group-tours 路由
+router.get('/group-tours/create', adminController.getGroupTourCreate)
+router.get('/group-tours', adminController.getGroupTours)
+router.post('/group-tours', adminController.postGroupTour)
 // 設定 fallback 路由
 router.use('/', (req, res) => res.redirect('/admin/group-tours'))
 

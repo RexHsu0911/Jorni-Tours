@@ -8,12 +8,12 @@ const admin = require('./modules/admin')
 const groupTourController = require('../controllers/group-tour-controller')
 const userController = require('../controllers/user-controller')
 
-// 透過 auth.js 登入驗證
-const { authenticated } = require('../middleware/auth')
+// 透過 auth.js 登入驗證及身分驗證
+const { authenticated, authenticatedAdmin } = require('../middleware/auth')
 const { generalErrorHandler } = require('../middleware/error-handler')
 
 // 設定 admin 路徑
-router.use('/admin', admin)
+router.use('/admin', authenticatedAdmin, admin)
 
 // register 路由
 router.get('/register', userController.getRegister)
@@ -25,7 +25,7 @@ router.post('/login', passport.authenticate('local', { failureRedirect: '/login'
 // logout 路由
 router.get('/logout', userController.logout)
 
-// group-tour 路由
+// group-tours 路由
 router.get('/group-tours', authenticated, groupTourController.getGroupTours)
 
 // 設定 fallback 路由

@@ -16,15 +16,15 @@ module.exports = (sequelize, DataTypes) => {
   GroupTour.init({
     name: DataTypes.STRING,
     city: DataTypes.STRING,
-    departureDate: DataTypes.DATE,
-    returnDate: DataTypes.DATE,
+    departureDate: DataTypes.STRING,
+    returnDate: DataTypes.STRING,
+    duration: DataTypes.STRING,
     description: DataTypes.TEXT,
     image: DataTypes.STRING,
+    quantity: DataTypes.STRING,
+    price: DataTypes.STRING,
     rating: DataTypes.FLOAT,
-    duration: DataTypes.INTEGER,
     canBeCancel: DataTypes.BOOLEAN,
-    amount: DataTypes.INTEGER,
-    price: DataTypes.INTEGER,
     userId: DataTypes.INTEGER,
     categoryId: DataTypes.INTEGER
   }, {
