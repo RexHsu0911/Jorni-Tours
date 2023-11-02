@@ -1,0 +1,26 @@
+<div class="row">
+  <div class="col-md-12">
+    <h1>{{groupTour.name}}</h1>
+  </div>
+  <div class="col-md-4">
+    
+    <div class="well">
+      <ul class="list-unstyled">
+        <li><strong>City:</strong> {{groupTour.city}}</li>
+        <li><strong>Departure Date:</strong> {{groupTour.departureDate}}</li>
+        <li><strong>Return Date:</strong> {{groupTour.returnDate}}</li>
+        <li><strong>Duration:</strong> {{groupTour.duration}}</li>
+        <li><strong>Price:</strong> {{groupTour.price}}</li>
+        <li><strong>Can Be Cancel:</strong> {{groupTour.canBeCancel}}</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="col-md-8">
+    <p style="white-space: break-spaces;">{{groupTour.description}}</p>
+  </div>
+
+  <hr>
+</div>
+
+<a class="btn btn-outline-secondary" href="javascript:history.back()">Back</a>

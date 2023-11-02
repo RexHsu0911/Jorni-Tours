@@ -31,6 +31,16 @@ const adminController = {
         return res.redirect('/admin/group-tours')
       })
       .catch(err => next(err))
+  },
+  getGroupTour: (req, res, next) => {
+    GroupTour.findByPk(req.params.id, {
+      raw: true
+    })
+      .then(groupTour => {
+        if (!groupTour) throw new Error("Group tour didn't exist!")
+        return res.render('admin/group-tour', { groupTour })
+      })
+      .catch(err => next(err))
   }
 }
 
