@@ -34,7 +34,10 @@
         </button>
 
         <form action="/admin/group-tours/{{this.id}}?_method=DELETE" method="POST" style="display: inline;">
-          <button type="submit" class="btn btn-link link-danger">Delete
+          {{!-- onclick 事件處理器 --}}
+          {{!-- 使用 confirm 顯示彈窗 --}}
+          <button type="submit" class="btn btn-link link-danger"
+            onclick="return confirm(`Confirm to delete {{ this.name }} ？`)">Delete
           </button>
         </form>
       </td>

@@ -9,6 +9,7 @@ router.get('/group-tours/create', adminController.getGroupTourCreate)
 router.get('/group-tours/:id/edit', adminController.getGroupTourEdit)
 router.get('/group-tours/:id', adminController.getGroupTour)
 router.put('/group-tours/:id', adminController.putGroupTour)
+router.delete('/group-tours/:id', adminController.deleteGroupTour)
 router.get('/group-tours', adminController.getGroupTours)
 router.post('/group-tours', adminController.postGroupTour)
 // 設定 fallback 路由
