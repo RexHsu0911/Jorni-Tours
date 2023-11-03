@@ -41,7 +41,8 @@ module.exports = {
         defaultValue: false
       },
       rating: {
-        type: Sequelize.FLOAT
+        type: Sequelize.FLOAT,
+        defaultValue: 5.0
       },
       user_id: {
         type: Sequelize.INTEGER

@@ -30,7 +30,7 @@ module.exports = {
       country: {
         type: Sequelize.STRING
       },
-      tel: {
+      phone: {
         type: Sequelize.STRING
       },
       avatar: {
