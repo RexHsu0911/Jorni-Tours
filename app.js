@@ -1,3 +1,5 @@
+// Node 提供原生模組 path 處理檔案路徑
+const path = require('path')
 const express = require('express')
 const { engine } = require('express-handlebars')
 const flash = require('connect-flash')
@@ -38,6 +40,9 @@ app.use(passport.session())
 app.use(flash())
 // 設定 _method 支援 PUT 跟 DELETE 這兩個 action
 app.use(methodOverride('_method'))
+// 使用 express.static 來指定路徑
+// path.join() 路徑連接在一起
+app.use('/upload', express.static(path.join(__dirname, 'upload')))
 // 使用本地變數 res.locals 設定 Flash Message
 app.use((req, res, next) => {
   res.locals.success_messages = req.flash('success_messages')

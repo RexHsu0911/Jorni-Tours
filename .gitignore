@@ -26,6 +26,9 @@ build/Release
 # https://docs.npmjs.com/cli/shrinkwrap#caveats
 node_modules
 
+temp
+upload
+
 # Debug log from npm
 npm-debug.log
 

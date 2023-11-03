@@ -1,4 +1,5 @@
 const { GroupTour } = require('../models')
+const { localFileHandler } = require('../helpers/file-helpers')
 
 const adminController = {
   getGroupTours: (req, res, next) => {
@@ -15,17 +16,20 @@ const adminController = {
     const { name, city, departureDate, returnDate, duration, quantity, price, description, canBeCancel } = req.body
     if (!name) throw new Error('Group tour name is required!')
 
-    return GroupTour.create({
-      name,
-      city,
-      departureDate,
-      returnDate,
-      duration,
-      quantity,
-      price,
-      description,
-      canBeCancel
-    })
+    const { file } = req // 讀取檔案
+    localFileHandler(file) // 檔案傳到 file-helper 處理
+      .then(filePath => GroupTour.create({
+        name,
+        city,
+        departureDate,
+        returnDate,
+        duration,
+        quantity,
+        price,
+        description,
+        canBeCancel,
+        image: filePath || null
+      }))
       .then(() => {
         req.flash('success_messages', 'Group tour was successfully created!')
         return res.redirect('/admin/group-tours')
@@ -56,8 +60,12 @@ const adminController = {
     const { name, city, departureDate, returnDate, duration, quantity, price, description, canBeCancel } = req.body
     if (!name) throw new Error('Group tour name is required!')
 
-    return GroupTour.findByPk(req.params.id)
-      .then(groupTour => {
+    const { file } = req
+    return Promise.all([ // 非同步處理
+      GroupTour.findByPk(req.params.id),
+      localFileHandler(file)
+    ])
+      .then(([groupTour, filePath]) => {
         if (!groupTour) throw new Error("Group tour didn't exist!")
 
         return groupTour.update({
@@ -69,7 +77,8 @@ const adminController = {
           quantity,
           price,
           description,
-          canBeCancel
+          canBeCancel,
+          image: filePath || groupTour.image
         })
       })
       .then(() => {
