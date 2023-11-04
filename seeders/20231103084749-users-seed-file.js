@@ -22,7 +22,7 @@ module.exports = {
       birthday: faker.date.past(65).toISOString().substring(0, 10), // 格式 date轉 string
       country: faker.address.country(),
       phone: faker.phone.phoneNumberFormat(),
-      avatar: 'https://loremflickr.com/300/300/male,teenager?lock=12',
+      avatar: `https://loremflickr.com/300/300/person,face?random=${Math.floor(Math.random() * 100 + 1)}`,
       description: faker.lorem.text(),
       created_at: new Date(),
       updated_at: new Date()
@@ -36,7 +36,7 @@ module.exports = {
       birthday: faker.date.past(65).toISOString().substring(0, 10),
       country: faker.address.country(),
       phone: faker.phone.phoneNumberFormat(),
-      avatar: 'https://loremflickr.com/300/300/male,teenager?lock=12',
+      avatar: `https://loremflickr.com/300/300/person,face?random=${Math.floor(Math.random() * 100 + 1)}`,
       description: faker.lorem.text(),
       created_at: new Date(),
       updated_at: new Date()
