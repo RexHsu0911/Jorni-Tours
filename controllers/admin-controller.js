@@ -1,4 +1,4 @@
-const { GroupTour } = require('../models')
+const { GroupTour, User } = require('../models')
 const { localFileHandler } = require('../helpers/file-helpers')
 
 const adminController = {
@@ -6,7 +6,10 @@ const adminController = {
     return GroupTour.findAll({
       raw: true
     })
-      .then(groupTours => res.render('admin/group-tours', { groupTours }))
+      .then(groupTours => {
+        if (!groupTours) throw new Error("Group tours didn't exist!")
+        return res.render('admin/group-tours', { groupTours })
+      })
       .catch(err => next(err))
   },
   getGroupTourCreate: (req, res, next) => {
@@ -94,6 +97,29 @@ const adminController = {
         return groupTour.destroy()
       })
       .then(() => res.redirect('/admin/group-tours'))
+      .catch(err => next(err))
+  },
+  getUsers: (req, res, next) => {
+    return User.findAll({
+      raw: true
+    })
+      .then(users => {
+        if (!users) throw new Error("Users didn't exist!")
+        return res.render('admin/users', { users })
+      })
+      .catch(err => next(err))
+  },
+  patchUser: (req, res, next) => {
+    return User.findByPk(req.params.id)
+      .then(user => {
+        if (!user) throw new Error("User didn't exist!")
+        if (user.email === 'root@example.com') throw new Error('Prohibit changing 「root」 permission!')
+
+        return user.update({
+          isAdmin: !user.isAdmin // 反值
+        })
+      })
+      .then(() => res.redirect('/admin/users'))
       .catch(err => next(err))
   }
 }

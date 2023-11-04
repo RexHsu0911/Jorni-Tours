@@ -1,4 +1,4 @@
-<h1>Jorni 旅遊後台</h1>
+{{> admin-tab route='group-tours'}}
 
 <a href='/admin/group-tours/create'>
   <button type="button" class="btn btn-primary">Create Group Tour
@@ -13,7 +13,7 @@
     <tr>
       <th scope="col">#</th>
       <th scope="col">Name</th>
-      <th scope="col"></th>
+      <th scope="col">Function</th>
     </tr>
   </thead>
 
@@ -37,7 +37,7 @@
           {{!-- onclick 事件處理器(return ture or false) --}}
           {{!-- 使用 confirm 顯示彈窗 --}}
           <button type="submit" class="btn btn-link link-danger"
-            onclick="return confirm(`Confirm to delete {{ this.name }} ？`)">Delete
+            onclick="return confirm(`Confirm to delete {{this.name}} ？`)">Delete
           </button>
         </form>
       </td>
