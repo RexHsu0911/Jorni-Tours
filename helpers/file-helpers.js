@@ -1,5 +1,12 @@
 // Node 提供原生模組 fs 處理檔案
 const fs = require('fs')
+// 串接 imgur API 網路相簿服務，並上傳到指定相簿
+const { ImgurClient } = require('imgur')
+const client = new ImgurClient({
+  clientId: process.env.IMGUR_CLIENTID,
+  clientSecret: process.env.IMGUR_CLIENT_SECRET,
+  refreshToken: process.env.IMGUR_REFRESH_TOKEN
+})
 
 // 本地伺服器處理圖片(開發階段)
 const localFileHandler = file => { // file 是 multer 處理完的檔案
@@ -17,6 +24,21 @@ const localFileHandler = file => { // file 是 multer 處理完的檔案
   })
 }
 
+const imgurFileHandler = file => {
+  return new Promise((resolve, reject) => {
+    if (!file) return resolve(null)
+
+    return client.upload({
+      image: fs.createReadStream(file.path),
+      type: 'stream',
+      album: process.env.IMGUR_ALBUM_ID
+    })
+      .then(img => resolve(img.data?.link || null))
+      .catch(err => reject(err))
+  })
+}
+
 module.exports = {
-  localFileHandler
+  localFileHandler,
+  imgurFileHandler
 }

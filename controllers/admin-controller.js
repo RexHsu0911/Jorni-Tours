@@ -1,5 +1,5 @@
 const { GroupTour, User } = require('../models')
-const { localFileHandler } = require('../helpers/file-helpers')
+const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const adminController = {
   getGroupTours: (req, res, next) => {
@@ -20,7 +20,7 @@ const adminController = {
     if (!name) throw new Error('Group tour name is required!')
 
     const { file } = req // 讀取檔案
-    localFileHandler(file) // 檔案傳到 file-helper 處理
+    imgurFileHandler(file) // 檔案傳到 file-helper 處理
       .then(filePath => GroupTour.create({
         name,
         city,
@@ -66,7 +66,7 @@ const adminController = {
     const { file } = req
     return Promise.all([ // 非同步處理
       GroupTour.findByPk(req.params.id),
-      localFileHandler(file)
+      imgurFileHandler(file)
     ])
       .then(([groupTour, filePath]) => {
         if (!groupTour) throw new Error("Group tour didn't exist!")

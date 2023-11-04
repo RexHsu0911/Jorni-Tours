@@ -1,3 +1,9 @@
+// 載入 dotenv 設定檔
+// 要在 passport 之前載入(否則 .env 裡的設定(secret)會讀取不到)
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config()
+}
+
 // Node 提供原生模組 path 處理檔案路徑
 const path = require('path')
 const express = require('express')
@@ -13,9 +19,9 @@ const routes = require('./routes')
 
 const app = express()
 const port = process.env.PORT || 3000
-const SESSION_SECRET = 'secret'
+const SESSION_SECRET = process.env.SESSION_SECRET
 
-// 註冊
+// 註冊 express-handlebars 及 helpers/handlebars-helpers
 app.engine('hbs', engine({
   extname: '.hbs',
   helpers: handlebarsHelpers
