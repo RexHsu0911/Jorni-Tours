@@ -10,7 +10,7 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate (models) {
-      // define association here
+      GroupTour.belongsTo(models.Category, { foreignKey: 'categoryId' }) // 多對一關係
     }
   }
   GroupTour.init({
@@ -24,9 +24,7 @@ module.exports = (sequelize, DataTypes) => {
     quantity: DataTypes.STRING,
     price: DataTypes.STRING,
     rating: DataTypes.FLOAT(2, 1), // FLOAT(n, m)，n=總位數，m=小數位數
-    canBeCancel: DataTypes.BOOLEAN,
-    userId: DataTypes.INTEGER,
-    categoryId: DataTypes.INTEGER
+    canBeCancel: DataTypes.BOOLEAN
   }, {
     sequelize,
     modelName: 'GroupTour',

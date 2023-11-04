@@ -44,12 +44,6 @@ module.exports = {
         type: Sequelize.FLOAT,
         defaultValue: 5.0
       },
-      user_id: {
-        type: Sequelize.INTEGER
-      },
-      category_id: {
-        type: Sequelize.INTEGER
-      },
       created_at: {
         allowNull: false,
         type: Sequelize.DATE
