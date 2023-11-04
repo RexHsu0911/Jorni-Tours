@@ -12,16 +12,17 @@ passport.use(new LocalStrategy(
     passReqToCallback: true // 把 callback 的第一個參數拿到 req 裡，則可以呼叫 req.flash()
   },
   // 登入認證 user
-  function (req, email, password, cb) {
-    User.findOne({ where: { email } })
+  (req, email, password, cb) => {
+    return User.findOne({ where: { email } })
       .then(user => {
         if (!user) throw new Error('帳號或密碼輸入錯誤！')
-        bcrypt.compare(password, user.password)
+
+        return bcrypt.compare(password, user.password)
           .then(res => {
             if (!res) throw new Error('帳號或密碼輸入錯誤！')
+            return cb(null, user)
           })
           .catch(err => cb(err))
-        return cb(null, user)
       })
       .catch(err => cb(err))
   }
