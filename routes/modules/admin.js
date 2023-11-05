@@ -26,6 +26,7 @@ router.put('/group-tours/:id', upload.single('image'), adminController.putGroupT
 router.delete('/group-tours/:id', adminController.deleteGroupTour)
 router.get('/group-tours', adminController.getGroupTours)
 router.post('/group-tours', upload.single('image'), adminController.postGroupTour)
+
 // 設定 fallback 路由
 router.use('/', (req, res) => res.redirect('/admin/group-tours'))
 
