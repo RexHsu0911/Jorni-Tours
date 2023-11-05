@@ -1,10 +1,12 @@
-const { GroupTour, User } = require('../models')
+const { GroupTour, User, Category } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const adminController = {
   getGroupTours: (req, res, next) => {
     return GroupTour.findAll({
-      raw: true
+      raw: true,
+      nest: true, // 巢狀結構
+      include: [Category]
     })
       .then(groupTours => {
         if (!groupTours) throw new Error("Group tours didn't exist!")
@@ -41,7 +43,9 @@ const adminController = {
   },
   getGroupTour: (req, res, next) => {
     return GroupTour.findByPk(req.params.id, {
-      raw: true
+      raw: true,
+      nest: true,
+      include: [Category]
     })
       .then(groupTour => {
         if (!groupTour) throw new Error("Group tour didn't exist!")
