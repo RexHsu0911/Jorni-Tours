@@ -26,6 +26,7 @@ router.post('/login', passport.authenticate('local', { failureRedirect: '/login'
 router.get('/logout', userController.logout)
 
 // group-tours 路由
+router.get('/group-tours/:id', authenticated, groupTourController.getGroupTour)
 router.get('/group-tours', authenticated, groupTourController.getGroupTours)
 
 // 設定 fallback 路由

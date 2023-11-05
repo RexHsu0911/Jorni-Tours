@@ -1,7 +1,7 @@
 const { GroupTour, Category } = require('../models')
 
 const groupTourController = {
-  getGroupTours: (req, res) => {
+  getGroupTours: (req, res, next) => {
     return GroupTour.findAll({
       raw: true,
       nest: true,
@@ -16,6 +16,19 @@ const groupTourController = {
         }))
         return res.render('group-tours', { groupTours: result })
       })
+      .catch(err => next(err))
+  },
+  getGroupTour: (req, res, next) => {
+    return GroupTour.findByPk(req.params.id, {
+      raw: true,
+      nest: true,
+      include: [Category]
+    })
+      .then(groupTour => {
+        if (!groupTour) throw new Error("Group tour didn't exist!")
+        return res.render('group-tour', { groupTour })
+      })
+      .catch(err => next(err))
   }
 }
 
