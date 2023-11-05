@@ -22,7 +22,7 @@ const userController = {
         password: hash
       }))
       .then(() => {
-        req.flash('success_message', '成功註冊帳號！')
+        req.flash('success_messages', '成功註冊帳號！')
         return res.redirect('/login')
       })
       .catch(err => next(err))

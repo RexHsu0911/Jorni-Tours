@@ -8,6 +8,7 @@ const upload = require('../../middleware/multer')
 
 // categories 路由
 router.get('/categories', categoryController.getCategories)
+router.post('/categories', categoryController.postCategory)
 
 // users 路由
 router.patch('/users/:id', adminController.patchUser)
