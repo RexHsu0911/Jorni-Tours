@@ -15,10 +15,17 @@ const adminController = {
       .catch(err => next(err))
   },
   getGroupTourCreate: (req, res, next) => {
-    return res.render('admin/create-group-tour')
+    return Category.findAll({
+      raw: true
+    })
+      .then(categories => {
+        if (!categories) throw new Error("Categories didn't exist!")
+        return res.render('admin/create-group-tour', { categories })
+      })
+      .catch(err => next(err))
   },
   postGroupTour: (req, res, next) => {
-    const { name, city, departureDate, returnDate, duration, quantity, price, description, canBeCancel } = req.body
+    const { name, city, departureDate, returnDate, duration, quantity, price, description, canBeCancel, categoryId } = req.body
     if (!name) throw new Error('Group tour name is required!')
 
     const { file } = req // 讀取檔案
@@ -33,7 +40,8 @@ const adminController = {
         price,
         description,
         canBeCancel,
-        image: filePath || null
+        image: filePath || null,
+        categoryId
       }))
       .then(() => {
         req.flash('success_messages', 'Group tour was successfully created!')
@@ -54,17 +62,19 @@ const adminController = {
       .catch(err => next(err))
   },
   getGroupTourEdit: (req, res, next) => {
-    return GroupTour.findByPk(req.params.id, {
-      raw: true
-    })
-      .then(groupTour => {
+    return Promise.all([
+      GroupTour.findByPk(req.params.id, { raw: true }),
+      Category.findAll({ raw: true })
+    ])
+      .then(([groupTour, categories]) => {
         if (!groupTour) throw new Error("Group tour didn't exist!")
-        return res.render('admin/edit-group-tour', { groupTour })
+        if (!categories) throw new Error("Category didn't exist!")
+        return res.render('admin/edit-group-tour', { groupTour, categories })
       })
       .catch(err => next(err))
   },
   putGroupTour: (req, res, next) => {
-    const { name, city, departureDate, returnDate, duration, quantity, price, description, canBeCancel } = req.body
+    const { name, city, departureDate, returnDate, duration, quantity, price, description, canBeCancel, categoryId } = req.body
     if (!name) throw new Error('Group tour name is required!')
 
     const { file } = req
@@ -85,7 +95,8 @@ const adminController = {
           price,
           description,
           canBeCancel,
-          image: filePath || groupTour.image
+          image: filePath || groupTour.image,
+          categoryId
         })
       })
       .then(() => {
