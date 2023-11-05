@@ -2,8 +2,12 @@ const express = require('express')
 const router = express.Router()
 
 const adminController = require('../../controllers/admin-controller')
+const categoryController = require('../../controllers/category-controller')
 
 const upload = require('../../middleware/multer')
+
+// categories 路由
+router.get('/categories', categoryController.getCategories)
 
 // users 路由
 router.patch('/users/:id', adminController.patchUser)
