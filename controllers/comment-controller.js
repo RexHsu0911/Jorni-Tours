@@ -27,7 +27,7 @@ const commentController = {
       })
       .then(() => {
         req.flash('success_messages', 'Comment was successfully shared!')
-        res.redirect(`/group-tours/${groupTourId}`)
+        return res.redirect(`/group-tours/${groupTourId}`)
       })
       .catch(err => next(err))
   }

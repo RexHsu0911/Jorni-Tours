@@ -6,7 +6,7 @@ const adminController = {
     return GroupTour.findAll({
       raw: true,
       nest: true, // 巢狀結構
-      include: [Category]
+      include: Category
     })
       .then(groupTours => {
         if (!groupTours) throw new Error("Group tours didn't exist!")
@@ -53,7 +53,7 @@ const adminController = {
     return GroupTour.findByPk(req.params.id, {
       raw: true,
       nest: true,
-      include: [Category]
+      include: Category
     })
       .then(groupTour => {
         if (!groupTour) throw new Error("Group tour didn't exist!")

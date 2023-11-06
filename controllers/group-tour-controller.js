@@ -1,4 +1,4 @@
-const { GroupTour, Category } = require('../models')
+const { GroupTour, Category, Comment, User } = require('../models')
 const { getOffset, getPagination } = require('../helpers/pagination-helper')
 
 const groupTourController = {
@@ -14,7 +14,7 @@ const groupTourController = {
       GroupTour.findAndCountAll({
         raw: true,
         nest: true,
-        include: [Category],
+        include: Category,
         where: {
           ...categoryId ? { categoryId } : {} // 檢查 categoryId 是否為空值
         },
@@ -43,13 +43,15 @@ const groupTourController = {
   },
   getGroupTour: (req, res, next) => {
     return GroupTour.findByPk(req.params.id, {
-      raw: true,
-      nest: true,
-      include: [Category]
+      include: [
+        Category,
+        { model: Comment, include: User } // 預先加載 Comment 和 User model
+      ]
     })
       .then(groupTour => {
+        console.log(groupTour.toJSON())
         if (!groupTour) throw new Error("Group tour didn't exist!")
-        return res.render('group-tour', { groupTour })
+        return res.render('group-tour', { groupTour: groupTour.toJSON() }) // 使用 toJSON() 把關聯資料轉成 JSON({{#each}} 陣列才取得到資料)
       })
       .catch(err => next(err))
   }
