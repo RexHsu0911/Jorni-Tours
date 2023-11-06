@@ -41,8 +41,8 @@ module.exports = {
         defaultValue: false
       },
       rating: {
-        type: Sequelize.FLOAT,
-        defaultValue: 5.0
+        type: Sequelize.FLOAT(2, 1),
+        defaultValue: 0.0
       },
       created_at: {
         allowNull: false,
