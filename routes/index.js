@@ -33,6 +33,7 @@ router.get('/group-tours/:id', authenticated, groupTourController.getGroupTour)
 router.get('/group-tours', authenticated, groupTourController.getGroupTours)
 
 // comment 路由
+router.delete('/comments/:id', authenticatedAdmin, commentController.deleteComment)
 router.post('/comments', authenticated, upload.single('image'), commentController.postComment)
 
 // 設定 fallback 路由

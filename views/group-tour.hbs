@@ -34,23 +34,33 @@
 {{!-- Comment --}}
 <div class="row">
   {{#if groupTour.Comments}}
-  <h3 class="mb-3">All comments</h3>
-  
+  <div class="col-md-12">
+    <h3 class="mb-3">All comments</h3>
+  </div>
+  {{/if}}
+
   {{#each groupTour.Comments}}
-  <h4><a href="/users/{{this.User.id}}">{{this.User.firstName}}{{this.User.lastName}}</a></h4>
+  <div class="col-md-12">
+    {{#if ../loginUser.isAdmin}}
+    <form action="/comments/{{this.id}}?_method=DELETE" method="POST" class="float-end">
+      <button type="submit" class="btn btn-danger" onclick="return confirm(`Confirm to delete 「{{this.User.firstName}} {{this.User.lastName}}」's comment ？`)">Delete</button>
+    </form>
+    {{/if}}
 
-  <p>Rating : {{this.rating}}</p>
+    <h4><a href="/users/{{this.User.id}}">{{this.User.firstName}} {{this.User.lastName}}</a></h4>
 
-  <p>{{this.text}}</p>
+    <p>Rating : {{this.rating}}</p>
 
-  <img class="img-responsive center-block" src="{{this.image}}"
-    style="width: 200px; margin-bottom: 25px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+    <p>{{this.text}}</p>
 
-  <footer class="blockquote-footer">{{relativeTimeFromNow this.createdAt}}</footer>
+    <img class="img-responsive center-block" src="{{this.image}}"
+      style="width: 200px; margin-bottom: 25px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+
+    <footer class="blockquote-footer">{{relativeTimeFromNow this.createdAt}}</footer>
+  </div>
 </div>
 <hr />
 {{/each}}
-{{/if}}
 
 {{!-- Comment form --}}
 <form action="/comments" method="POST" enctype="multipart/form-data">

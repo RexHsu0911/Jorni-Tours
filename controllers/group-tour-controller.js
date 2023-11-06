@@ -49,7 +49,7 @@ const groupTourController = {
       ]
     })
       .then(groupTour => {
-        console.log(groupTour.toJSON())
+        // console.log(groupTour.toJSON())
         if (!groupTour) throw new Error("Group tour didn't exist!")
         return res.render('group-tour', { groupTour: groupTour.toJSON() }) // 使用 toJSON() 把關聯資料轉成 JSON({{#each}} 陣列才取得到資料)
       })
