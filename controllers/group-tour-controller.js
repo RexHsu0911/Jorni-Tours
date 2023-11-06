@@ -26,6 +26,7 @@ const groupTourController = {
       .then(([groupTours, categories]) => {
         if (!groupTours) throw new Error("Group tours didn't exist!")
         if (!categories) throw new Error("Categories didn't exist!")
+
         // findAndCountAll 回傳 rows 資料集合
         const result = groupTours.rows.map(t => ({
           ...t, // ... 展開運算子

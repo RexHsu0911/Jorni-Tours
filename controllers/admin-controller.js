@@ -27,8 +27,8 @@ const adminController = {
   postGroupTour: (req, res, next) => {
     const { name, city, departureDate, returnDate, duration, quantity, price, description, canBeCancel, categoryId } = req.body
     if (!name) throw new Error('Group tour name is required!')
-
     const { file } = req // 讀取檔案
+
     imgurFileHandler(file) // 檔案傳到 file-helper 處理
       .then(filePath => GroupTour.create({
         name,
@@ -76,8 +76,8 @@ const adminController = {
   putGroupTour: (req, res, next) => {
     const { name, city, departureDate, returnDate, duration, quantity, price, description, canBeCancel, categoryId } = req.body
     if (!name) throw new Error('Group tour name is required!')
-
     const { file } = req
+
     return Promise.all([ // 非同步處理
       GroupTour.findByPk(req.params.id),
       imgurFileHandler(file)

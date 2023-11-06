@@ -31,4 +31,27 @@
   <hr>
 </div>
 
-<a class="btn btn-outline-secondary" href="javascript:history.back()">Back</a>
+{{!-- Comment --}}
+<form action="/comments" method="POST" enctype="multipart/form-data">
+  <div class="form-row mb-3">
+    <label class="form-label" for="rating">Rating</label>
+    <input class="form-control" type="number" min="1" max="5" step="0.1" placeholder="Please rate this experience(1.0 ~ 5.0)" name="rating"  id="rating" value="{{restaurant.rating}}" required>
+  </div>
+
+  <div class="form-row mb-3">
+    <label class="form-label" for="text">Comment</label>
+    <textarea class="form-control" id="text" name="text" rows="3"
+      placeholder="Please share this experience"></textarea>
+  </div>
+  {{!-- 把 groupTour.id 送到後端取用 --}}
+  <input type="hidden" name="groupTourId" value="{{groupTour.id}}">
+
+  <div class="form-row mb-3">
+    <label class="form-label" for="image">Image</label>
+    <input class="form-control" type="file" name="image" id="image">
+  </div>
+
+  <button type="submit" class="btn btn-primary">Submit</button>
+
+  <a class="btn btn-outline-secondary" href="javascript:history.back()">Back</a>
+</form>

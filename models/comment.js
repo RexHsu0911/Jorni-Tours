@@ -15,10 +15,9 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Comment.init({
-    userText: DataTypes.STRING,
+    text: DataTypes.STRING,
     rating: DataTypes.FLOAT(2, 1),
     image: DataTypes.STRING,
-    adminText: DataTypes.STRING,
     userId: DataTypes.INTEGER,
     groupTourId: DataTypes.INTEGER
   }, {

@@ -9,16 +9,13 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      user_text: {
+      text: {
         type: Sequelize.STRING
       },
       rating: {
         type: Sequelize.FLOAT(2, 1)
       },
       image: {
-        type: Sequelize.STRING
-      },
-      admin_text: {
         type: Sequelize.STRING
       },
       user_id: {
@@ -29,11 +26,11 @@ module.exports = {
         allowNull: false,
         type: Sequelize.INTEGER
       },
-      createdAt: {
+      created_at: {
         allowNull: false,
         type: Sequelize.DATE
       },
-      updatedAt: {
+      updated_at: {
         allowNull: false,
         type: Sequelize.DATE
       }
