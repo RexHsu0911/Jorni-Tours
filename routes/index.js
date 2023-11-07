@@ -29,6 +29,7 @@ router.post('/login', passport.authenticate('local', { failureRedirect: '/login'
 router.get('/logout', userController.logout)
 
 // user 路由
+router.get('/users/:id/edit', authenticated, userController.getUserEdit)
 router.get('/users/:id', authenticated, userController.getUser)
 
 // group-tours 路由

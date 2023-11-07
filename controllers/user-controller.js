@@ -41,12 +41,18 @@ const userController = {
     return res.redirect('/login')
   },
   getUser: (req, res, next) => {
-    return User.findByPk(req.params.id, {
-      raw: true
-    })
+    return User.findByPk(req.params.id, { raw: true })
       .then(user => {
         if (!user) throw new Error("User didn't exist!")
         return res.render('users/profile', { user })
+      })
+      .catch(err => next(err))
+  },
+  getUserEdit: (req, res, next) => {
+    return User.findByPk(req.params.id, { raw: true })
+      .then(user => {
+        if (!user) throw new Error("User didn't exist!")
+        return res.render('users/edit', { user })
       })
       .catch(err => next(err))
   }

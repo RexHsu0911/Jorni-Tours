@@ -6,14 +6,19 @@
         onload="this.style.opacity=1;" />
       {{else}}
       {{!-- 預設 user 大頭貼 --}}
-      <img src="https://via.placeholder.com/300" width="300px" height="300px"
-        style="transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;" />
+      <img src="https://fakeimg.pl/300" width="300px" height="300px" style="transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;" />
       {{/if}}
     </div>
     <div class="col-md-6 mx-auto">
       <div class="card-body">
         <h5 class="card-title">{{user.firstName}} {{user.lastName}}</h5>
         <p class="card-text">{{user.email}}</p>
+
+        {{!-- 使用者只能編輯自己的資料 --}}
+        {{#ifCond loginUser.id user.id}}
+        <a class="btn btn-primary" href="/users/{{user.id}}/edit">Edit</a>
+        {{/ifCond}}
+        <a class="btn btn-outline-secondary" href="javascript:history.back()">Back</a>
 
       </div>
     </div>
