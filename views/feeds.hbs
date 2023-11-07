@@ -1,0 +1,86 @@
+{{> group-tour-tabs route='feeds'}}
+
+<h1>Latest feeds</h1>
+<hr />
+
+{{!-- group-tour feeds --}}
+<div class="row mt-5">
+  <div class="col-md-6">
+    <div class="card">
+      <div class="card-header">
+        Latest Group Tours
+      </div>
+
+      <div class="card-body">
+        {{#each groupTours}}
+        <div>
+          <div class="row">
+            <h4>
+              <a class="link-primary" href="/group-tours/{{this.id}}">{{this.name}}</a>
+
+              <small class="fs-6 px-2">
+                [<a class="link-primary" href="/group-tours?categoryId={{this.Category.id}}"> {{this.Category.name}} </a>]
+              </small>
+              </a>
+            </h4>
+          </div>
+
+          <div class="row pt-3">
+            <a href="/group-tours/{{this.id}}">
+              <img class="card-img-top img-fluid" src="{{this.image}}" width="286px" height="180px"
+                style="transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+            </a>
+          </div>
+
+          <p class="text-truncate my-4">{{this.description}}</p>
+          
+          - <small>{{relativeTimeFromNow this.createdAt}}</small>
+
+          <hr>
+        </div>
+        {{/each}}
+      </div>
+    </div>
+  </div>
+
+  {{!-- group-tour comments --}}
+  <div class="col-md-6">
+    <div class="card">
+      <div class="card-header">
+        Latest Comments
+      </div>
+
+      <div class="card-body">
+        {{#each comments}}
+        <div>
+          <h4>
+            <a class="link-primary" href="/group-tours/{{this.GroupTour.id}}">{{this.GroupTour.name}}</a>
+          </h4>
+
+          <div class="row py-3">
+            <div class="col-md-2">
+              {{#if this.User.avatar}}
+              <a href="/users/{{this.User.id}}">
+                <img src="{{this.User.avatar}}" width="60px" height="60px" style="transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;" />
+              </a>
+              {{else}}
+              <img src="https://fakeimg.pl/60" width="60px" height="60px"
+                style="transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;" />
+              {{/if}}
+            </div>
+
+            <div class="col-md-10 px-4">
+              {{!-- style="white-space: break-spaces;" 允許文本在空格處自動換行 --}}
+              <p style="white-space: break-spaces;">{{this.text}}</p>
+            </div>
+          </div>
+
+          - <a class="link-secondary" href="/users/{{this.User.id}}">{{this.User.firstName}} {{this.User.lastName}}</a>
+          <small>at {{relativeTimeFromNow this.createdAt}}</small>
+          <hr>
+        </div>
+        {{/each}}
+      </div>
+    </div>
+  </div>
+</div>

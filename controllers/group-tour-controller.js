@@ -54,6 +54,32 @@ const groupTourController = {
         return res.render('group-tour', { groupTour: groupTour.toJSON() }) // 使用 toJSON() 把關聯資料轉成 JSON({{#each}} 陣列才取得到資料)
       })
       .catch(err => next(err))
+  },
+  getFeeds: (req, res, next) => {
+    return Promise.all([
+      GroupTour.findAll({
+        raw: true,
+        nest: true,
+        limit: 10,
+        include: Category,
+        order: [['createdAt', 'DESC']] // 排序條件
+      }),
+      Comment.findAll({
+        raw: true,
+        nest: true,
+        limit: 10,
+        include: [User, GroupTour],
+        order: [['createdAt', 'DESC']]
+      })
+    ])
+      .then(([groupTours, comments]) => {
+        console.log(groupTours)
+        console.log(comments)
+        if (!groupTours) throw new Error("Group tours didn't exist!")
+        if (!comments) throw new Error("Comments didn't exist!")
+        return res.render('feeds', { groupTours, comments })
+      })
+      .catch(err => next(err))
   }
 }
 
