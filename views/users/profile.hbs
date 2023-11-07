@@ -12,7 +12,10 @@
     <div class="col-md-6 mx-auto">
       <div class="card-body">
         <h5 class="card-title">{{user.firstName}} {{user.lastName}}</h5>
+
         <p class="card-text">{{user.email}}</p>
+        
+        <p class="card-text">{{user.description}}</p>
 
         {{!-- 使用者只能編輯自己的資料 --}}
         {{#ifCond loginUser.id user.id}}

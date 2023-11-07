@@ -31,6 +31,7 @@ router.get('/logout', userController.logout)
 // user 路由
 router.get('/users/:id/edit', authenticated, userController.getUserEdit)
 router.get('/users/:id', authenticated, userController.getUser)
+router.put('/users/:id', authenticated, upload.single('avatar'), userController.putUser)
 
 // group-tours 路由
 router.get('/group-tours/:id', authenticated, groupTourController.getGroupTour)

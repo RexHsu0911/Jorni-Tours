@@ -1,6 +1,7 @@
 const { User } = require('../models')
 // 載入 bcrypt 雜湊演算法
 const bcrypt = require('bcryptjs')
+const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const userController = {
   getRegister: (req, res) => {
@@ -55,7 +56,36 @@ const userController = {
         return res.render('users/edit', { user })
       })
       .catch(err => next(err))
+  },
+  putUser: (req, res, next) => {
+    const { firstName, lastName, gender, birthday, country, phone, description } = req.body
+    if (req.user.id !== Number(req.params.id)) throw new Error('User can only edit your own profile!')
+    if (!firstName) throw new Error('User first name is required!')
+    if (!lastName) throw new Error('User last name is required!')
+    const { file } = req
+
+    return Promise.all([
+      User.findByPk(req.params.id),
+      imgurFileHandler(file)
+    ])
+      .then(([user, filePath]) => {
+        if (!user) throw new Error("User didn't exist!")
+
+        return user.update({
+          firstName,
+          lastName,
+          gender,
+          birthday,
+          country,
+          phone,
+          avatar: filePath || user.avatar,
+          description
+        })
+      })
+      .then(user => res.redirect(`/users/${user.id}`))
+      .catch(err => next(err))
   }
+
 }
 
 module.exports = userController
