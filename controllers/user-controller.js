@@ -8,22 +8,37 @@ const userController = {
     return res.render('register')
   },
   register: (req, res, next) => {
-    const { name, email, password, passwordCheck } = req.body
+    const { firstName, lastName, email, password, passwordCheck, gender, birthday, country, phone, description } = req.body
+    if (!firstName) throw new Error('First name is required!')
+    if (!lastName) throw new Error('Last name is required!')
     if (password !== passwordCheck) throw new Error("Password don't match!")
+    const { file } = req
 
     return User.findOne({ where: { email } })
       .then(user => {
         if (user) throw new Error('Email already exists!')
         // 密碼轉成暗碼(複雜度係數為 10)
-        return bcrypt.hash(password, 10)
+        return Promise.all([
+          bcrypt.hash(password, 10),
+          imgurFileHandler(file)
+        ])
+          .then(([hash, filePath]) => {
+            return User.create({
+              firstName,
+              lastName,
+              email,
+              password: hash,
+              gender,
+              birthday,
+              country,
+              phone,
+              avatar: filePath || null,
+              description
+            })
+          })
       })
-      .then(hash => User.create({
-        name,
-        email,
-        password: hash
-      }))
       .then(() => {
-        req.flash('success_messages', '成功註冊帳號！')
+        req.flash('success_messages', 'Visitor has successfully registered an account!')
         return res.redirect('/login')
       })
       .catch(err => next(err))
@@ -32,11 +47,11 @@ const userController = {
     return res.render('login')
   },
   login: (req, res) => {
-    req.flash('success_messages', '成功登入!')
+    req.flash('success_messages', 'User has successfully logged in!')
     return res.redirect('/group-tours')
   },
   logout: (req, res) => {
-    req.flash('success_messages', '登出成功!')
+    req.flash('success_messages', 'User has successfully logged out!')
     // Passport 提供的 logout() 把 user id 對應的 session 清除
     req.logout()
     return res.redirect('/login')
@@ -82,7 +97,10 @@ const userController = {
           description
         })
       })
-      .then(user => res.redirect(`/users/${user.id}`))
+      .then(user => {
+        req.flash('success_messages', 'User profile was successfully updated!')
+        return res.redirect(`/users/${user.id}`)
+      })
       .catch(err => next(err))
   }
 

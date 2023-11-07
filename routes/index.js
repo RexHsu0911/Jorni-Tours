@@ -20,7 +20,7 @@ router.use('/admin', authenticatedAdmin, admin)
 
 // register 路由
 router.get('/register', userController.getRegister)
-router.post('/register', userController.register)
+router.post('/register', upload.single('avatar'), userController.register)
 // login 路由
 router.get('/login', userController.getLogin)
 // 使用 Passport 做本地身分驗證

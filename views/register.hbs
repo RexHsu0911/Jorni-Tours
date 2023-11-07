@@ -2,25 +2,67 @@
   <h1 class="h3 font-weight-normal mb-3">Register</h1>
 </div>
 
-<form class="form-register" action="/register" method="POST" style="width: 100%;">
+<form class="form-register" action="/register" method="POST" enctype="multipart/form-data" style="width: 100%;">
+  {{!-- autofocus 自動聚焦 --}}
   <div class="form-row mb-3">
-    <label class="form-label" for="name">Name</label>
-    <input type="text" id="name" name="name" class="form-control" placeholder="Name" required autofocus>
+    <label class="form-label" for="firstName">First Name</label>
+    <input class="form-control" type="text" name="firstName" id="firstName" placeholder="Enter first name" required autofocus>
   </div>
+
+  <div class="form-row mb-3">
+    <label class="form-label" for="lastName">Last Name</label>
+    <input class="form-control" type="text" name="lastName" id="lastName" placeholder="Enter last name" required>
+  </div>
+
   <div class="form-row mb-3">
     <label class="form-label" for="email">Email</label>
-    <input type="text" id="email" name="email" class="form-control" placeholder="Email" required>
+    <input type="text" id="email" name="email" class="form-control" placeholder="Enter email" required>
   </div>
+
   <div class="form-row mb-3">
     <label class="form-label" for="password">Password</label>
-    <input type="password" id="password" name="password" class="form-control" placeholder="Password" required>
+    <input type="password" id="password" name="password" class="form-control" placeholder="Enter password" required>
   </div>
+
   <div class="form-row mb-3">
     <label class="form-label" for="passwordCheck">Password Check</label>
-    <input type="password" id="passwordCheck" name="passwordCheck" class="form-control" placeholder="Password Check"
-      required>
+    <input type="password" id="passwordCheck" name="passwordCheck" class="form-control" placeholder="Enter password Check" required>
+  </div>
+
+  <div class="form-row mb-3">
+    <label class="form-label" for="gender">Gender</label>
+    <select class="form-select" name="gender" id="gender">
+      <option selected>Type to choose...</option>
+      <option value="Male">Male</option>
+      <option value="Female">Female</option>
+    </select>
   </div>
   
+  <div class="form-row mb-3">
+    <label class="form-label" for="birthday">Birthday</label>
+    <input class="form-control" type="date" name="birthday" id="birthday">
+  </div>
+  
+  <div class="form-row mb-3">
+    <label class="form-label" for="country">Country</label>
+    <input class="form-control" type="text" name="country" id="country" placeholder="Enter country">
+  </div>
+  
+  <div class="form-row mb-3">
+    <label class="form-label" for="phone">Phone</label>
+    <input class="form-control" type="tel" name="phone" id="phone" placeholder="Enter phone">
+  </div>
+  
+  <div class="form-row mb-3">
+    <label class="form-label" for="avatar">Avatar</label>
+    <input class="form-control" type="file" class="form-control-file" id="avatar" name="avatar">
+  </div>
+  
+  <div class="form-row mb-3">
+    <label class="form-label" for="description">Description</label>
+    <textarea class="form-control" id="description" name="description" rows="3" placeholder="Enter your introduction"></textarea>
+  </div>
+
   <button class="btn btn-primary btn-block" type="submit">Submit</button>
 </form>
 
