@@ -1,4 +1,4 @@
-const { User } = require('../models')
+const { User, Comment, GroupTour } = require('../models')
 // 載入 bcrypt 雜湊演算法
 const bcrypt = require('bcryptjs')
 const { imgurFileHandler } = require('../helpers/file-helpers')
@@ -57,9 +57,27 @@ const userController = {
     return res.redirect('/login')
   },
   getUser: (req, res, next) => {
-    return User.findByPk(req.params.id, { raw: true })
+    return User.findByPk(req.params.id, {
+      include: [
+        { model: Comment, include: GroupTour }
+      ]
+    })
       .then(user => {
         if (!user) throw new Error("User didn't exist!")
+        user = user.toJSON()
+        // console.log(user.Comments)
+
+        // reduce 對陣列轉化為單一值
+        // acc 是累加器，初始值為 []
+        user.commentedGroupTours = user.Comments?.reduce((acc, comment) => {
+          // 檢查 groupTour 不存在重複，則回傳到 user.commentedGroupTours
+          if (!acc.some(groupTour => groupTour.id === comment.groupTourId)) {
+            acc.push(comment.GroupTour)
+          }
+          return acc
+        }, [])
+        // console.log(user.commentedGroupTours)
+
         return res.render('users/profile', { user })
       })
       .catch(err => next(err))
