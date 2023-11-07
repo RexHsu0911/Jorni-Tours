@@ -39,6 +39,16 @@ const userController = {
     // Passport 提供的 logout() 把 user id 對應的 session 清除
     req.logout()
     return res.redirect('/login')
+  },
+  getUser: (req, res, next) => {
+    return User.findByPk(req.params.id, {
+      raw: true
+    })
+      .then(user => {
+        if (!user) throw new Error("User didn't exist!")
+        return res.render('users/profile', { user })
+      })
+      .catch(err => next(err))
   }
 }
 

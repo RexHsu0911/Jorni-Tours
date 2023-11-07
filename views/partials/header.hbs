@@ -2,14 +2,14 @@
   <nav class="navbar navbar-expand-lg fixed-top navbar-dark bg-dark px-4">
     <div class="container-fluid">
       <a class="navbar-brand" href="/">Jorni Tours</a>
-      {{#if loginUser}}
+
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse"
         aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
-      <div class="collapse navbar-collapse" id="navbarCollapse">
-        <ul class="navbar-nav ms-auto mb-2 mb-md-0">
 
+      <div class="collapse navbar-collapse" id="navbarCollapse">
+        <ul class="navbar-nav ms-auto mb-2 mb-md-0 gap-3">
           {{#if loginUser.isAdmin}}
           <li class="nav-item">
             <a href="/admin" class="nav-link">Admin Backstage</a>
@@ -17,7 +17,12 @@
           {{/if}}
 
           <li class="nav-item d-inline-flex align-items-center">
-            <span class="text-white nav-link">Hi, {{ loginUser.email }}</span>
+            <span class="text-white nav-link">Hi, {{#if loginUser}}{{loginUser.email}}{{else}}Visitor{{/if}}</span>
+          </li>
+
+          {{#if loginUser}}
+          <li class="nav-item">
+            <a href="/users/{{loginUser.id}}" class="nav-link">Profile</a>
           </li>
 
           <li class="nav-item">
@@ -25,10 +30,13 @@
               <button class="btn btn-outline-success my-sm-0 my-2">Logout</button>
             </a>
           </li>
-
+          {{else}}
+          <li class="nav-item">
+            <a href="/login" class="nav-link">Profile</a>
+          </li>
+          {{/if}}
         </ul>
       </div>
-      {{/if}}
     </div>
   </nav>
 </header>

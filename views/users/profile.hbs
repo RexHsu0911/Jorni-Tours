@@ -1,0 +1,21 @@
+<div class="card">
+  <div class="row align-items-center no-gutters">
+    <div class="col-md-4">
+      {{#if user.avatar}}
+      <img src="{{user.avatar}}" width="300px" height="300px" style="transition: opacity 0.5s; opacity:0;"
+        onload="this.style.opacity=1;" />
+      {{else}}
+      {{!-- 預設 user 大頭貼 --}}
+      <img src="https://via.placeholder.com/300" width="300px" height="300px"
+        style="transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;" />
+      {{/if}}
+    </div>
+    <div class="col-md-6 mx-auto">
+      <div class="card-body">
+        <h5 class="card-title">{{user.firstName}} {{user.lastName}}</h5>
+        <p class="card-text">{{user.email}}</p>
+
+      </div>
+    </div>
+  </div>
+</div>
