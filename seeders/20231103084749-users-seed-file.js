@@ -23,7 +23,7 @@ module.exports = {
       country: faker.address.country(),
       phone: faker.phone.phoneNumberFormat(),
       avatar: `https://loremflickr.com/300/300/person,face?random=${Math.floor(Math.random() * 100 + 1)}`,
-      description: faker.lorem.text(),
+      description: faker.lorem.sentence(),
       created_at: new Date(),
       updated_at: new Date()
     }, {
@@ -37,7 +37,7 @@ module.exports = {
       country: faker.address.country(),
       phone: faker.phone.phoneNumberFormat(),
       avatar: `https://loremflickr.com/300/300/person,face?random=${Math.floor(Math.random() * 100 + 1)}`,
-      description: faker.lorem.text(),
+      description: faker.lorem.sentence(),
       created_at: new Date(),
       updated_at: new Date()
     }], {})

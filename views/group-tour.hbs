@@ -12,7 +12,8 @@
 
     <div class="well">
       <ul class="list-unstyled">
-        <li><strong>Rating:</strong> {{groupTour.rating}}</li>
+                
+        <li><span class="badge rounded-pill bg-warning text-dark mb-2">Rating : {{groupTour.rating}}</span></li>
         <li><strong>City:</strong> {{groupTour.city}}</li>
         <li><strong>Departure Date:</strong> {{groupTour.departureDate}}</li>
         <li><strong>Return Date:</strong> {{groupTour.returnDate}}</li>
@@ -49,7 +50,7 @@
 
     <h4><a href="/users/{{this.User.id}}">{{this.User.firstName}} {{this.User.lastName}}</a></h4>
 
-    <p>Rating : {{this.rating}}</p>
+    <span class="badge rounded-pill bg-secondary mb-2">Rating : {{this.rating}}</span>
 
     <p>{{this.text}}</p>
 
