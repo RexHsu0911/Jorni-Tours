@@ -32,7 +32,7 @@ const groupTourController = {
         // findAndCountAll 回傳 rows 資料集合
         const result = groupTours.rows.map(gt => ({
           ...gt, // ... 展開運算子
-          description: gt.description.substring(0, 50), // substring 截取字串
+          description: gt.description?.substring(0, 50), // substring 截取字串
           isFavorited: favoritedGroupToursId.includes(gt.id) //  includes 比對是否收藏
         }))
 
@@ -84,11 +84,32 @@ const groupTourController = {
       })
     ])
       .then(([groupTours, comments]) => {
-        console.log(groupTours)
-        console.log(comments)
         if (!groupTours) throw new Error("Group tours didn't exist!")
         if (!comments) throw new Error("Comments didn't exist!")
+        // console.log(groupTours)
+        // console.log(comments)
+
         return res.render('feeds', { groupTours, comments })
+      })
+      .catch(err => next(err))
+  },
+  getTopGroupTours: (req, res, next) => {
+    return GroupTour.findAll({
+      include: [{ model: User, as: 'FavoritedUsers' }]
+    })
+      .then(groupTours => {
+        if (!groupTours) throw new Error("Group tours didn't exist!")
+
+        const result = groupTours.map(gt => ({
+          ...gt.toJSON(),
+          description: gt.description?.substring(0, 50),
+          favoritedCount: gt.FavoritedUsers.length,
+          isFavorited: req.user?.FavoritedGroupTours.some(fgt => fgt.id === gt.id)
+        }))
+          .sort((a, b) => b.favoritedCount - a.favoritedCount)
+          .slice(0, 10)
+
+        return res.render('top-group-tours', { groupTours: result })
       })
       .catch(err => next(err))
   }

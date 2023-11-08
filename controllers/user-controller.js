@@ -131,10 +131,11 @@ const userController = {
         const result = users.map(u => ({
           ...u.toJSON(),
           followerCount: u.Followers.length,
-          isFollowed: req.user.Followings.some(f => f.id === u.id) // 目前登入 user 是否已追蹤該 user 物件
+          isFollowed: req.user?.Followings.some(fu => fu.id === u.id) // 目前登入 user 是否已追蹤該 user 物件
         }))
         // 使用 sort 排序 followerCount 由大排到小(若 b - a 為正數，則 b 排到前面)
           .sort((a, b) => b.followerCount - a.followerCount)
+          .slice(0, 10)
 
         return res.render('top-users', { users: result })
       })

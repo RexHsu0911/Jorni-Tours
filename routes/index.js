@@ -37,6 +37,7 @@ router.get('/users/:id', authenticated, userController.getUser)
 router.put('/users/:id', authenticated, upload.single('avatar'), userController.putUser)
 
 // group-tours 路由
+router.get('/group-tours/top', authenticated, groupTourController.getTopGroupTours)
 router.get('/group-tours/feeds', authenticated, groupTourController.getFeeds)
 router.get('/group-tours/:id', authenticated, groupTourController.getGroupTour)
 router.get('/group-tours', authenticated, groupTourController.getGroupTours)

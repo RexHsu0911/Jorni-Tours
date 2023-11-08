@@ -72,9 +72,10 @@
 
     <footer class="blockquote-footer">{{relativeTimeFromNow this.createdAt}}</footer>
   </div>
+  <hr />
+  {{/each}}
 </div>
-<hr />
-{{/each}}
+
 
 {{!-- comment form --}}
 <form action="/comments" method="POST" enctype="multipart/form-data">

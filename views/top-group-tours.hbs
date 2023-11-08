@@ -1,0 +1,44 @@
+{{> group-tour-tabs route='topGroupTours'}}
+
+<h1>Popular Group Tours</h1>
+<hr />
+
+<div class="d-flex flex-column align-items-center">
+  {{#each groupTours}}
+  <div class="card col-12 mb-3 h-100 m-1" style="break-inside: avoid;">
+    <div class="row no-gutters">
+      <div class="col-md-4 align-self-center">
+        <a href="/group-tours/{{this.id}}">
+          <img class="card-img img-fluid" src="{{this.image}}" width="286px" height="180px"
+            style="transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+        </a>
+      </div>
+
+      <div class="col-md-8">
+        <div class="card-body">
+          <h5 class="card-title">
+            <a class="link-primary" href="/group-tours/{{this.id}}">{{this.name}}</a>
+          </h5>
+
+          <span class="bg-secondary badge bg-secondary">Favorited：{{this.favoritedCount}}</span>
+
+          <p class="card-text text-truncate my-4">{{this.description}}</p>
+
+          <a class="btn btn-primary"href="/group-tours/{{this.id}}">Show</a>
+
+          {{!-- favorite button --}}
+          {{#if this.isFavorited }}
+          <form action="/favorite/{{this.id}}?_method=DELETE" method="POST" style="display: contents;">
+            <button type="submit" class="btn btn-danger">Unfavorite</button>
+          </form>
+          {{else}}
+          <form action="/favorite/{{this.id}}" method="POST" style="display: contents;">
+            <button type="submit" class="btn btn-primary">Favorite</button>
+          </form>
+          {{/if}}
+        </div>
+      </div>
+    </div>
+  </div>
+  {{/each}}
+</div>
