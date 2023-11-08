@@ -27,11 +27,15 @@ const groupTourController = {
         if (!groupTours) throw new Error("Group tours didn't exist!")
         if (!categories) throw new Error("Categories didn't exist!")
 
+        // 取出每個收藏的 id
+        const favoritedGroupToursId = req.user?.FavoritedGroupTours.map(fgt => fgt.id)
         // findAndCountAll 回傳 rows 資料集合
-        const result = groupTours.rows.map(t => ({
-          ...t, // ... 展開運算子
-          description: t.description.substring(0, 50) // substring 截取字串
+        const result = groupTours.rows.map(gt => ({
+          ...gt, // ... 展開運算子
+          description: gt.description.substring(0, 50), // substring 截取字串
+          isFavorited: favoritedGroupToursId.includes(gt.id) //  includes 比對是否收藏
         }))
+
         return res.render('group-tours', {
           groupTours: result,
           categories,
@@ -45,13 +49,20 @@ const groupTourController = {
     return GroupTour.findByPk(req.params.id, {
       include: [
         Category,
-        { model: Comment, include: User } // 預先加載 Comment 和 User model
+        { model: Comment, include: User }, // 預先加載 Comment 和 User model
+        { model: User, as: 'FavoritedUsers' }
       ]
     })
       .then(groupTour => {
         // console.log(groupTour.toJSON())
         if (!groupTour) throw new Error("Group tour didn't exist!")
-        return res.render('group-tour', { groupTour: groupTour.toJSON() }) // 使用 toJSON() 把關聯資料轉成 JSON({{#each}} 陣列才取得到資料)
+
+        const isFavorited = groupTour.FavoritedUsers.some(fu => fu.id === req.user.id) // some 找到一個符合條件的項目，就會立刻回傳 true
+
+        return res.render('group-tour', {
+          groupTour: groupTour.toJSON(), // 使用 toJSON() 把關聯資料轉成 JSON({{#each}} 陣列才取得到資料)
+          isFavorited
+        })
       })
       .catch(err => next(err))
   },

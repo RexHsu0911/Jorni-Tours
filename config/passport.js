@@ -1,7 +1,7 @@
 const passport = require('passport')
 const LocalStrategy = require('passport-local')
 const bcrypt = require('bcryptjs')
-const { User } = require('../models')
+const { User, GroupTour } = require('../models')
 
 // 設定 Passport 的認證策略
 passport.use(new LocalStrategy(
@@ -33,7 +33,11 @@ passport.use(new LocalStrategy(
 passport.serializeUser((user, cb) => cb(null, user.id))
 // 反序列化 deserialize(透過 user id 拿出整個 user 物件實例)
 passport.deserializeUser((id, cb) => {
-  return User.findByPk(id)
+  return User.findByPk(id, {
+    include: [
+      { model: GroupTour, as: 'FavoritedGroupTours' } // as 指定引入關係的別名
+    ]
+  })
     .then(user => cb(null, user.toJSON())) // toJSON() 整理格式
     .catch(err => cb(err))
 })

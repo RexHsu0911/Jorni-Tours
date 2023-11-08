@@ -1,5 +1,4 @@
 const { Favorite, GroupTour } = require('../models')
-const favorite = require('../models/favorite')
 
 const favoriteController = {
   addFavorite: (req, res, next) => {

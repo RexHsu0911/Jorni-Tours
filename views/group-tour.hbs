@@ -1,10 +1,11 @@
+{{!-- groupTour --}}
 <div class="row">
   <div class="col-md-12">
     <h1>{{groupTour.name}}</h1>
     <p>[ {{groupTour.Category.name}} ]</p>
   </div>
 
-  <div class="col-md-4">
+  <div class="col-md-6">
     <img class="img-responsive center-block" src="{{groupTour.image}}"
       style="width: 300px; margin-bottom: 25px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
 
@@ -12,7 +13,7 @@
 
     <div class="well">
       <ul class="list-unstyled">
-                
+
         <li><span class="badge rounded-pill bg-warning text-dark mb-2">Rating : {{groupTour.rating}}</span></li>
         <li><strong>City:</strong> {{groupTour.city}}</li>
         <li><strong>Departure Date:</strong> {{groupTour.departureDate}}</li>
@@ -25,14 +26,25 @@
     </div>
   </div>
 
-  <div class="col-md-8">
-    <p style="white-space: break-spaces;">{{groupTour.description}}</p>
+  <div class="col-md-6">
+    <p class="mb-5" style="white-space: break-spaces;">{{groupTour.description}}</p>
+
+    {{!-- favorite button --}}
+    {{#if isFavorited }}
+    <form action="/favorite/{{restaurant.id}}?_method=DELETE" method="POST" style="display: contents;">
+      <button type="submit" class="btn btn-danger">Unfavorite</button>
+    </form>
+    {{else}}
+    <form action="/favorite/{{restaurant.id}}" method="POST" style="display: contents;">
+      <button type="submit" class="btn btn-primary">Favorite</button>
+    </form>
+    {{/if}}
   </div>
 
   <hr>
 </div>
 
-{{!-- Comment --}}
+{{!-- comments --}}
 <div class="row">
   {{#if groupTour.Comments}}
   <div class="col-md-12">
@@ -44,7 +56,8 @@
   <div class="col-md-12">
     {{#if ../loginUser.isAdmin}}
     <form action="/comments/{{this.id}}?_method=DELETE" method="POST" class="float-end">
-      <button type="submit" class="btn btn-danger" onclick="return confirm(`Confirm to delete 「{{this.User.firstName}} {{this.User.lastName}}」's comment ？`)">Delete</button>
+      <button type="submit" class="btn btn-danger"
+        onclick="return confirm(`Confirm to delete 「{{this.User.firstName}} {{this.User.lastName}}」's comment ？`)">Delete</button>
     </form>
     {{/if}}
 
@@ -63,7 +76,7 @@
 <hr />
 {{/each}}
 
-{{!-- Comment form --}}
+{{!-- comment form --}}
 <form action="/comments" method="POST" enctype="multipart/form-data">
   <div class="mb-4 text-center">
     <h3 class="font-weight-normal">Please share your comments</h3>
