@@ -8,6 +8,7 @@ const admin = require('./modules/admin')
 const groupTourController = require('../controllers/group-tour-controller')
 const userController = require('../controllers/user-controller')
 const commentController = require('../controllers/comment-controller')
+const favoriteController = require('../controllers/favorite-controller')
 
 // 透過 auth.js 登入驗證及身分驗證
 const { authenticated, authenticatedAdmin } = require('../middleware/auth')
@@ -41,6 +42,10 @@ router.get('/group-tours', authenticated, groupTourController.getGroupTours)
 // comment 路由
 router.delete('/comments/:id', authenticatedAdmin, commentController.deleteComment)
 router.post('/comments', authenticated, upload.single('image'), commentController.postComment)
+
+// favorite 路由
+router.post('/favorite/:groupTourId', authenticated, favoriteController.addFavorite)
+router.delete('/favorite/:groupTourId', authenticated, favoriteController.removeFavorite)
 
 // 設定 fallback 路由
 router.use('/', (req, res) => res.redirect('/group-tours'))

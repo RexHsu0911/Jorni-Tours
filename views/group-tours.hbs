@@ -35,6 +35,17 @@
 
         {{!-- .text-truncate 使用刪節號截斷較長的字串 --}}
         <p class="card-text text-truncate mt-4">{{this.description}}</p>
+
+        {{!-- favorite --}}
+        <div class="d-flex">
+          <form action="/favorite/{{this.id}}?_method=DELETE" method="POST">
+            <button type="submit" class="btn btn-danger m-1">移除最愛</button>
+          </form>
+
+          <form action="/favorite/{{this.id}}" method="POST">
+            <button type="submit" class="btn btn-primary m-1">加到最愛</button>
+          </form>
+        </div>
       </div>
     </div>
   </div>
