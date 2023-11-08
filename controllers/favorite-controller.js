@@ -10,13 +10,13 @@ const favoriteController = {
       Favorite.findOne({
         where: {
           userId,
-          groupTourId
+          groupTourId // 目前登入 user 的 groupTour
         }
       })
     ])
       .then(([groupTour, favorite]) => {
         if (!groupTour) throw new Error("Group tour didn't exist!")
-        if (favorite) throw new Error('You have favorited this group tour!')
+        if (favorite) throw new Error('You have already favorited this group tour!')
 
         return Favorite.create({
           userId,

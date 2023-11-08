@@ -1,6 +1,6 @@
 {{> group-tour-tabs route='topUsers'}}
 
-<h1>Travelling expert</h1>
+<h1 class="text-center">Travelling expert</h1>
 
 <hr />
 <div class="row" style="text-align: center;">
@@ -22,11 +22,11 @@
     <p>
       {{!-- followship --}}
       {{#if this.isFollowed }}
-    <form action="/following/{{this.id}}?_method=DELETE" method="POST" style="display: contents;">
+    <form action="/follow/{{this.id}}?_method=DELETE" method="POST" style="display: contents;">
       <button type="submit" class="btn btn-danger">Unfollow</button>
     </form>
     {{else}}
-    <form action="/following/{{this.id}}" method="POST" style="display: contents;">
+    <form action="/follow/{{this.id}}" method="POST" style="display: contents;">
       <button type="submit" class="btn btn-primary">Follow</button>
     </form>
     {{/if}}
