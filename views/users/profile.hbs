@@ -16,14 +16,31 @@
 
         <p class="card-text">{{user.email}}</p>
 
+        <ul class="list-unstyled mb-3">
+          <li><strong>{{user.FavoritedGroupTours.length}}</strong> Favorited</li>
+
+          <li><strong>{{user.commentedGroupTours.length}}</strong> Commented</li>
+
+          <li><strong>{{user.Followings.length}}</strong> Followings</li>
+
+          <li><strong>{{user.Followers.length}}</strong> Followers</li>
+        </ul>
+
         <p class="card-text">{{user.description}}</p>
 
-        <p class="card-text mb-5">
-          <strong>{{user.commentedGroupTours.length}}</strong> Commented Group Tours
-        </p>
-
+        {{!-- followship --}}
         {{#ifCond loginUser.id user.id}}
         <a class="btn btn-primary" href="/users/{{user.id}}/edit">Edit</a>
+        {{else}}
+        {{#if user.isFollowed}}
+        <form action="/follow/{{user.id}}?_method=DELETE" method="POST" style="display: contents;">
+          <button type="submit" class="btn btn-danger">Unfollow</button>
+        </form>
+        {{else}}
+        <form action="/follow/{{user.id}}" method="POST" style="display: contents;">
+          <button type="submit" class="btn btn-primary">Follow</button>
+        </form>
+        {{/if}}
         {{/ifCond}}
 
         <a class="btn btn-outline-secondary" href="javascript:history.back()">Back</a>
@@ -34,15 +51,65 @@
 </div>
 
 <div class="row">
-  <div class="col-md-8">
-    {{!-- commentedGroupTours --}}
+  <div class="col-md-4">
+    {{!-- followings --}}
+    {{#if user.Followings}}
     <br />
-    {{#if user.commentedGroupTours}}
     <div class="card">
       <div class="card-header">
-        <strong>{{user.commentedGroupTours.length}}</strong> Commented Group Tours
+        <strong>{{user.Followings.length}}</strong> Followings
       </div>
-      <div class="card-body">
+      <div class="card-body p-2">
+        {{#each user.Followings}}
+        <a href="/users/{{this.id}}" class="text-decoration-none">
+          {{!-- 當元素被加載到網頁中時，觸發 onload 事件，它最初是不可見的（不透明度 opacity 為 0），然後透過 CSS 過渡(transition)效果 ，透明度平滑地在 0.5 秒內從 0 增加到
+          1，使元素淡入可見（不透明度 opacity 為 1） --}}
+          {{#if this.avatar}}
+          <img src="{{this.avatar}}" width="60" height="60" class="avatar m-1"
+            style="transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;" />
+          {{else}}
+          <img src="https://fakeimg.pl/300" width="60px" height="60px" style="transition: opacity 0.5s; opacity:0;"
+            onload="this.style.opacity=1;" />
+          {{/if}}
+        </a>
+        {{/each}}
+      </div>
+    </div>
+    {{/if}}
+
+    {{!-- followers --}}
+    {{#if user.Followers}}
+    <br />
+    <div class="card">
+      <div class="card-header">
+        <strong>{{user.Followers.length}}</strong> Followers
+      </div>
+      <div class="card-body p-2">
+        {{#each user.Followers}}
+        <a href="/users/{{this.id}}" class="text-decoration-none">
+          {{#if this.avatar}}
+          <img src="{{this.avatar}}" width="60" height="60" class="avatar m-1"
+            style="transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;" />
+          {{else}}
+          <img src="https://fakeimg.pl/300" width="60px" height="60px" style="transition: opacity 0.5s; opacity:0;"
+            onload="this.style.opacity=1;" />
+          {{/if}}
+        </a>
+        {{/each}}
+      </div>
+    </div>
+    {{/if}}
+  </div>
+
+  <div class="col-md-8">
+    {{!-- commentedGroupTours --}}
+    {{#if user.commentedGroupTours}}
+    <br />
+    <div class="card">
+      <div class="card-header">
+        <strong>{{user.commentedGroupTours.length}}</strong> Commented
+      </div>
+      <div class="card-body p-2">
         {{#each user.commentedGroupTours}}
         <a href="/group-tours/{{this.id}}" class="text-decoration-none">
           <img src="{{this.image}}" width="60" height="60" class="avatar m-1"
@@ -53,5 +120,22 @@
     </div>
     {{/if}}
 
+    {{!-- FavoritedRestaurants --}}
+    {{#if user.FavoritedGroupTours}}
+    <br />
+    <div class="card">
+      <div class="card-header">
+        <strong>{{user.FavoritedGroupTours.length}}</strong> Favorited
+      </div>
+      <div class="card-body p-2">
+        {{#each user.FavoritedGroupTours}}
+        <a href="/group-tours/{{this.id}}" class="text-decoration-none">
+          <img src="{{this.image}}" width="60" height="60" class="avatar m-1"
+            style="transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;" />
+        </a>
+        {{/each}}
+      </div>
+    </div>
+    {{/if}}
   </div>
 </div>

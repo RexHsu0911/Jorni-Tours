@@ -59,26 +59,31 @@ const userController = {
   getUser: (req, res, next) => {
     return User.findByPk(req.params.id, {
       include: [
-        { model: Comment, include: GroupTour }
+        { model: Comment, include: GroupTour },
+        { model: GroupTour, as: 'FavoritedGroupTours' },
+        { model: User, as: 'Followings' },
+        { model: User, as: 'Followers' }
       ]
     })
       .then(user => {
         if (!user) throw new Error("User didn't exist!")
-        user = user.toJSON()
-        // console.log(user.Comments)
 
-        // reduce 對陣列轉化為單一值
-        // acc 是累加器，初始值為 []
-        user.commentedGroupTours = user.Comments?.reduce((acc, comment) => {
-          // 檢查 groupTour 不存在重複，則回傳到 user.commentedGroupTours
-          if (!acc.some(groupTour => groupTour.id === comment.groupTourId)) {
-            acc.push(comment.GroupTour)
-          }
-          return acc
-        }, [])
-        // console.log(user.commentedGroupTours)
+        const result = {
+          ...user.toJSON(),
+          // reduce 對陣列轉化為單一值
+          // acc 是累加器，初始值為 []
+          commentedGroupTours: user.Comments?.reduce((acc, comment) => {
+            // 檢查 groupTour 不存在重複，則回傳到 user.commentedGroupTours
+            if (!acc.some(groupTour => groupTour.id === comment.groupTourId)) {
+              acc.push(comment.GroupTour.toJSON())
+            }
+            return acc
+          }, []),
+          isFollowed: req.user?.Followings.some(fu => fu.id === user.id)
+        }
+        // console.log(result)
 
-        return res.render('users/profile', { user })
+        return res.render('users/profile', { user: result })
       })
       .catch(err => next(err))
   },
@@ -133,7 +138,7 @@ const userController = {
           followerCount: u.Followers.length,
           isFollowed: req.user?.Followings.some(fu => fu.id === u.id) // 目前登入 user 是否已追蹤該 user 物件
         }))
-        // 使用 sort 排序 followerCount 由大排到小(若 b - a 為正數，則 b 排到前面)
+          // 使用 sort 排序 followerCount 由大排到小(若 b - a 為正數，則 b 排到前面)
           .sort((a, b) => b.followerCount - a.followerCount)
           .slice(0, 10)
 
