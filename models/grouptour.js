@@ -12,6 +12,11 @@ module.exports = (sequelize, DataTypes) => {
     static associate (models) {
       GroupTour.belongsTo(models.Category, { foreignKey: 'categoryId' }) // 多對一關係
       GroupTour.hasMany(models.Comment, { foreignKey: 'groupTourId' })
+      GroupTour.belongsToMany(models.User, { // 多對多關係
+        through: models.Favorite,
+        foreignKey: 'groupTourId',
+        as: 'FavoritedUsers'
+      })
     }
   }
   GroupTour.init({
