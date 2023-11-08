@@ -31,11 +31,11 @@
 
     {{!-- favorite button --}}
     {{#if isFavorited }}
-    <form action="/favorite/{{restaurant.id}}?_method=DELETE" method="POST" style="display: contents;">
+    <form action="/favorite/{{groupTour.id}}?_method=DELETE" method="POST" style="display: contents;">
       <button type="submit" class="btn btn-danger">Unfavorite</button>
     </form>
     {{else}}
-    <form action="/favorite/{{restaurant.id}}" method="POST" style="display: contents;">
+    <form action="/favorite/{{groupTour.id}}" method="POST" style="display: contents;">
       <button type="submit" class="btn btn-primary">Favorite</button>
     </form>
     {{/if}}

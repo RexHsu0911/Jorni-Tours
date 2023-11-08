@@ -1,0 +1,36 @@
+{{> group-tour-tabs route='topUsers'}}
+
+<h1>Travelling expert</h1>
+
+<hr />
+<div class="row" style="text-align: center;">
+  {{#each users}}
+  <div class="col-3">
+    <a href="/users/{{this.id}}">
+      {{#if this.avatar}}
+      <img src="{{this.avatar}}" width="140px" height="140px" style="transition: opacity 0.5s; opacity:0;"
+        onload="this.style.opacity=1;" />
+      {{else}}
+      <img src="https://fakeimg.pl/140/" width="140px" height="140px" />
+      {{/if}}
+    </a>
+
+    <h2>{{this.firstName}} {{this.lastName}}</h2>
+
+    <span class="bg-secondary badge">Followers：{{this.followerCount}}</span>
+
+    <p>
+      {{!-- followship --}}
+      {{#if this.isFollowed }}
+    <form action="/following/{{this.id}}?_method=DELETE" method="POST" style="display: contents;">
+      <button type="submit" class="btn btn-danger">Unfollow</button>
+    </form>
+    {{else}}
+    <form action="/following/{{this.id}}" method="POST" style="display: contents;">
+      <button type="submit" class="btn btn-primary">Follow</button>
+    </form>
+    {{/if}}
+    </p>
+  </div>
+  {{/each}}
+</div>

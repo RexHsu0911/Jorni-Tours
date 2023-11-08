@@ -120,8 +120,23 @@ const userController = {
         return res.redirect(`/users/${user.id}`)
       })
       .catch(err => next(err))
-  }
+  },
+  getTopUsers: (req, res, next) => {
+    return User.findAll({
+      include: [{ model: User, as: 'Followers' }]
+    })
+      .then(users => {
+        if (!users) throw new Error("Users didn't exist!")
 
+        const result = users.map(u => ({
+          ...u.toJSON(),
+          followerCount: u.Followers.length,
+          isFollowed: req.user.Followings.some(f => f.id === u.id)
+        }))
+        return res.render('top-users', { users: result })
+      })
+      .catch(err => next(err))
+  }
 }
 
 module.exports = userController

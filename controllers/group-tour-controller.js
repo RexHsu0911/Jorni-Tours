@@ -60,7 +60,7 @@ const groupTourController = {
         const isFavorited = groupTour.FavoritedUsers.some(fu => fu.id === req.user.id) // some 找到一個符合條件的項目，就會立刻回傳 true
 
         return res.render('group-tour', {
-          groupTour: groupTour.toJSON(), // 使用 toJSON() 把關聯資料轉成 JSON({{#each}} 陣列才取得到資料)
+          groupTour: groupTour.toJSON(), // 使用 toJSON() 把關聯資料轉成 JSON(不破壞一對多關係，{{#each}} 陣列才取得到資料)
           isFavorited
         })
       })
