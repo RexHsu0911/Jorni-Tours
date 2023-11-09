@@ -1,0 +1,67 @@
+<div class="card">
+  <div class="card-header text-center bg-white">
+    <h1>My Favorite</h1>
+  </div>
+  <div class="card-body">
+
+    <div class="row my-2">
+      <div class="text-grey text-start"><strong class="text-primary">{{user.length}}
+        </strong> group tours in your favorite
+      </div>
+
+      {{!-- <div class="dropdown text-end"><span>Sort by : </span>
+        <button class="btn btn-default btn-sm dropdown-toggle" type="button" id="dropdownMenuButton1"
+          data-bs-toggle="dropdown" aria-expanded="false"><span>All Categories</span></button>
+        <ul class="dropdown-menu dropdown-menu-end dropdown-menu-lg-start" aria-labelledby="dropdownMenuButton1">
+          {{#each }}
+          <li><a class="dropdown-item" href="#" active>{{All}}</a></li>
+          {{/each}}
+        </ul>
+      </div> --}}
+    </div>
+    
+    {{!-- FavoritedGroupTours --}}
+    {{#each user}}
+    <a href="/group-tours/{{this.id}}" class="text-decoration-none link-dark">
+      <div class="card col-12 mb-3 h-100" style="break-inside: avoid;">
+        <div class="row no-gutters">
+          <div class="col-md-5 align-self-center">
+            <img class="card-img img-fluid" src="{{this.image}}" width="286px" height="180px"
+              style="transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+          </div>
+
+          <div class="col-md-7">
+            <div class="card-body">
+              <h4 class="card-title">{{this.name}}</h4>
+
+              <span class="badge bg-secondary">{{this.Category.name}}</span>
+
+              <div class="float-end">
+                <span class="badge rounded-pill bg-warning text-dark">{{this.rating}}</span>
+                <span class="text-secondary">({{this.ratedCount}})</span>
+              </div>
+
+              <p class="card-text text-truncate my-4">{{this.description}}</p>
+
+              {{!-- favorite button --}}
+              {{#if this.isFavorited }}
+              <form action="/favorite/{{this.id}}?_method=DELETE" method="POST" style="display: contents;">
+                <button type="submit" class="btn btn-danger">Unfavorite</button>
+              </form>
+              {{else}}
+              <form action="/favorite/{{this.id}}" method="POST" style="display: contents;">
+                <button type="submit" class="btn btn-primary">Favorite</button>
+              </form>
+              {{/if}}
+
+              <div class="price float-end">
+                <h4 class="my-auto">TWD {{this.price}}</h4>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </a>
+    {{/each}}
+  </div>
+</div>

@@ -1,4 +1,4 @@
-const { Favorite, GroupTour } = require('../models')
+const { Favorite, GroupTour, User, Category, Comment } = require('../models')
 
 const favoriteController = {
   addFavorite: (req, res, next) => {
@@ -39,6 +39,42 @@ const favoriteController = {
         return favorite.destroy()
       })
       .then(() => res.redirect('back'))
+      .catch(err => next(err))
+  },
+  getFavorite: (req, res, next) => {
+    const { userId } = req.params
+    if (req.user.id !== Number(userId)) throw new Error("Favorite didn't exist!")
+
+    return User.findByPk(userId, {
+      include: [
+        {
+          model: GroupTour,
+          as: 'FavoritedGroupTours',
+          through: Favorite,
+          include: [
+            { model: User, as: 'FavoritedUsers' },
+            Category,
+            Comment
+          ],
+          order: [['createdAt', 'DESC']]
+        }
+      ]
+    })
+      .then((user) => {
+        if (!user) throw new Error("User didn't exist!")
+
+        user = user.toJSON()
+        const result = user.FavoritedGroupTours.map(gt => ({
+          ...gt,
+          ratedCount: gt.Comments.length,
+          isFavorited: req.user?.FavoritedGroupTours.some(fgt => fgt.id === gt.id)
+        }))
+        console.log(result)
+
+        return res.render('users/favorite-list', {
+          user: result
+        })
+      })
       .catch(err => next(err))
   }
 }

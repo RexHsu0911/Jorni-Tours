@@ -1,5 +1,5 @@
 <header>
-  <nav class="navbar navbar-expand-lg fixed-top navbar-dark bg-dark px-4">
+  <nav class="navbar navbar-expand-lg fixed-top navbar-light px-4" style="background-color: #e3f2fd;">
     <div class="container-fluid">
       <a class="navbar-brand" href="/">Jorni Tours</a>
 
@@ -12,17 +12,21 @@
         <ul class="navbar-nav ms-auto mb-2 mb-md-0 gap-3">
           {{#if loginUser.isAdmin}}
           <li class="nav-item">
-            <a href="/admin" class="nav-link">Admin Backstage</a>
+            <a href="/admin" class="text-danger nav-link">Admin Backstage</a>
           </li>
           {{/if}}
 
           <li class="nav-item d-inline-flex align-items-center">
-            <span class="text-white nav-link">Hi, {{#if loginUser}}{{loginUser.email}}{{else}}Visitor{{/if}}</span>
+            <span class="text-dark nav-link"><strong>Hi, {{#if loginUser}}{{loginUser.email}}{{else}}Visitor{{/if}}</strong></span>
           </li>
 
           {{#if loginUser}}
           <li class="nav-item">
             <a href="/users/{{loginUser.id}}" class="nav-link">Profile</a>
+          </li>
+
+          <li class="nav-item">
+            <a href="/favorite/{{loginUser.id}}" class="nav-link">My Favorite</a>
           </li>
 
           <li class="nav-item">

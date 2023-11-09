@@ -102,15 +102,15 @@
   </div>
 
   <div class="col-md-8">
-    {{!-- commentedGroupTours --}}
-    {{#if user.commentedGroupTours}}
+    {{!-- FavoritedGroupTours --}}
+    {{#if user.FavoritedGroupTours}}
     <br />
     <div class="card">
       <div class="card-header">
-        <strong>{{user.commentedGroupTours.length}}</strong> Commented
+        <strong>{{user.FavoritedGroupTours.length}}</strong> Favorited
       </div>
       <div class="card-body p-2">
-        {{#each user.commentedGroupTours}}
+        {{#each user.FavoritedGroupTours}}
         <a href="/group-tours/{{this.id}}" class="text-decoration-none">
           <img src="{{this.image}}" width="60" height="60" class="avatar m-1"
             style="transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;" />
@@ -120,15 +120,15 @@
     </div>
     {{/if}}
 
-    {{!-- FavoritedRestaurants --}}
-    {{#if user.FavoritedGroupTours}}
+    {{!-- commentedGroupTours --}}
+    {{#if user.commentedGroupTours}}
     <br />
     <div class="card">
       <div class="card-header">
-        <strong>{{user.FavoritedGroupTours.length}}</strong> Favorited
+        <strong>{{user.commentedGroupTours.length}}</strong> Commented
       </div>
       <div class="card-body p-2">
-        {{#each user.FavoritedGroupTours}}
+        {{#each user.commentedGroupTours}}
         <a href="/group-tours/{{this.id}}" class="text-decoration-none">
           <img src="{{this.image}}" width="60" height="60" class="avatar m-1"
             style="transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;" />

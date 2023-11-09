@@ -47,6 +47,7 @@ router.delete('/comments/:id', authenticatedAdmin, commentController.deleteComme
 router.post('/comments', authenticated, upload.single('image'), commentController.postComment)
 
 // favorite 路由
+router.get('/favorite/:userId', authenticated, favoriteController.getFavorite)
 router.post('/favorite/:groupTourId', authenticated, favoriteController.addFavorite)
 router.delete('/favorite/:groupTourId', authenticated, favoriteController.removeFavorite)
 
