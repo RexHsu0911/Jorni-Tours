@@ -4,22 +4,29 @@
   </div>
   <div class="card-body">
 
-    <div class="row my-2">
+    <div class="row">
       <div class="text-grey text-start"><strong class="text-primary">{{user.length}}
         </strong> group tours in your favorite
       </div>
 
-      {{!-- <div class="dropdown text-end"><span>Sort by : </span>
-        <button class="btn btn-default btn-sm dropdown-toggle" type="button" id="dropdownMenuButton1"
-          data-bs-toggle="dropdown" aria-expanded="false"><span>All Categories</span></button>
-        <ul class="dropdown-menu dropdown-menu-end dropdown-menu-lg-start" aria-labelledby="dropdownMenuButton1">
-          {{#each }}
-          <li><a class="dropdown-item" href="#" active>{{All}}</a></li>
-          {{/each}}
-        </ul>
-      </div> --}}
+      <div class="dropdown text-end mb-2">
+        <span>Sort by : </span>
+        <div class="btn-group">
+          <button class="btn dropdown-toggle" type="button" id="dropdownMenuClickableInside" data-bs-toggle="dropdown"
+            data-bs-auto-close="outside" aria-expanded="false"><span>All Categories</span>
+          </button>
+          <ul class="dropdown-menu" aria-labelledby="dropdownMenuClickableInside">
+            <li><a class="dropdown-item" href="?categoryId=All" {{#ifCond '' categoryId}}active{{/ifCond}}>All
+                Categories</a></li>
+            {{#each user}}
+            <li><a class="dropdown-item" href="?categoryId={{this.Category.id}}" {{#ifCond this.Category.id ../categoryId}}active{{/ifCond}}>{{this.Category.name}}</a></li>
+            {{/each}}
+          </ul>
+        </div>
+      </div>
+
     </div>
-    
+
     {{!-- FavoritedGroupTours --}}
     {{#each user}}
     <a href="/group-tours/{{this.id}}" class="text-decoration-none link-dark">

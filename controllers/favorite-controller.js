@@ -43,6 +43,7 @@ const favoriteController = {
   },
   getFavorite: (req, res, next) => {
     const { userId } = req.params
+    const categoryId = Number(req.query.categoryId) || ''
     if (req.user.id !== Number(userId)) throw new Error("Favorite didn't exist!")
 
     return User.findByPk(userId, {
@@ -56,7 +57,10 @@ const favoriteController = {
             Category,
             Comment
           ],
-          order: [['createdAt', 'DESC']]
+          order: [['createdAt', 'DESC']],
+          where: {
+            ...categoryId ? { categoryId } : {}
+          }
         }
       ]
     })
@@ -72,7 +76,8 @@ const favoriteController = {
         console.log(result)
 
         return res.render('users/favorite-list', {
-          user: result
+          user: result,
+          categoryId
         })
       })
       .catch(err => next(err))
