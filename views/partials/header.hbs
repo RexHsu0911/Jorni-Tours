@@ -13,7 +13,7 @@
       <div class="collapse navbar-collapse" id="navbarCollapse">
         <ul class="navbar-nav ms-auto mb-2 mb-md-0 gap-3">
           {{#if loginUser.isAdmin}}
-          <li class="nav-item">
+          <li class="nav-item d-inline-flex align-items-center">
             <a href="/admin" class="text-danger nav-link">Admin Backstage</a>
           </li>
           {{/if}}
@@ -23,22 +23,88 @@
                 loginUser}}{{loginUser.email}}{{else}}Visitor{{/if}}</strong></span>
           </li>
 
-          {{#if loginUser}}
           <li class="nav-item">
+            <div class="dropdown ml-auto">
+              <button class="btn btn-cart" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown"
+                aria-haspopup="true" aria-expanded="false">
+                <i class="fas fa-shopping-cart fa-2x"></i>
+                <span class="badge rounded-pill badge-danger text-danger bg-light">2</span>
+              </button>
+              <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" style="min-width: 350px;">
+
+                <div class="cart-group p-4">
+                  <div class="cart-item"><a href="/group-tours/{{id}}">
+                      <div class="product-img img-bg"
+                        src="https://image.kkday.com/v2/image/get/w_140%2Ch_105%2Cc_fill%2Cq_55%2Ct_webp/s1.kkday.com/product_148050/20231030144139_De5rO/png"
+                        lazy="loading"
+                        style="background-image: url(&quot;https://cdn.kkday.com/pc-web/assets/img/bg_default.svg&quot;);">
+                      </div>
+                    </a>
+                    <div class="cart-detail">
+                      <div class="product-detail">
+                        <h6><a
+                            href="https://www.kkday.com/en-us/product/148050">【日本旅遊】東京森呼吸～澀谷展望台、輕井澤慢漫遊、LAVIEW列車、乙晚五星飯店五日</a>
+                        </h6>
+                        <div class="product-action float-end">
+                          <a href="#" data-toggle="modal" data-target="#removeModal">
+                            <i class="far fa-trash-alt"></i>
+                          </a>
+                        </div>
+                        <div class="product-option">
+                          全額團費
+                        </div>
+                      </div>
+                      <div class="text-grey float-end px-5">
+                        2023-11-25
+                      </div>
+                      <div class="text-grey">
+                        航空: 長榮航空
+                      </div>
+                      <div class="text-grey float-end px-5">
+                        TWD 520
+                      </div>
+                      <div class="text-grey">
+                        大人 x 1
+                      </div>
+
+                      <p class="h5 fw-bold text-primary text-center my-2">
+                        TWD 1000
+                      </p>
+
+
+                      <hr>
+                      <div class="cart-footer">
+                        <span class="text-grey"><strong class="text-danger">2{{user.length}}</strong> items in total
+                        </span>
+                        <a href="/cart" class="btn btn-primary btn-sm float-end">Check shopping cart
+                        </a>
+                      </div>
+
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </li>
+
+
+          {{#if loginUser}}
+          <li class="nav-item d-inline-flex align-items-center">
             <a href="/users/{{loginUser.id}}" class="nav-link">Profile</a>
           </li>
 
-          <li class="nav-item">
+          <li class="nav-item d-inline-flex align-items-center">
             <a href="/favorite/{{loginUser.id}}" class="nav-link">My Favorite</a>
           </li>
 
-          <li class="nav-item">
+          <li class="nav-item d-inline-flex align-items-center">
             <a href="/logout">
               <button class="btn btn-outline-success my-sm-0 my-2">Logout</button>
             </a>
           </li>
           {{else}}
-          <li class="nav-item">
+          <li class="nav-item d-inline-flex align-items-center">
             <a href="/login" class="nav-link">Profile</a>
           </li>
           {{/if}}
