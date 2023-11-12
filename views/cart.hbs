@@ -1,0 +1,99 @@
+<div class="card mt-5">
+  <div class="card-header bg-white text-center mt-2">
+    <div class="step1 h5 d-inline-block">
+      <span class="px-1">1.</span>
+      <span>Shopping cart</span>
+      <span class="px-2">&rarr;</span>
+    </div>
+    <div class="step2 text-secondary h5 d-inline-block">
+      <span class="px-1">2.</span>
+      <span>Payment</span>
+      <span class="px-2">&rarr;</span>
+    </div>
+    <div class="step3 text-secondary h5 d-inline-block">
+      <span class="px-1">3.</span>
+      <span>Order completed</span>
+    </div>
+  </div>
+
+  <div class="card-body mt-5">
+    {{#if cart.cartedGroupTours}}
+    <table class="table align-middle">
+      <thead>
+        <tr>
+          <th scope="col">Product</th>
+          <th scope="col"></th>
+          <th scope="col">Date</th>
+          <th scope="col">Price</th>
+          <th scope="col">Quantity</th>
+          <th scope="col">Subtotal</th>
+          <th scope="col">Delete</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each cart.cartedGroupTours}}
+        <tr>
+          <td>
+            <div>
+              <a href="/group-tours/{{this.id}}">
+                <img src="{{this.image}}" class="card-img" alt="..." style="height: 100px;width: auto;">
+              </a>
+            </div>
+          </td>
+          <td>
+            <a href="/group-tours/{{this.id}}">
+              <span>{{this.name}}</span>
+            </a>
+          </td>
+          <td>
+            <span>{{this.departureDate}}</span>
+          </td>
+          <td>
+            <span>{{this.price}}</span>
+          </td>
+          <td>
+            <div class="d-flex align-items-center">
+              <form action="/cartItem/{{this.id}}/add" method="POST">
+                <button type="submit" class="btn btn-sm btn-outline-secondary">+</button>
+              </form>
+              <span class="mx-3">
+                {{this.CartItem.quantity}}
+              </span>
+              <form action="/cartItem/{{this.id}}/sub" method="POST">
+                <button type="submit" class="btn btn-sm btn-outline-secondary">-</button>
+              </form>
+            </div>
+          </td>
+          <td>
+            <span>{{this}}</span>
+          </td>
+          <td>
+            <form action="/cartItem/{{this.id}}?_method=DELETE" method="POST">
+              <button type="submit" class="btn btn-link">
+                <i class="fas fa-trash"></i>
+              </button>
+            </form>
+          </td>
+        </tr>
+        {{/each}}
+      </tbody>
+    </table>
+
+    <div class="h4 my-4">
+      <div class=" row">
+        <div class="col">Total：</div>
+        <div class="col text-danger text-end">TWD {{total}}</div>
+      </div>
+    </div>
+    {{/if}}
+
+    <div class=" button-container d-flex justify-content-end">
+      <a href="/group-tours" class="btn btn-secondary mx-2">Continue shopping</a>
+      {{#if loginUser}}
+      <a href="/order" class="btn btn-warning">Checkout</a>
+      {{else}}
+      <a href="/login" class="btn btn-warning">Checkout</a>
+      {{/if}}
+    </div>
+  </div>
+</div>

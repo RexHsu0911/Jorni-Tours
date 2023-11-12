@@ -36,7 +36,7 @@ app.use(express.urlencoded({ extended: true }))
 app.use(session({
   secret: SESSION_SECRET, // 驗證 session id
   resave: false,
-  saveUninitialized: false
+  saveUninitialized: true // 強制將未初始化(新的而且未被修改)的session存回 session store
 }))
 // 初始化 Passport
 app.use(passport.initialize())

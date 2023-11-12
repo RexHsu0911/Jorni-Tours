@@ -10,6 +10,7 @@ const userController = require('../controllers/user-controller')
 const commentController = require('../controllers/comment-controller')
 const favoriteController = require('../controllers/favorite-controller')
 const followController = require('../controllers/follow-controller')
+const cartController = require('../controllers/cart-controller')
 
 // 透過 auth.js 登入驗證及身分驗證
 const { authenticated, authenticatedAdmin } = require('../middleware/auth')
@@ -54,6 +55,10 @@ router.delete('/favorite/:groupTourId', authenticated, favoriteController.remove
 // follow 路由
 router.post('/follow/:userId', authenticated, followController.addFollow)
 router.delete('/follow/:userId', authenticated, followController.removeFollow)
+
+// cart 路由
+router.get('/cart', cartController.getCart)
+router.post('/cart', cartController.postCart)
 
 // 設定 fallback 路由
 router.use('/', (req, res) => res.redirect('/group-tours'))
