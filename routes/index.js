@@ -57,7 +57,8 @@ router.post('/follow/:userId', authenticated, followController.addFollow)
 router.delete('/follow/:userId', authenticated, followController.removeFollow)
 
 // cart 路由
-router.get('/cart', cartController.getCart)
+router.post('/cartItem/:id/add', cartController.addCartItem)
+router.get('/cart', authenticated, cartController.getCart)
 router.post('/cart', cartController.postCart)
 
 // 設定 fallback 路由

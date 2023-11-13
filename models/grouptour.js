@@ -25,6 +25,7 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'groupTourId',
         as: 'cartedGroupTours'
       })
+      GroupTour.hasMany(models.CartItem, { foreignKey: 'groupTourId' })
     }
   }
   GroupTour.init({

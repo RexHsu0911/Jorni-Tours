@@ -16,9 +16,9 @@ function calculateTotal () {
 // onclick +
 function incrementCount () {
   const countInput = document.getElementById('count')
-  if (countInput.value < 30) {
+  if (countInput.value < 20) {
     countInput.value++
-    calculateTotal()
+    return calculateTotal()
   }
 }
 
@@ -27,12 +27,12 @@ function decrementCount () {
   const countInput = document.getElementById('count')
   if (countInput.value > 0) {
     countInput.value--
-    calculateTotal()
+    return calculateTotal()
   }
 }
 
 // onclick reset
 function resetCount () {
   document.getElementById('count').value = 0
-  calculateTotal()
+  return calculateTotal()
 }
