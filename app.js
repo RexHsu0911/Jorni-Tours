@@ -27,6 +27,8 @@ app.engine('hbs', engine({
   helpers: handlebarsHelpers
 }))
 app.set('view engine', 'hbs')
+// 設定靜態資源路徑
+app.use(express.static('public'))
 
 // 使用 Express 內建的 body-parser
 // 使用 POST 動作來傳送資料時，才能解析並傳入 req.body

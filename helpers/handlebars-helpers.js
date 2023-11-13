@@ -12,5 +12,10 @@ module.exports = {
   // 刻意不用箭頭函式，避免綁定 this(可被 handlebar 使用)
   ifCond: function (a, b, options) {
     return a === b ? options.fn(this) : options.inverse(this)
+  },
+  multiplicate: function (a, b) {
+    if (typeof a === 'number' && typeof b === 'number') {
+      return a * b
+    }
   }
 }

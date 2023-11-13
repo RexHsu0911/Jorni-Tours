@@ -31,10 +31,10 @@ module.exports = {
         type: Sequelize.STRING
       },
       quantity: {
-        type: Sequelize.STRING
+        type: Sequelize.INTEGER
       },
       price: {
-        type: Sequelize.STRING
+        type: Sequelize.INTEGER
       },
       can_be_cancel: {
         type: Sequelize.BOOLEAN,

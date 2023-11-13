@@ -62,24 +62,24 @@
               <span>{{groupTour.departureDate}}</span>
             </td>
             <td>
-              <span>{{groupTour.price}}</span>
+              <span id="groupTourPrice">{{groupTour.price}}</span>
             </td>
             <td>
               <div class="counter d-flex align-items-center">
                 <button class="btn btn-sm btn-outline-secondary" style="width: 30px;"
-                  onclick="document.querySelector('#count').value > 0 ? document.querySelector('#count').value-- : 0; return false">
+                  onclick="decrementCount(); return false">
                   <i class="fa-solid fa-minus"></i>
                 </button>
-                <input type="number" class="text-center mx-3" min="1" max="20" id="count" placeholder="0"
-                  name="quantity" required>
+                <input type="text" class="col-1 text-center mx-3" min="1" max="20" id="count" placeholder="0"
+                  name="quantity" onchange="calculateTotal()" required>
                 <button class="btn btn-sm btn-outline-secondary" style="width: 30px;"
-                  onclick="document.querySelector('#count').value < 20 ? document.querySelector('#count').value++ : 0; return false">
+                  onclick="incrementCount(); return false">
                   <i class="fa-solid fa-plus"></i>
                 </button>
               </div>
             </td>
             <td>
-              <button class="btn btn-link" onclick="document.querySelector('#count').value = 0; return false">
+              <button class="btn btn-link" onclick="resetCount(); return false">
                 <i class="fa-solid fa-rotate-right"></i>
               </button>
             </td>
@@ -89,8 +89,9 @@
 
       <div class="h4 my-4">
         <div class=" row">
-          <div class="col">Total：</div>
-          <div class="col text-danger text-end">TWD </div>
+          <div class="col">Total： </div>
+          <div class="col text-danger text-end" id="subTotal">
+          </div>
         </div>
       </div>
 

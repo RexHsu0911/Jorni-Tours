@@ -35,8 +35,8 @@ module.exports = (sequelize, DataTypes) => {
     duration: DataTypes.STRING,
     description: DataTypes.TEXT,
     image: DataTypes.STRING,
-    quantity: DataTypes.STRING,
-    price: DataTypes.STRING,
+    quantity: DataTypes.INTEGER,
+    price: DataTypes.INTEGER,
     rating: DataTypes.FLOAT(2, 1), // FLOAT(n, m)，n=總位數，m=小數位數
     canBeCancel: DataTypes.BOOLEAN
   }, {

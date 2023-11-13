@@ -65,7 +65,7 @@
             </div>
           </td>
           <td>
-            <span>{{this}}</span>
+            <span>{{multiplicate this.price this.CartItem.quantity}}</span>
           </td>
           <td>
             <form action="/cartItem/{{this.id}}?_method=DELETE" method="POST">
