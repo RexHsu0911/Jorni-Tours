@@ -58,6 +58,7 @@ router.delete('/follow/:userId', authenticated, followController.removeFollow)
 
 // cart 路由
 router.post('/cartItem/:id/add', cartController.addCartItem)
+router.post('/cartItem/:id/sub', cartController.subCartItem)
 router.get('/cart', authenticated, cartController.getCart)
 router.post('/cart', cartController.postCart)
 

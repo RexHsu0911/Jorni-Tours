@@ -76,6 +76,23 @@ const cartController = {
       })
       .then(() => res.redirect('back'))
       .catch(err => next(err))
+  },
+  subCartItem: (req, res, next) => {
+    return CartItem.findByPk(req.params.id, {
+      include: GroupTour
+    })
+      .then(cartItem => {
+        if (!cartItem) throw new Error("CartItem didn't exist!")
+        if (cartItem.quantity > 1) {
+          return cartItem.update({
+            quantity: cartItem.quantity - 1
+          })
+        } else {
+          return cartItem.destroy()
+        }
+      })
+      .then(() => res.redirect('back'))
+      .catch(err => next(err))
   }
 }
 
