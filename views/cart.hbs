@@ -53,9 +53,15 @@
           </td>
           <td>
             <div class="d-flex align-items-center">
+              {{#ifCond this.CartItem.quantity 1}}
+              <form action="/cartItem/{{this.CartItem.cartId}}?_method=DELETE" method="POST">
+                <button type="submit" class="btn btn-sm btn-outline-secondary" onclick="return confirm(`Confirm to delete 「{{this.name}}」 ？`)">-</button>
+              </form>
+              {{else}}
               <form action="/cartItem/{{this.CartItem.cartId}}/sub" method="POST">
                 <button type="submit" class="btn btn-sm btn-outline-secondary">-</button>
               </form>
+              {{/ifCond}}
               <span class="mx-3">
                 {{this.CartItem.quantity}}
               </span>
@@ -69,7 +75,8 @@
           </td>
           <td>
             <form action="/cartItem/{{this.CartItem.cartId}}?_method=DELETE" method="POST">
-              <button type="submit" class="btn btn-link" onclick="return confirm(`Confirm to delete 「{{this.name}}」 ？`)">
+              <button type="submit" class="btn btn-link"
+                onclick="return confirm(`Confirm to delete 「{{this.name}}」 ？`)">
                 <i class="fas fa-trash"></i>
               </button>
             </form>
