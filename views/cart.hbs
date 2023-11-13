@@ -68,8 +68,8 @@
             <span>{{multiplicate this.price this.CartItem.quantity}}</span>
           </td>
           <td>
-            <form action="/cartItem/{{this.id}}?_method=DELETE" method="POST">
-              <button type="submit" class="btn btn-link">
+            <form action="/cartItem/{{this.CartItem.cartId}}?_method=DELETE" method="POST">
+              <button type="submit" class="btn btn-link" onclick="return confirm(`Confirm to delete 「{{this.name}}」 ？`)">
                 <i class="fas fa-trash"></i>
               </button>
             </form>
