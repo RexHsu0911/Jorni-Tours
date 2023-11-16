@@ -1,0 +1,140 @@
+{{> order-breadcrumb route='order'}}
+
+<form action="/order" method="POST"></form>
+<div class="card mb-5">
+  <div class="card-header text-center bg-white mt-2">
+    <h3>Orderer information</h3>
+  </div>
+  <div class="card-body">
+    <div class="order-Info my-3">
+      <div class="row pb-3">
+        <div class="col-md-6">
+          <div class="form-group">
+            <label class="form-label" for="city">First Name
+              <span class="text-danger">*</span>
+            </label>
+            <input class="form-control" type="text" name="firstName" id="firstName" placeholder="Enter first name"
+              value="{{user.firstName}}" required autofocus>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="form-group">
+            <label class="form-label" for="city">Last Name
+              <span class="text-danger">*</span>
+            </label>
+            <input class="form-control" type="text" name="lastName" id="lastName" placeholder="Enter last name"
+              value="{{user.lastName}}" required autofocus>
+          </div>
+        </div>
+      </div>
+
+      <div class="row pb-3">
+        <div class="col-md-6">
+          <div class="form-group">
+            <label class="form-label" for="country">Country
+              <span class="text-danger">*</span>
+            </label>
+            <input class="form-control" type="text" name="country" id="country" placeholder="Enter country"
+              value="{{user.country}}" required autofocus>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="form-group">
+            <label class="form-label" for="phone">Phone
+              <span class="text-danger">*</span>
+            </label>
+            <input class="form-control" type="tel" name="phone" id="phone" placeholder="Enter phone"
+              value="{{user.phone}}" required autofocus>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr>
+
+<div class="card my-5">
+  <div class="card-header text-center bg-white mt-2">
+    <h3>Payment details</h3>
+  </div>
+  <div class="card-body my-3">
+    <table class="table align-middle">
+      <thead>
+        <tr>
+          <th scope="col">Product</th>
+          <th scope="col"></th>
+          <th scope="col">Date</th>
+          <th scope="col">Price</th>
+          <th scope="col">Quantity</th>
+          <th scope="col">Subtotal</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each cart.cartedGroupTours}}
+        <tr>
+          <td>
+            <div>
+              <a href="/group-tours/{{this.id}}">
+                <img src="{{this.image}}" class="card-img" alt="..." style="height: 100px;width: auto;">
+              </a>
+            </div>
+          </td>
+          <td>
+            <a href="/group-tours/{{this.id}}">
+              <span>{{this.name}}</span>
+            </a>
+          </td>
+          <td>
+            <span>{{this.departureDate}}</span>
+          </td>
+          <td>
+            <span>{{this.price}}</span>
+          </td>
+          <td>
+            <span>{{this.CartItem.quantity}}</span>
+          </td>
+          <td>
+            <span>{{multiplicate this.price this.CartItem.quantity}}</span>
+          </td>
+        </tr>
+        {{/each}}
+      </tbody>
+    </table>
+
+    <div class="text h4 my-4">
+      <p class="text-secondary fs-6">Total of {{cart.cartedGroupTours.length}} items</p>
+      <div class="row">
+        <div class="col">
+          Payment amount：</div>
+        <div class="col text-danger text-end">TWD {{totalPrice}}</div>
+      </div>
+    </div>
+
+    <hr>
+
+    <div class="text mt-5">
+      <h4>Payment method：</h4>
+      <form action="/order" method="POST">
+        <div class="form-check pt-2">
+          <input class="form-check-input" for="paymentMethod" type="radio" name="paymentMethod" value="1">
+          <label class="form-check-label mx-2" id="paymentMethod">
+            Credit card / Debit card
+          </label>
+        </div>
+
+        <hr>
+
+        <div class="form-group d-flex justify-content-end">
+          <input type="hidden" name="cartId" value="{{cart.id}}">
+          <input type="hidden" name="amount" value="{{cart.cartedGroupTours.length}}">
+          <input type="hidden" name="confirmPrice" value="{{totalPrice}}">
+          <input type="hidden" name="paymentStatus" value="0">
+          <button type="submit" class='btn btn-warning text-end'>Confirm payment</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

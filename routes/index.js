@@ -11,6 +11,7 @@ const commentController = require('../controllers/comment-controller')
 const favoriteController = require('../controllers/favorite-controller')
 const followController = require('../controllers/follow-controller')
 const cartController = require('../controllers/cart-controller')
+const orderController = require('../controllers/order-controller')
 
 // 透過 auth.js 登入驗證及身分驗證
 const { authenticated, authenticatedAdmin } = require('../middleware/auth')
@@ -62,6 +63,9 @@ router.post('/cartItem/:id/sub', cartController.subCartItem)
 router.delete('/cartItem/:id', cartController.deleteCartItem)
 router.get('/cart', authenticated, cartController.getCart)
 router.post('/cart', cartController.postCart)
+
+// order 路由
+router.get('/order', authenticated, orderController.getOrder)
 
 // 設定 fallback 路由
 router.use('/', (req, res) => res.redirect('/group-tours'))
