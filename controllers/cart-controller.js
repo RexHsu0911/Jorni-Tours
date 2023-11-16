@@ -7,7 +7,6 @@ const cartController = {
 
     return Cart.findByPk(cartId, {
       include: [
-        CartItem,
         { model: GroupTour, as: 'cartedGroupTours' }
       ]
     })
@@ -78,9 +77,7 @@ const cartController = {
       .catch(err => next(err))
   },
   subCartItem: (req, res, next) => {
-    return CartItem.findByPk(req.params.id, {
-      include: GroupTour
-    })
+    return CartItem.findByPk(req.params.id)
       .then(cartItem => {
         if (!cartItem) throw new Error("CartItem didn't exist!")
         if (cartItem.quantity > 1) {
@@ -95,9 +92,7 @@ const cartController = {
       .catch(err => next(err))
   },
   deleteCartItem: (req, res, next) => {
-    return CartItem.findByPk(req.params.id, {
-      include: GroupTour
-    })
+    return CartItem.findByPk(req.params.id)
       .then(cartItem => {
         if (!cartItem) throw new Error("CartItem didn't exist!")
 

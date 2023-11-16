@@ -26,6 +26,7 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'followerId',
         as: 'Followings' // User 追蹤中的 User
       })
+      User.hasMany(models.Order, { foreignKey: 'userId' })
     }
   }
   // 定義欄位

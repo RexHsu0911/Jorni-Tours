@@ -18,14 +18,16 @@ module.exports = (sequelize, DataTypes) => {
         as: 'FavoritedUsers'
       })
       GroupTour.belongsToMany(models.Cart, {
-        through: {
-          model: models.CartItem,
-          unique: false
-        },
+        through: models.CartItem,
         foreignKey: 'groupTourId',
         as: 'cartedGroupTours'
       })
       GroupTour.hasMany(models.CartItem, { foreignKey: 'groupTourId' })
+      GroupTour.belongsToMany(models.Order, {
+        through: models.OrderItem,
+        foreignKey: 'groupTourId',
+        as: 'OrderedGroupTours'
+      })
     }
   }
   GroupTour.init({
