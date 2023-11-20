@@ -65,6 +65,7 @@ router.get('/cart', authenticated, cartController.getCart)
 router.post('/cart', cartController.postCart)
 
 // order 路由
+router.post('/order', authenticated, orderController.postOrder)
 router.get('/order', authenticated, orderController.getOrder)
 
 // 設定 fallback 路由

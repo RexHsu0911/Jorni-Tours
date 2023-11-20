@@ -40,7 +40,7 @@
   </div>
 </div>
 
-{{!-- Quantity --}}
+{{!-- Order --}}
 <div class="card mt-5">
   <div class="card-header bg-white text-center mt-2">
     <h3 class="my-4">Order</h3>
@@ -70,7 +70,7 @@
                   onclick="decrementCount(); return false">
                   <i class="fa-solid fa-minus"></i>
                 </button>
-                <input type="number" class="col-1 text-center mx-3" min="1" max="20" id="count" placeholder="0"
+                <input type="number" class="text-center mx-3" min="1" max="20" id="count" placeholder="0"
                   name="quantity" onchange="calculateTotal()" readonly required>
                 <button class="btn btn-sm btn-outline-secondary" style="width: 30px;"
                   onclick="incrementCount(); return false">
@@ -104,11 +104,7 @@
         {{else}}
         <button type="submit" class="btn btn-primary mx-2 disabled">Sold out</button>
         {{/if}}
-        {{#if loginUser}}
         <a href="/order" class="btn btn-warning">Checkout</a>
-        {{else}}
-        <a href="/login" class="btn btn-warning">Checkout</a>
-        {{/if}}
       </div>
     </form>
   </div>

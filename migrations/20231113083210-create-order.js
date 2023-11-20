@@ -12,11 +12,26 @@ module.exports = {
       sn: {
         type: Sequelize.STRING
       },
+      first_name: {
+        type: Sequelize.STRING
+      },
+      last_name: {
+        type: Sequelize.STRING
+      },
+      country: {
+        type: Sequelize.STRING
+      },
+      phone: {
+        type: Sequelize.STRING
+      },
       amount: {
         type: Sequelize.INTEGER
       },
       confirm_price: {
         type: Sequelize.INTEGER
+      },
+      order_status: {
+        type: Sequelize.BOOLEAN
       },
       payment_status: {
         type: Sequelize.BOOLEAN
