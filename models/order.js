@@ -16,6 +16,7 @@ module.exports = (sequelize, DataTypes) => {
         as: 'OrderedGroupTours'
       })
       Order.belongsTo(models.User, { foreignKey: 'orderId' })
+      Order.hasMany(models.Payment, { foreignKey: 'orderId' })
     }
   }
   Order.init({
