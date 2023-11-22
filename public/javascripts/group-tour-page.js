@@ -1,4 +1,3 @@
-// group-tour page
 // onchange input
 function calculateTotal () {
   const quantity = parseInt(document.getElementById('count').value)
@@ -35,4 +34,11 @@ function decrementCount () {
 function resetCount () {
   document.getElementById('count').value = 0
   return calculateTotal()
+}
+
+module.exports = {
+  calculateTotal,
+  incrementCount,
+  decrementCount,
+  resetCount
 }

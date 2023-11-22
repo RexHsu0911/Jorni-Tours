@@ -67,6 +67,7 @@ router.post('/cart', cartController.postCart)
 // order 路由
 router.post('/order', authenticated, orderController.postOrder)
 router.get('/order', authenticated, orderController.getOrder)
+router.get('/order/:id/payment', authenticated, orderController.getPayment)
 
 // 設定 fallback 路由
 router.use('/', (req, res) => res.redirect('/group-tours'))

@@ -1,6 +1,5 @@
 const { Cart, GroupTour, User, Order, OrderItem, CartItem } = require('../models')
-const faker = require('faker')
-const snNum = faker.random.alphaNumeric(10) // 訂單編號
+const { getTradeInfo } = require('../public/javascripts/payment')
 
 const orderController = {
   getOrder: (req, res, next) => {
@@ -52,7 +51,6 @@ const orderController = {
         // 創建 Order
         return Order.create({
           userId: req.user.id,
-          sn: snNum,
           firstName,
           lastName,
           country,
@@ -91,6 +89,36 @@ const orderController = {
             return res.redirect(`/order/${order.id}/payment`)
           })
       })
+      .catch(err => next(err))
+  },
+  getPayment: (req, res, next) => {
+    return Order.findByPk(req.params.id, {
+      include: [
+        User,
+        { model: GroupTour, as: 'orderedGroupTours' }
+      ]
+    })
+      .then(order => {
+        order = order.toJSON()
+
+        const tradeInfo = getTradeInfo(
+          order.confirmPrice,
+          order.id,
+          order.User.email
+        )
+
+        return Promise.all([
+          tradeInfo,
+          order.update({
+            ...req.body,
+            sn: tradeInfo.MerchantOrderNo
+          })
+        ])
+      })
+      .then(([order, tradeInfo]) => res.render('payment', {
+        order,
+        tradeInfo
+      }))
       .catch(err => next(err))
   }
 }
