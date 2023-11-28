@@ -39,19 +39,19 @@
           <td>
             <div class="d-flex align-items-center">
               {{#ifCond this.CartItem.quantity 1}}
-              <form action="/cartItem/{{this.CartItem.cartId}}?_method=DELETE" method="POST">
+              <form action="/cartItem/{{this.CartItem.groupTourId}}?_method=DELETE" method="POST">
                 <button type="submit" class="btn btn-sm btn-outline-secondary"
                   onclick="return confirm(`Confirm to delete 「{{this.name}}」 ？`)">-</button>
               </form>
               {{else}}
-              <form action="/cartItem/{{this.CartItem.cartId}}/sub" method="POST">
+              <form action="/cartItem/{{this.CartItem.groupTourId}}/sub" method="POST">
                 <button type="submit" class="btn btn-sm btn-outline-secondary">-</button>
               </form>
               {{/ifCond}}
               <span class="mx-3">
                 {{this.CartItem.quantity}}
               </span>
-              <form action="/cartItem/{{this.CartItem.cartId}}/add" method="POST">
+              <form action="/cartItem/{{this.CartItem.groupTourId}}/add" method="POST">
                 <button type="submit" class="btn btn-sm btn-outline-secondary">+</button>
               </form>
             </div>
@@ -60,7 +60,7 @@
             <span>{{multiplicate this.price this.CartItem.quantity}}</span>
           </td>
           <td>
-            <form action="/cartItem/{{this.CartItem.cartId}}?_method=DELETE" method="POST">
+            <form action="/cartItem/{{this.CartItem.groupTourId}}?_method=DELETE" method="POST">
               <button type="submit" class="btn btn-link"
                 onclick="return confirm(`Confirm to delete 「{{this.name}}」 ？`)">
                 <i class="fas fa-trash"></i>
@@ -75,9 +75,11 @@
     <div class="h4 my-4">
       <div class=" row">
         <div class="col">Total：</div>
-        <div class="col text-danger text-end">TWD {{total}}</div>
+        <div class="col text-danger text-end">TWD {{cart.totalPrice}}</div>
       </div>
     </div>
+    {{else}}
+    <h4 class="text-secondary text-center my-5">Your shopping cart is empty</h4>
     {{/if}}
 
     <div class=" button-container d-flex justify-content-end">

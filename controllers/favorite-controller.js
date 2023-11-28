@@ -75,7 +75,7 @@ const favoriteController = {
         }))
         console.log(result)
 
-        return res.render('users/favorite-list', {
+        return res.render('users/favorite', {
           user: result,
           categoryId
         })

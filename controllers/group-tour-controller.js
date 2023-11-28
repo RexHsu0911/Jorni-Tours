@@ -28,13 +28,15 @@ const groupTourController = {
         if (!categories) throw new Error("Categories didn't exist!")
 
         // 取出每個收藏的 id
-        const favoritedGroupToursId = req.user?.FavoritedGroupTours.map(fgt => fgt.id)
+        const favoritedGroupToursId = req.user ? req.user.FavoritedGroupTours.map(fgt => fgt.id) : []
+        // console.log(favoritedGroupToursId)
         // findAndCountAll 回傳 rows 資料集合
         const result = groupTours.rows.map(gt => ({
           ...gt, // ... 展開運算子
           description: gt.description?.substring(0, 50), // substring 截取字串
           isFavorited: favoritedGroupToursId.includes(gt.id) //  includes 比對是否收藏
         }))
+        // console.log(result)
 
         return res.render('group-tours', {
           groupTours: result,
@@ -57,7 +59,8 @@ const groupTourController = {
         // console.log(groupTour.toJSON())
         if (!groupTour) throw new Error("Group tour didn't exist!")
 
-        const isFavorited = groupTour.FavoritedUsers.some(fu => fu.id === req.user.id) // some 找到一個符合條件的項目，就會立刻回傳 true
+        const isFavorited = req.user ? groupTour.FavoritedUsers.some(fu => fu.id === req.user.id) : false // some 找到一個符合條件的項目，就會立刻回傳 true
+        // console.log(isFavorited)
 
         return res.render('group-tour', {
           groupTour: groupTour.toJSON(), // 使用 toJSON() 把關聯資料轉成 JSON(不破壞一對多關係，{{#each}} 陣列才取得到資料)

@@ -30,7 +30,7 @@ router.get('/login', userController.getLogin)
 // 使用 Passport 做本地身分驗證
 router.post('/login', passport.authenticate('local', { failureRedirect: '/login', failureFlash: true }), userController.login)
 // logout 路由
-router.get('/logout', userController.logout)
+router.get('/logout', authenticated, userController.logout)
 
 // user 路由
 router.get('/users/top', authenticated, userController.getTopUsers)
@@ -39,10 +39,10 @@ router.get('/users/:id', authenticated, userController.getUser)
 router.put('/users/:id', authenticated, upload.single('avatar'), userController.putUser)
 
 // group-tours 路由
-router.get('/group-tours/top', authenticated, groupTourController.getTopGroupTours)
-router.get('/group-tours/feeds', authenticated, groupTourController.getFeeds)
-router.get('/group-tours/:id', authenticated, groupTourController.getGroupTour)
-router.get('/group-tours', authenticated, groupTourController.getGroupTours)
+router.get('/group-tours/top', groupTourController.getTopGroupTours)
+router.get('/group-tours/feeds', groupTourController.getFeeds)
+router.get('/group-tours/:id', groupTourController.getGroupTour)
+router.get('/group-tours', groupTourController.getGroupTours)
 
 // comment 路由
 router.delete('/comments/:id', authenticatedAdmin, commentController.deleteComment)
@@ -58,9 +58,9 @@ router.post('/follow/:userId', authenticated, followController.addFollow)
 router.delete('/follow/:userId', authenticated, followController.removeFollow)
 
 // cart 路由
-router.post('/cartItem/:id/add', cartController.addCartItem)
-router.post('/cartItem/:id/sub', cartController.subCartItem)
-router.delete('/cartItem/:id', cartController.deleteCartItem)
+router.post('/cartItem/:groupTourId/add', authenticated, cartController.addCartItem)
+router.post('/cartItem/:groupTourId/sub', authenticated, cartController.subCartItem)
+router.delete('/cartItem/:groupTourId', authenticated, cartController.deleteCartItem)
 router.get('/cart', authenticated, cartController.getCart)
 router.post('/cart', cartController.postCart)
 

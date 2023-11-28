@@ -38,7 +38,9 @@ app.use(express.urlencoded({ extended: true }))
 app.use(session({
   secret: SESSION_SECRET, // 驗證 session id
   resave: false,
-  saveUninitialized: true // 強制將未初始化(新的而且未被修改)的session存回 session store
+  saveUninitialized: true, // 強制將未初始化(新的而且未被修改)的session存回 session store
+  cookie: { maxAge: 120 * 60 * 1000 } // 儲存時間
+  // cookie 的 name 預設值為'connect.sid'
 }))
 // 初始化 Passport
 app.use(passport.initialize())
@@ -56,6 +58,8 @@ app.use((req, res, next) => {
   res.locals.success_messages = req.flash('success_messages')
   res.locals.error_messages = req.flash('error_messages')
   res.locals.loginUser = getUser(req) // 讓 view 取得登入中的使用者狀態
+  res.locals.session = req.session // 讓 view 取得 Cart 的 amount 數量
+
   next()
 })
 // 使用 routes 路徑
