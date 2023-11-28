@@ -58,9 +58,9 @@ router.post('/follow/:userId', authenticated, followController.addFollow)
 router.delete('/follow/:userId', authenticated, followController.removeFollow)
 
 // cart 路由
-router.post('/cartItem/:groupTourId/add', authenticated, cartController.addCartItem)
-router.post('/cartItem/:groupTourId/sub', authenticated, cartController.subCartItem)
-router.delete('/cartItem/:groupTourId', authenticated, cartController.deleteCartItem)
+router.post('/cartItem/:id/add', authenticated, cartController.addCartItem)
+router.post('/cartItem/:id/sub', authenticated, cartController.subCartItem)
+router.delete('/cartItem/:id', authenticated, cartController.deleteCartItem)
 router.get('/cart', authenticated, cartController.getCart)
 router.post('/cart', cartController.postCart)
 

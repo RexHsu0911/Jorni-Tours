@@ -27,9 +27,11 @@
 
           {{!-- cart --}}
           <li class="nav-item">
-            <a href="/cart" class="btn btn-sm float-end">
+            <a href="/cart" class="btn btn-sm">
               <i class="fas fa-shopping-cart fa-2x"></i>
-              <span class="badge rounded-pill badge-danger text-danger bg-light">{{cart.amount}}</span>
+              {{#if session.cartAmount}}
+              <span class="badge rounded-pill badge-danger text-danger bg-light">{{session.cartAmount}}</span>
+              {{/if}}
             </a>
           </li>
 
