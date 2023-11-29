@@ -22,7 +22,6 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'groupTourId',
         as: 'cartedGroupTours'
       })
-      GroupTour.hasMany(models.CartItem, { foreignKey: 'groupTourId' })
       GroupTour.belongsToMany(models.Order, {
         through: models.OrderItem,
         foreignKey: 'groupTourId',
