@@ -140,7 +140,7 @@ const groupTourController = {
         // console.log('訪客購物車合併到使用者購物車:', cart.cartedGroupTours)
       }
 
-      console.log(req.session)
+      // console.log(req.session)
 
       // 取出每個收藏的 id
       const favoritedGroupToursId = req.user ? req.user.FavoritedGroupTours.map(fgt => fgt.id) : []
@@ -223,7 +223,7 @@ const groupTourController = {
 
       const isFavorited = req.user ? groupTour.FavoritedUsers.some(fu => fu.id === req.user.id) : false // some 找到一個符合條件的項目，就會立刻回傳 true
 
-      console.log(groupTour.toJSON())
+      // console.log(groupTour.toJSON())
       // console.log(cart.toJSON())
       // console.log(isFavorited)
 

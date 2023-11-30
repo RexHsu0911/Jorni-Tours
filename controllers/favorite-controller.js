@@ -1,86 +1,89 @@
 const { Favorite, GroupTour, User, Category, Comment } = require('../models')
 
 const favoriteController = {
-  addFavorite: (req, res, next) => {
-    const { groupTourId } = req.params
-    const userId = req.user.id
+  addFavorite: async (req, res, next) => {
+    try {
+      const { groupTourId } = req.params
+      const userId = req.user.id
 
-    return Promise.all([
-      GroupTour.findByPk(groupTourId),
-      Favorite.findOne({
-        where: {
-          userId,
-          groupTourId // 目前登入 user 的 groupTour
-        }
+      const [favorite, isCreated] = await Favorite.findOrCreate({
+        where: { userId, groupTourId }
       })
-    ])
-      .then(([groupTour, favorite]) => {
-        if (!groupTour) throw new Error("Group tour didn't exist!")
-        if (favorite) throw new Error('You have already favorited this group tour!')
+      console.log(favorite)
 
-        return Favorite.create({
-          userId,
-          groupTourId
-        })
-      })
-      .then(() => res.redirect('back'))
-      .catch(err => next(err))
+      // 存在我的最愛中
+      if (favorite && !isCreated) throw new Error('You have already favorited this group tour!')
+
+      return res.redirect('back')
+    } catch (err) {
+      console.log(err)
+      return next(err)
+    }
   },
-  removeFavorite: (req, res, next) => {
-    return Favorite.findOne({
-      where: {
-        userId: req.user.id,
-        groupTourId: req.params.groupTourId
-      }
-    })
-      .then(favorite => {
-        if (!favorite) throw new Error("You haven't favorited this group tour!")
+  removeFavorite: async (req, res, next) => {
+    try {
+      const { groupTourId } = req.params
+      const userId = req.user.id
 
-        return favorite.destroy()
+      const favorite = await Favorite.findOne({
+        where: { userId, groupTourId }
       })
-      .then(() => res.redirect('back'))
-      .catch(err => next(err))
-  },
-  getFavorite: (req, res, next) => {
-    const { userId } = req.params
-    const categoryId = Number(req.query.categoryId) || ''
-    if (req.user.id !== Number(userId)) throw new Error("Favorite didn't exist!")
 
-    return User.findByPk(userId, {
-      include: [
-        {
-          model: GroupTour,
-          as: 'FavoritedGroupTours',
-          through: Favorite,
-          include: [
-            { model: User, as: 'FavoritedUsers' },
-            Category,
-            Comment
-          ],
-          order: [['createdAt', 'DESC']],
-          where: {
-            ...categoryId ? { categoryId } : {}
+      // 不存在我的最愛中
+      if (!favorite) throw new Error("You haven't favorited this group tour!")
+
+      await favorite.destroy()
+
+      return res.redirect('back')
+    } catch (err) {
+      console.log(err)
+      return next(err)
+    }
+  },
+  getFavorite: async (req, res, next) => {
+    try {
+      const userId = req.user.id
+      const categoryId = Number(req.query.categoryId) || ''
+
+      let favorite = await User.findByPk(userId, {
+        include: [
+          {
+            model: GroupTour,
+            as: 'FavoritedGroupTours',
+            // through: Favorite,
+            include: [
+              // { model: User, as: 'FavoritedUsers' },
+              Category,
+              Comment
+            ],
+            order: [['createdAt', 'DESC']],
+            where: {
+              ...categoryId ? { categoryId } : {}
+            }
           }
-        }
-      ]
-    })
-      .then((user) => {
-        if (!user) throw new Error("User didn't exist!")
-
-        user = user.toJSON()
-        const result = user.FavoritedGroupTours.map(gt => ({
-          ...gt,
-          ratedCount: gt.Comments.length,
-          isFavorited: req.user?.FavoritedGroupTours.some(fgt => fgt.id === gt.id)
-        }))
-        console.log(result)
-
-        return res.render('users/favorite', {
-          user: result,
-          categoryId
-        })
+        ]
       })
-      .catch(err => next(err))
+
+      // 沒有我的最愛
+      if (!favorite) return res.render('users/favorite')
+
+      favorite = favorite.toJSON()
+
+      const result = favorite.FavoritedGroupTours.map(gt => ({
+        ...gt,
+        ratedCount: gt.Comments.length,
+        isFavorited: favorite.FavoritedGroupTours.some(fgt => fgt.id === gt.id)
+      }))
+      console.log(result)
+
+      return res.render('users/favorite', {
+        favorite: result,
+        categoryId
+      })
+    } catch (err) {
+      console.log(err)
+      return next(err)
+    }
   }
 }
 

@@ -8,6 +8,7 @@ module.exports = {
 
     try {
       transaction = await queryInterface.sequelize.transaction()
+
       const categories = await queryInterface.sequelize.query(
         'SELECT id FROM Categories;', // 查詢 Categories 的所有 id
         {
