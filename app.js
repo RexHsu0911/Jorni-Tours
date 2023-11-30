@@ -56,6 +56,7 @@ app.use('/upload', express.static(path.join(__dirname, 'upload')))
 // 使用本地變數 res.locals 設定 Flash Message
 app.use((req, res, next) => {
   res.locals.success_messages = req.flash('success_messages')
+  res.locals.warning_messages = req.flash('warning_messages')
   res.locals.error_messages = req.flash('error_messages')
   res.locals.loginUser = getUser(req) // 讓 view 取得登入中的使用者狀態
   res.locals.session = req.session // 讓 view 取得 Cart 的 amount 數量

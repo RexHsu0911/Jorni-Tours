@@ -3,16 +3,6 @@ const { Cart, GroupTour, CartItem } = require('../models')
 const cartController = {
   getCart: async (req, res, next) => {
     try {
-      const user = req.user
-
-      // 沒有登入(訪客)
-      if (!user) {
-        // 請先登入才能進購物車
-        req.flash('warning_msg', 'Please login first!')
-        return res.redirect('/users/login')
-      }
-
-      // 有登入(使用者)
       // 顯示使用者購物車
       let cart = await Cart.findOne({
         where: { userId: req.user.id },
@@ -25,6 +15,9 @@ const cartController = {
       if (!cart) return res.render('cart')
 
       cart = cart.toJSON()
+
+      // 顯示購物車數量
+      req.session.cartAmount = cart.amount
 
       const result = {
         ...cart,
@@ -43,7 +36,7 @@ const cartController = {
     try {
       const groupTourId = Number(req.body.groupTourId)
       const quantity = Number(req.body.quantity)
-      if (quantity <= 0) throw new Error("CartItem's quantity must be greater than 0!")
+      if (quantity <= 0) throw new Error("Group tour's quantity must be greater than 0!")
 
       const user = req.user
       let cart = {}
@@ -79,10 +72,10 @@ const cartController = {
 
       // 是否創建購物車項目
       if (isCreated) {
-        // 不同購物車項目，則購物車顯示數量 + 1
+        // 不同購物車項目，則顯示購物車數量 + 1
         req.session.cartAmount = cart.amount ? cart.amount + 1 : 1
 
-        // 更新購物車顯示數量 + 1
+        // 更新顯示購物車數量 + 1
         await cart.update({
           amount: cart.amount ? cart.amount + 1 : 1
         })
@@ -103,15 +96,18 @@ const cartController = {
   },
   addCartItem: async (req, res, next) => {
     try {
-      const cartItem = await CartItem.findByPk(req.params.id, {
-        include: GroupTour
-      })
-      console.log(cartItem)
+      const cartItem = await CartItem.findByPk(req.params.id)
+
+      const groupTour = await GroupTour.findByPk(cartItem.groupTourId)
 
       if (!cartItem) throw new Error("CartItem didn't exist!")
+      if (!groupTour) throw new Error("Group tour didn't exist!")
 
       // 購物車項目數量 > 庫存
-      if (cartItem.quantity >= cartItem.GroupTour.quantity) throw new Error("CartItem's quantity can't exceed product's inventory!")
+      if (cartItem.quantity + 1 > groupTour.quantity) {
+        req.flash('warning_messages', `The quantity remaining for the group tour named「${groupTour.name}」is「${groupTour.quantity}」!`)
+        return res.redirect('back')
+      }
 
       // 更新購物車項目數量 + 1
       await cartItem.update({
@@ -131,13 +127,23 @@ const cartController = {
       if (!cartItem) throw new Error("CartItem didn't exist!")
 
       // 更新購物車項目數量 - 1
-      if (cartItem.quantity > 1) {
+      if (cartItem.quantity - 1 > 0) {
         await cartItem.update({
           quantity: cartItem.quantity - 1
         })
       } else {
-        // 購物車顯示數量為 0
-        req.session.cartAmount = 0
+        const cart = await Cart.findOne({
+          where: { userId: req.user.id }
+        })
+
+        if (!cart) throw new Error("Cart didn't exist!")
+
+        // 更新顯示購物車數量 - 1
+        await cart.update({ amount: cart.amount ? cart.amount - 1 : null }, {
+          where: { id: req.session.cartId }
+        })
+
+        req.session.cartAmount = cart.amount
 
         // 刪除購物車項目
         await cartItem.destroy()
@@ -153,10 +159,19 @@ const cartController = {
     try {
       const cartItem = await CartItem.findByPk(req.params.id)
 
-      if (!cartItem) throw new Error("CartItem didn't exist!")
+      const cart = await Cart.findOne({
+        where: { userId: req.user.id }
+      })
 
-      // 購物車顯示數量為 0
-      req.session.cartAmount = 0
+      if (!cartItem) throw new Error("CartItem didn't exist!")
+      if (!cart) throw new Error("Cart didn't exist!")
+
+      // 更新顯示購物車數量 - 1
+      await cart.update({ amount: cart.amount ? cart.amount - 1 : null }, {
+        where: { id: req.session.cartId }
+      })
+
+      req.session.cartAmount = cart.amount
 
       // 刪除購物車項目
       await cartItem.destroy()

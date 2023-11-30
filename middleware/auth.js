@@ -3,6 +3,9 @@ const { getUser, ensureAuthenticated } = require('../helpers/auth-helpers')
 const authenticated = (req, res, next) => {
   // user 是否登入
   if (ensureAuthenticated(req)) return next()
+
+  // 使用者功能，請先登入才能啟用
+  req.flash('warning_messages', 'Please login first!')
   return res.redirect('/login')
 }
 

@@ -45,6 +45,12 @@ const groupTourController = {
               { model: GroupTour, as: 'cartedGroupTours' }
             ]
           })
+
+          if (!cart) throw new Error("Cart didn't exist!")
+
+          // 顯示購物車數量
+          req.session.cartAmount = cart.amount
+
           cart = cart.toJSON()
           console.log('訪客購物車:', cart.cartedGroupTours)
 
@@ -82,6 +88,8 @@ const groupTourController = {
               where: { cartId: cart.id }
             })
 
+            if (!cartItems) throw new Error("CartItems didn't exist!")
+
             const groupTourMap = {}
 
             // 遍歷購物車項目
@@ -97,13 +105,20 @@ const groupTourController = {
                 // 例 cartItems 中 { id: 3, groupTourId: 101 }
                 const cartItem = await CartItem.findByPk(groupTourMap[item.groupTourId])
 
+                if (!cartItem) throw new Error("CartItem didn't exist!")
+
                 // 重複購物車項目，則更新數量完成後，刪除訪客的購物車項目
                 await cartItem.update({ quantity: cartItem.quantity + item.quantity })
+
                 await CartItem.destroy({ where: { id: item.id } })
               }
             }
-
             console.log('遍歷購物車項目:', cartItems)
+
+            // 更新顯示購物車數量
+            await cart.update({
+              amount: Object.keys(groupTourMap).length
+            })
 
             // 購物車項目完成合併後，則刪除訪客的購物車
             await Cart.destroy({ where: { id: req.session.cartId } })
@@ -112,9 +127,12 @@ const groupTourController = {
           // 清除 req.session.cartId
           req.session.cartId = null
         }
-        console.log(req.session)
 
         cart = cart ? cart.toJSON() : { cartedGroupTours: [] }
+
+        // 顯示購物車數量
+        req.session.cartAmount = cart.amount
+        console.log(req.session)
 
         cartResult = {
           ...cart,
