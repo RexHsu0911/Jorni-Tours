@@ -5,9 +5,12 @@ function calculateTotal () {
 
   const subTotal = price * quantity
 
+  // 有選擇數量，顯示總金額
   if (quantity) {
+    document.getElementById('total').innerText = 'Total： '
     document.getElementById('subTotal').innerText = 'TWD' + subTotal
   } else {
+    document.getElementById('total').innerText = ''
     document.getElementById('subTotal').innerText = ''
   }
 }
@@ -15,7 +18,10 @@ function calculateTotal () {
 // onclick +
 function incrementCount () {
   const countInput = document.getElementById('count')
-  if (countInput.value < 20) {
+  const inventory = document.getElementById('inventory')
+
+  // 選擇數量 < 庫存
+  if (countInput.value < inventory.value) {
     countInput.value++
     return calculateTotal()
   }
@@ -24,15 +30,20 @@ function incrementCount () {
 // onclick -
 function decrementCount () {
   const countInput = document.getElementById('count')
-  if (countInput.value > 0) {
+  if (countInput.value > 1) {
     countInput.value--
-    return calculateTotal()
+  } else {
+    // 設為空字串，顯示 placeholder="0"
+    countInput.value = ''
   }
+
+  return calculateTotal()
 }
 
 // onclick reset
 function resetCount () {
-  document.getElementById('count').value = 0
+  // 設為空字串，顯示 placeholder="0"
+  document.getElementById('count').value = ''
   return calculateTotal()
 }
 

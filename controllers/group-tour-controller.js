@@ -140,6 +140,8 @@ const groupTourController = {
         // console.log('訪客購物車合併到使用者購物車:', cart.cartedGroupTours)
       }
 
+      console.log(req.session)
+
       // 取出每個收藏的 id
       const favoritedGroupToursId = req.user ? req.user.FavoritedGroupTours.map(fgt => fgt.id) : []
       // console.log(favoritedGroupToursId)
@@ -164,27 +166,76 @@ const groupTourController = {
       return next(err)
     }
   },
-  getGroupTour: (req, res, next) => {
-    return GroupTour.findByPk(req.params.id, {
-      include: [
-        Category,
-        { model: Comment, include: User }, // 預先加載 Comment 和 User model
-        { model: User, as: 'FavoritedUsers' }
-      ]
-    })
-      .then(groupTour => {
-        // console.log(groupTour.toJSON())
-        if (!groupTour) throw new Error("Group tour didn't exist!")
-
-        const isFavorited = req.user ? groupTour.FavoritedUsers.some(fu => fu.id === req.user.id) : false // some 找到一個符合條件的項目，就會立刻回傳 true
-        // console.log(isFavorited)
-
-        return res.render('group-tour', {
-          groupTour: groupTour.toJSON(), // 使用 toJSON() 把關聯資料轉成 JSON(不破壞一對多關係，{{#each}} 陣列才取得到資料)
-          isFavorited
-        })
+  getGroupTour: async (req, res, next) => {
+    try {
+      const groupTour = await GroupTour.findByPk(req.params.id, {
+        include: [
+          Category,
+          { model: Comment, include: User }, // 預先加載 Comment 和 User model
+          { model: User, as: 'FavoritedUsers' }
+        ]
       })
-      .catch(err => next(err))
+
+      if (!groupTour) throw new Error("Group tour didn't exist!")
+
+      const user = req.user
+      let cart = null
+      let cartItem = {}
+
+      // 存在使用者購物車
+      if (user) {
+        const userCart = await Cart.findOne({
+          where: { userId: req.user.id }
+        })
+
+        cart = userCart || null
+      }
+
+      // 存在訪客購物車
+      if (req.session.cartId) {
+        const visitorCart = await Cart.findOne({
+          where: { id: req.session.cartId }
+        })
+
+        cart = visitorCart || null
+      }
+
+      // 存在購物車
+      if (cart) {
+        const cartItemExist = await CartItem.findOne({
+          where: {
+            cartId: cart.id,
+            groupTourId: req.params.id
+          }
+        })
+
+        // 存在購物車項目
+        if (cartItem) {
+          // 購物車項目數量 > 庫存
+          if (cartItem.quantity > groupTour.quantity) {
+            req.flash('warning_messages', `The quantity remaining for the group tour named「${groupTour.name}」is「${groupTour.quantity}」!`)
+            return res.redirect('back')
+          }
+        }
+
+        cartItem = cartItemExist.toJSON()
+      }
+
+      const isFavorited = req.user ? groupTour.FavoritedUsers.some(fu => fu.id === req.user.id) : false // some 找到一個符合條件的項目，就會立刻回傳 true
+
+      console.log(groupTour.toJSON())
+      // console.log(cart.toJSON())
+      // console.log(isFavorited)
+
+      return res.render('group-tour', {
+        groupTour: groupTour.toJSON(), // 使用 toJSON() 把關聯資料轉成 JSON(不破壞一對多關係，{{#each}} 陣列才取得到資料)
+        isFavorited,
+        cartItem
+      })
+    } catch (err) {
+      console.log(err)
+      return next(err)
+    }
   },
   getFeeds: (req, res, next) => {
     return Promise.all([

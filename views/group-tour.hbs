@@ -17,7 +17,7 @@
         <li><strong>Departure Date:</strong> {{groupTour.departureDate}}</li>
         <li><strong>Return Date:</strong> {{groupTour.returnDate}}</li>
         <li><strong>Duration:</strong> {{groupTour.duration}}</li>
-        <li><strong>Quantity:</strong> {{groupTour.quantity}}</li>
+        <li id="inventory" value="{{groupTour.quantity}}"><strong>Quantity:</strong> {{groupTour.quantity}}</li>
         <li><strong>Price:</strong> {{groupTour.price}}</li>
         <li><strong>Can Be Cancel:</strong>{{#if groupTour.canBeCancel}} Yes{{else}} No{{/if}}</li>
       </ul>
@@ -70,8 +70,8 @@
                   onclick="decrementCount(); return false">
                   <i class="fa-solid fa-minus"></i>
                 </button>
-                <input type="number" class="text-center mx-3" min="1" max="20" id="count" placeholder="0"
-                  name="quantity" onchange="calculateTotal()" readonly required>
+                <input type="number" class="text-center mx-2" id="count" placeholder="0" name="quantity" onchange="calculateTotal()"
+                {{#if cartItem}}value="{{cartItem.quantity}}"{{/if}} readonly required>
                 <button class="btn btn-sm btn-outline-secondary" style="width: 30px;"
                   onclick="incrementCount(); return false">
                   <i class="fa-solid fa-plus"></i>
@@ -89,7 +89,7 @@
 
       <div class="h4 my-4">
         <div class=" row">
-          <div class="col">Total： </div>
+          <div class="col" id="total"></div>
           <div class="col text-danger text-end" id="subTotal">
           </div>
         </div>

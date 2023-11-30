@@ -37,19 +37,32 @@ const cartController = {
     try {
       const groupTourId = Number(req.body.groupTourId)
       const quantity = Number(req.body.quantity)
-      if (quantity <= 0) throw new Error("Group tour's quantity must be greater than 0!")
+
+      // 選擇數量 <= 0
+      if (quantity <= 0) {
+        req.flash('warning_messages', 'Group tour\'s quantity must be greater than 「0」!')
+        return res.redirect('back')
+      }
+
+      const groupTour = await GroupTour.findByPk(groupTourId)
+
+      // 選擇數量 > 庫存
+      if (quantity > groupTour.quantity) {
+        req.flash('warning_messages', `The quantity remaining for the group tour named「${groupTour.name}」is「${groupTour.quantity}」!`)
+        return res.redirect('back')
+      }
 
       const user = req.user
       let cart = {}
 
-      // 使用者
+      // 使用者購物車
       if (user) {
         const [userCart] = await Cart.findOrCreate({
           where: { userId: req.user.id || 0 }
         })
 
         cart = userCart
-        // 訪客
+        // 訪客購物車
       } else {
         const [visitorCart] = await Cart.findOrCreate({
           where: { id: req.session.cartId || 0 },
@@ -71,7 +84,7 @@ const cartController = {
         defaults: { quantity }
       })
 
-      // 是否創建購物車項目
+      // 創建購物車項目
       if (isCreated) {
         // 更新顯示購物車數量 + 1
         await cart.update({
@@ -80,8 +93,14 @@ const cartController = {
       } else {
         // 更新購物車項目數量
         await cartItem.update({
-          quantity: cartItem.quantity + quantity
+          quantity
         })
+      }
+
+      // 購物車項目數量 > 庫存
+      if (cartItem.quantity + 1 > groupTour.quantity) {
+        req.flash('warning_messages', `The quantity remaining for the group tour named「${groupTour.name}」is「${groupTour.quantity}」!`)
+        return res.redirect('back')
       }
 
       // 顯示購物車數量
