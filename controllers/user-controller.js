@@ -52,6 +52,10 @@ const userController = {
   },
   logout: (req, res) => {
     req.flash('success_messages', 'User has successfully logged out!')
+
+    // 清除顯示購物車數量
+    req.session.cartAmount = null
+
     // Passport 提供的 logout() 把 user id 對應的 session 清除
     req.logout()
     return res.redirect('/login')

@@ -18,13 +18,14 @@ const cartController = {
 
       // 顯示購物車數量
       req.session.cartAmount = cart.amount
+      // console.log(req.session)
 
       const result = {
         ...cart,
         // 計算購物車的總金額
         totalPrice: cart.cartedGroupTours?.reduce((acc, cgt) => acc + (cgt.price * cgt.CartItem.quantity), 0)
       }
-      console.log('使用者購物車:', cart.cartedGroupTours)
+      // console.log('使用者購物車:', cart.cartedGroupTours)
 
       return res.render('cart', { cart: result })
     } catch (err) {
@@ -72,9 +73,6 @@ const cartController = {
 
       // 是否創建購物車項目
       if (isCreated) {
-        // 不同購物車項目，則顯示購物車數量 + 1
-        req.session.cartAmount = cart.amount ? cart.amount + 1 : 1
-
         // 更新顯示購物車數量 + 1
         await cart.update({
           amount: cart.amount ? cart.amount + 1 : 1
@@ -85,7 +83,10 @@ const cartController = {
           quantity: cartItem.quantity + quantity
         })
       }
-      console.log(req.session)
+
+      // 顯示購物車數量
+      req.session.cartAmount = cart.amount
+      // console.log(req.session)
 
       req.flash('success_messages', 'Group tour has successfully added to the shopping cart!')
       return res.redirect('back')
@@ -140,10 +141,8 @@ const cartController = {
 
         // 更新顯示購物車數量 - 1
         await cart.update({ amount: cart.amount ? cart.amount - 1 : null }, {
-          where: { id: req.session.cartId }
+          where: { userId: req.user.id }
         })
-
-        req.session.cartAmount = cart.amount
 
         // 刪除購物車項目
         await cartItem.destroy()
@@ -168,10 +167,8 @@ const cartController = {
 
       // 更新顯示購物車數量 - 1
       await cart.update({ amount: cart.amount ? cart.amount - 1 : null }, {
-        where: { id: req.session.cartId }
+        where: { userId: req.user.id }
       })
-
-      req.session.cartAmount = cart.amount
 
       // 刪除購物車項目
       await cartItem.destroy()

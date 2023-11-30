@@ -35,8 +35,8 @@
             </a>
           </li>
 
-          {{!-- profile --}}
           {{#if loginUser}}
+          {{!-- profile --}}
           <li class="nav-item d-inline-flex align-items-center">
             <a href="/users/{{loginUser.id}}" class="nav-link">Profile</a>
           </li>
@@ -49,12 +49,14 @@
           {{!-- logout --}}
           <li class="nav-item d-inline-flex align-items-center">
             <a href="/logout">
-              <button class="btn btn-outline-success my-sm-0 my-2">Logout</button>
+              <button class="btn btn-outline-danger my-sm-0 my-2">Logout</button>
             </a>
           </li>
           {{else}}
           <li class="nav-item d-inline-flex align-items-center">
-            <a href="/login" class="nav-link">Profile</a>
+            <a href="/login">
+              <button class="btn btn-outline-success my-sm-0 my-2">Login/Register</button>
+            </a>
           </li>
           {{/if}}
         </ul>

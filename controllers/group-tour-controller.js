@@ -36,6 +36,7 @@ const groupTourController = {
       const user = req.user
       let cartResult = {}
 
+      // 購物車
       // 沒有登入(訪客)
       if (!user) {
         // 訪客有加入商品至購物車
@@ -48,11 +49,8 @@ const groupTourController = {
 
           if (!cart) throw new Error("Cart didn't exist!")
 
-          // 顯示購物車數量
-          req.session.cartAmount = cart.amount
-
           cart = cart.toJSON()
-          console.log('訪客購物車:', cart.cartedGroupTours)
+          // console.log('訪客購物車:', cart.cartedGroupTours)
 
           cartResult = cart
         }
@@ -113,7 +111,7 @@ const groupTourController = {
                 await CartItem.destroy({ where: { id: item.id } })
               }
             }
-            console.log('遍歷購物車項目:', cartItems)
+            // console.log('遍歷購物車項目:', cartItems)
 
             // 更新顯示購物車數量
             await cart.update({
@@ -132,14 +130,14 @@ const groupTourController = {
 
         // 顯示購物車數量
         req.session.cartAmount = cart.amount
-        console.log(req.session)
+        // console.log(req.session)
 
         cartResult = {
           ...cart,
           // 計算購物車的總金額
           totalPrice: cart.cartedGroupTours?.reduce((acc, cgt) => acc + (cgt.price * cgt.CartItem.quantity), 0)
         }
-        console.log('訪客購物車合併到使用者購物車:', cart.cartedGroupTours)
+        // console.log('訪客購物車合併到使用者購物車:', cart.cartedGroupTours)
       }
 
       // 取出每個收藏的 id
