@@ -1,8 +1,24 @@
 {{!-- groupTour --}}
 <div class="row">
-  <div class="col-md-12">
+  <div class="col-md-6">
     <h1>{{groupTour.name}}</h1>
     <p>[ {{groupTour.Category.name}} ]</p>
+  </div>
+  <div class="col-md-6 text-end">
+    {{!-- favorite button --}}
+    {{#if isFavorited }}
+    <form action="/favorite/{{groupTour.id}}?_method=DELETE" method="POST" style="display: contents;">
+      <button type="submit" class="btn">
+        <i class="fa-solid fa-heart fa-2xl" style="color: brown;"></i>
+      </button>
+    </form>
+    {{else}}
+    <form action="/favorite/{{groupTour.id}}" method="POST" style="display: contents;">
+      <button type="submit" class="btn">
+        <i class="fa-regular fa-heart fa-2xl" style="color: gray;"></i>
+      </button>
+    </form>
+    {{/if}}
   </div>
 
   <div class="col-md-6">
@@ -26,17 +42,6 @@
 
   <div class="col-md-6">
     <p class="mb-5" style="white-space: break-spaces;">{{groupTour.description}}</p>
-
-    {{!-- favorite button --}}
-    {{#if isFavorited }}
-    <form action="/favorite/{{groupTour.id}}?_method=DELETE" method="POST" style="display: contents;">
-      <button type="submit" class="btn btn-danger">Unfavorite</button>
-    </form>
-    {{else}}
-    <form action="/favorite/{{groupTour.id}}" method="POST" style="display: contents;">
-      <button type="submit" class="btn btn-primary">Favorite</button>
-    </form>
-    {{/if}}
   </div>
 </div>
 
@@ -70,8 +75,8 @@
                   onclick="decrementCount(); return false">
                   <i class="fa-solid fa-minus"></i>
                 </button>
-                <input type="number" class="text-center mx-2" id="count" placeholder="0" name="quantity" onchange="calculateTotal()"
-                {{#if cartItem}}value="{{cartItem.quantity}}"{{/if}} readonly required>
+                <input type="number" class="text-center mx-2" id="count" placeholder="0" name="quantity"
+                  onchange="calculateTotal()" {{#if cartItem}}value="{{cartItem.quantity}}" {{/if}} readonly required>
                 <button class="btn btn-sm btn-outline-secondary" style="width: 30px;"
                   onclick="incrementCount(); return false">
                   <i class="fa-solid fa-plus"></i>

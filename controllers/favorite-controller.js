@@ -3,13 +3,13 @@ const { Favorite, GroupTour, User, Category, Comment } = require('../models')
 const favoriteController = {
   addFavorite: async (req, res, next) => {
     try {
-      const { groupTourId } = req.params
       const userId = req.user.id
+      const { groupTourId } = req.params
 
       const [favorite, isCreated] = await Favorite.findOrCreate({
         where: { userId, groupTourId }
       })
-      console.log(favorite)
+      // console.log(favorite)
 
       // 存在我的最愛中
       if (favorite && !isCreated) throw new Error('You have already favorited this group tour!')
@@ -22,8 +22,8 @@ const favoriteController = {
   },
   removeFavorite: async (req, res, next) => {
     try {
-      const { groupTourId } = req.params
       const userId = req.user.id
+      const { groupTourId } = req.params
 
       const favorite = await Favorite.findOne({
         where: { userId, groupTourId }
@@ -45,40 +45,58 @@ const favoriteController = {
       const userId = req.user.id
       const categoryId = Number(req.query.categoryId) || ''
 
+      // 我的最愛中所有分類
+      const categories = await User.findByPk(userId, {
+        include: [
+          {
+            model: GroupTour,
+            as: 'FavoritedGroupTours',
+            include: Category
+          }
+        ]
+      })
+      // console.log(categories)
+
+      // 沒有我的最愛(分類數量為 0)
+      if (categories.FavoritedGroupTours.length === 0) return res.render('users/favorite')
+
+      // 下拉式選單取得不重複的分類
+      const categoryDropdown = categories.FavoritedGroupTours.reduce((acc, groupTour) => {
+        if (!acc.some(category => category.id === groupTour.Category.id)) {
+          acc.push(groupTour.Category.toJSON())
+        }
+        return acc
+      }, [])
+      // console.log(categoryDropdown)
+
+      // 選取分類
       let favorite = await User.findByPk(userId, {
         include: [
           {
             model: GroupTour,
             as: 'FavoritedGroupTours',
-            // through: Favorite,
-            include: [
-              // { model: User, as: 'FavoritedUsers' },
-              Category,
-              Comment
-            ],
+            include: [Category, Comment],
             order: [['createdAt', 'DESC']],
-            where: {
-              ...categoryId ? { categoryId } : {}
-            }
+            where: { ...categoryId ? { categoryId } : {} }
           }
         ]
       })
-
-      // 沒有我的最愛
-      if (!favorite) return res.render('users/favorite')
 
       favorite = favorite.toJSON()
 
       const result = favorite.FavoritedGroupTours.map(gt => ({
         ...gt,
+        // 評論數量
         ratedCount: gt.Comments.length,
+        // 存在我的最愛中
         isFavorited: favorite.FavoritedGroupTours.some(fgt => fgt.id === gt.id)
       }))
-      console.log(result)
+      // console.log(result)
 
       return res.render('users/favorite', {
         favorite: result,
-        categoryId
+        categoryId,
+        categoryDropdown
       })
     } catch (err) {
       console.log(err)
