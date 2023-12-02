@@ -13,13 +13,13 @@ module.exports = {
 
       await queryInterface.bulkInsert('Carts', [
         {
-        //   amount:
+          amount: 3,
           user_id: users[1].id,
           created_at: new Date(),
           updated_at: new Date()
         },
         {
-          //   amount:
+          amount: 3,
           user_id: users[2].id,
           created_at: new Date(),
           updated_at: new Date()
