@@ -51,7 +51,7 @@
     <h3 class="my-4">Order</h3>
   </div>
   <div class="card-body">
-    <form action="/cart" method="POST">
+    <form id="cartForm" action="/cart" method="POST">
       <table class="table align-middle">
         <thead>
           <tr>
@@ -103,13 +103,14 @@
       <input type="hidden" name="groupTourId" value="{{groupTour.id}}">
 
       {{!-- cart button --}}
-      {{#if groupTour.quantity}}
       <div class="text-end">
+        {{#if groupTour.quantity}}
         <button type="submit" class="btn btn-primary mx-2">Add to Cart</button>
+        <button type="submit" class="btn btn-warning" onclick="switchForm()">Checkout</button>
         {{else}}
-        <button type="submit" class="btn btn-primary mx-2 disabled">Sold out</button>
+        <button type="submit" class="btn btn-secondary disabled">Sold out</button>
+        <a href="/group-tours" class="btn btn-primary mx-2">Continue shopping</a>
         {{/if}}
-        <a href="/order" class="btn btn-warning">Checkout</a>
       </div>
     </form>
   </div>

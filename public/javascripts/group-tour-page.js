@@ -47,9 +47,16 @@ function resetCount () {
   return calculateTotal()
 }
 
+function switchForm () {
+  // 切換表單的 action 和 method
+  document.getElementById('cartForm').action = '/order'
+  document.getElementById('cartForm').method = 'GET'
+}
+
 module.exports = {
   calculateTotal,
   incrementCount,
   decrementCount,
-  resetCount
+  resetCount,
+  switchForm
 }

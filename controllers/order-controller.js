@@ -2,31 +2,68 @@ const { Cart, GroupTour, User, Order, OrderItem, CartItem } = require('../models
 const { getTradeInfo } = require('../public/javascripts/payment')
 
 const orderController = {
-  getOrder: (req, res, next) => {
-    return Promise.all([
-      Cart.findByPk(req.session.cartId, {
-        include: [
-          { model: GroupTour, as: 'cartedGroupTours' }
-        ]
-      }),
-      User.findByPk(req.user.id, { raw: true })
-    ])
-      .then(([cart, user]) => {
-        cart = cart ? cart.toJSON() : { cartedGroupTours: [] }
+  getOrderCreate: async (req, res, next) => {
+    try {
+      const userId = req.user.id
+      let cart = {}
 
-        const totalPrice = cart.cartedGroupTours.length > 0
-          ? cart.cartedGroupTours
-            .map(cgt => (cgt.price * cgt.CartItem.quantity))
-            .reduce((a, b) => a + b)
-          : 0
+      // 直接購買，query 取得商品參數
+      const groupTourId = Number(req.query.groupTourId)
+      const quantity = Number(req.query.quantity)
 
-        return res.render('order', {
-          cart,
-          totalPrice,
-          user
+      // 商品頁面直接購買(有商品參數)
+      if (groupTourId && quantity) {
+        // 創建臨時性的購物車(userId = null)
+        const temporaryCart = await Cart.create()
+
+        await CartItem.create({
+          cartId: temporaryCart.id,
+          groupTourId,
+          quantity
         })
+
+        cart = await Cart.findByPk(temporaryCart.id, {
+          include: [
+            { model: GroupTour, as: 'cartedGroupTours' }
+          ]
+        })
+        // 購物車頁面購買
+      } else {
+        cart = await Cart.findOne({
+          include: [
+            { model: GroupTour, as: 'cartedGroupTours' }
+          ],
+          where: { userId }
+        })
+      }
+
+      cart = cart.toJSON()
+
+      // 購物車不存在或為空的
+      if (!cart || !cart.cartedGroupTours.length) {
+        req.flash('warning_messages', 'Your shopping cart is empty. Please add products to your cart before placing an order!')
+        return res.redirect('cart')
+      }
+
+      const result = {
+        ...cart,
+        totalPrice: cart.cartedGroupTours.reduce((acc, cgt) => acc + (cgt.price * cgt.CartItem.quantity), 0)
+      }
+      console.log('使用者購物車:', cart.cartedGroupTours)
+
+      // 填入使用者資料
+      let user = await User.findByPk(userId)
+
+      user = user.toJSON()
+
+      return res.render('order', {
+        cart: result,
+        user
       })
-      .catch(err => next(err))
+    } catch (err) {
+      console.log(err)
+      return next(err)
+    }
   },
   postOrder: (req, res, next) => {
     const { firstName, lastName, country, phone, cartId, amount, confirmPrice } = req.body

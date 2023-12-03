@@ -57,8 +57,8 @@ const favoriteController = {
       })
       // console.log(categories)
 
-      // 沒有我的最愛(分類數量為 0)
-      if (categories.FavoritedGroupTours.length === 0) return res.render('users/favorite')
+      // 我的最愛為空的
+      if (!categories.FavoritedGroupTours.length) return res.render('users/favorite')
 
       // 下拉式選單取得不重複的分類
       const categoryDropdown = categories.FavoritedGroupTours.reduce((acc, groupTour) => {

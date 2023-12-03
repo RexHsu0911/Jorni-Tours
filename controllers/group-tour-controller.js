@@ -218,7 +218,7 @@ const groupTourController = {
           }
         }
 
-        cartItem = cartItemExist.toJSON()
+        cartItem = cartItemExist ? cartItemExist.toJSON() : null
       }
 
       const isFavorited = req.user ? groupTour.FavoritedUsers.some(fu => fu.id === req.user.id) : false // some 找到一個符合條件的項目，就會立刻回傳 true

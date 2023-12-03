@@ -11,7 +11,7 @@ const cartController = {
         ]
       })
 
-      // 沒有購物車
+      // 購物車為空的
       if (!cart) return res.render('cart')
 
       cart = cart.toJSON()
@@ -25,7 +25,7 @@ const cartController = {
         // 計算購物車的總金額
         totalPrice: cart.cartedGroupTours.reduce((acc, cgt) => acc + (cgt.price * cgt.CartItem.quantity), 0)
       }
-      // console.log('使用者購物車:', cart.cartedGroupTours)
+      console.log('使用者購物車:', cart.cartedGroupTours)
 
       return res.render('cart', { cart: result })
     } catch (err) {
@@ -40,7 +40,7 @@ const cartController = {
 
       // 選擇數量 <= 0
       if (quantity <= 0) {
-        req.flash('warning_messages', 'Group tour\'s quantity must be greater than 「0」!')
+        req.flash('warning_messages', "Group tour's quantity must be greater than 「0」!")
         return res.redirect('back')
       }
 
