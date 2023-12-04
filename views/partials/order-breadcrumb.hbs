@@ -10,18 +10,18 @@
     <li class="breadcrumb-item">
       <a class="link-secondary text-decoration-none" href="/cart">Shopping cart</a>
     </li>
-    <li class="breadcrumb-item">Order confirmation</li>
+    <li class="breadcrumb-item">Order information</li>
     <li class="breadcrumb-item active">Order confirmed & Payment</li>
     {{/ifCond}}
 
-    {{#ifCond route 'Payment'}}
+    {{#ifCond route 'payment'}}
     <li class="breadcrumb-item">
       <a class="link-secondary text-decoration-none" href="/cart">Shopping cart</a>
     </li>
     <li class="breadcrumb-item">
       <a class="link-secondary text-decoration-none" href="/order">Order information</a>
     </li>
-    <li class="breadcrumb-item active">Order confirmed & Payment</li>
+    <li class="breadcrumb-item">Order confirmed & Payment</li>
     {{/ifCond}}
   </ol>
 </nav>

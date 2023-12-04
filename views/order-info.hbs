@@ -1,11 +1,11 @@
 {{> order-breadcrumb route='order'}}
 
-<div class="card mb-5">
-  <div class="card-header text-center bg-white mt-2">
-    <h3>Orderer information</h3>
-  </div>
-  {{!-- order --}}
-  <form action="/order" method="POST" id="orderForm" onsubmit="return submitForms()">
+<form action="/order" method="POST" onsubmit="return submitForms()">
+  <div class="card mb-5">
+    <div class="card-header text-center bg-white mt-2">
+      <h3>Orderer information</h3>
+    </div>
+    {{!-- order information--}}
     <div class="card-body">
       <div class="order-Info my-3">
         <div class="row pb-3">
@@ -53,100 +53,75 @@
         </div>
       </div>
     </div>
-  </form>
-</div>
-
-<hr>
-
-<div class="card my-5">
-  <div class="card-header text-center bg-white mt-2">
-    <h3>Payment details</h3>
   </div>
-  <div class="card-body my-3">
-    <table class="table align-middle">
-      <thead>
-        <tr>
-          <th scope="col">Product</th>
-          <th scope="col"></th>
-          <th scope="col">Date</th>
-          <th scope="col">Price</th>
-          <th scope="col">Quantity</th>
-          <th scope="col">Subtotal</th>
-        </tr>
-      </thead>
-      <tbody>
-        {{#each cart.cartedGroupTours}}
-        <tr>
-          <td>
-            <div>
-              <a href="/group-tours/{{this.id}}">
-                <img src="{{this.image}}" class="card-img" alt="..." style="height: 100px;width: auto;">
-              </a>
-            </div>
-          </td>
-          <td>
-            <a href="/group-tours/{{this.id}}">
-              <span>{{this.name}}</span>
-            </a>
-          </td>
-          <td>
-            <span>{{this.departureDate}}</span>
-          </td>
-          <td>
-            <span>{{this.price}}</span>
-          </td>
-          <td>
-            <span>{{this.CartItem.quantity}}</span>
-          </td>
-          <td>
-            <span>{{multiplicate this.price this.CartItem.quantity}}</span>
-          </td>
-        </tr>
-        {{/each}}
-      </tbody>
-    </table>
 
-    <div class="text h4 my-4">
-      <p class="text-secondary fs-6">Total of {{cart.cartedGroupTours.length}} items</p>
-      <div class="row">
-        <div class="col">
-          Payment amount：</div>
-        <div class="col text-danger text-end">TWD {{cart.totalPrice}}</div>
-      </div>
+  {{!-- order details --}}
+  <div class="card my-5">
+    <div class="card-header text-center bg-white mt-2">
+      <h3>Order details</h3>
     </div>
+    <div class="card-body my-3">
+      <table class="table align-middle">
+        <thead>
+          <tr>
+            <th scope="col">Product</th>
+            <th scope="col"></th>
+            <th scope="col">City</th>
+            <th scope="col">Date</th>
+            <th scope="col">Price</th>
+            <th scope="col">Quantity</th>
+            <th scope="col">Subtotal</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#each cart.cartedGroupTours}}
+          <tr>
+            <td>
+              <div>
+                <a href="/group-tours/{{this.id}}">
+                  <img src="{{this.image}}" class="card-img" alt="..." style="height: 100px;width: auto;">
+                </a>
+              </div>
+            </td>
+            <td>
+              <a href="/group-tours/{{this.id}}">
+                <span>{{this.name}}</span>
+              </a>
+            </td>
+            <td>
+              <span>{{this.city}}</span>
+            </td>
+            <td>
+              <span>{{this.departureDate}}</span>
+            </td>
+            <td>
+              <span>{{this.price}}</span>
+            </td>
+            <td>
+              <span>{{this.CartItem.quantity}}</span>
+            </td>
+            <td>
+              <span>{{multiplicate this.price this.CartItem.quantity}}</span>
+            </td>
+          </tr>
+          {{/each}}
+        </tbody>
+      </table>
 
-    <hr>
-
-    <form action="/order" method="POST" id="orderForm" onsubmit="return submitForms()">
-      <div class="text mt-5">
-        <h4>Payment method：</h4>
-        <div class="form-check pt-2">
-          <input class="form-check-input" for="paymentMethod" type="radio" name="paymentMethod" value="1" required
-            autofocus>
-          <label class="form-check-label mx-2" id="paymentMethod">
-            Credit card / Debit card
-          </label>
-        </div>
-
-        <hr>
-
-        <div class="form-group d-flex justify-content-end">
-          <input type="hidden" name="cartId" value="{{cart.id}}">
-          <input type="hidden" name="amount" value="{{cart.cartedGroupTours.length}}">
-          <input type="hidden" name="confirmPrice" value="{{cart.totalPrice}}">
+      <div class="text h4 my-4">
+        <p class="text-secondary fs-6">Total order amount ({{cart.amount}} items)</p>
+        <div class="row">
+          <div class="col">
+            Payment amount：</div>
+          <div class="col text-danger text-end">TWD {{cart.totalPrice}}</div>
         </div>
       </div>
-    </form>
 
-    {{!-- payment --}}
-    <form name='Spgateway' action='{{tradeInfo.PayGateWay}}' method="POST" id="paymentForm"
-      onsubmit="return submitForms();">
-      <input class="form-control mt-2" type="hidden" name="MerchantID" value="{{tradeInfo.MerchantID}}">
-      <input class="form-control mt-2" type="hidden" name="TradeInfo" value="{{tradeInfo.TradeInfo}}">
-      <input class="form-control mt-2" type="hidden" name="TradeSha" value="{{tradeInfo.TradeSha}}">
-      <input class="form-control mt-2" type="hidden" name="Version" value="{{tradeInfo.Version}}">
-    </form>
+      <input type="hidden" name="cartId" value="{{cart.id}}">
+      <input type="hidden" name="amount" value="{{cart.amount}}">
+      <input type="hidden" name="totalPrice" value="{{cart.totalPrice}}">
 
-    <button type="submit" class='btn btn-warning float-end' onclick="submitForms()">Confirm payment</button>
+      <button type="submit" class="btn btn-warning float-end">Go to Payment</button>
+    </div>
   </div>
-</div>
+</form>

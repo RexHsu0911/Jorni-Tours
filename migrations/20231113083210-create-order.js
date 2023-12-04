@@ -27,7 +27,7 @@ module.exports = {
       amount: {
         type: Sequelize.INTEGER
       },
-      confirm_price: {
+      total_price: {
         type: Sequelize.INTEGER
       },
       order_status: {

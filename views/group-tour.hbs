@@ -45,10 +45,10 @@
   </div>
 </div>
 
-{{!-- Order --}}
+{{!-- Select --}}
 <div class="card mt-5">
   <div class="card-header bg-white text-center mt-2">
-    <h3 class="my-4">Order</h3>
+    <h3 class="my-4">Select</h3>
   </div>
   <div class="card-body">
     <form id="cartForm" action="/cart" method="POST">
@@ -105,8 +105,8 @@
       {{!-- cart button --}}
       <div class="text-end">
         {{#if groupTour.quantity}}
-        <button type="submit" class="btn btn-primary mx-2">Add to Cart</button>
-        <button type="submit" class="btn btn-warning" onclick="switchForm()">Checkout</button>
+        <button type="submit" class="btn btn-primary mx-2">Add to the cart</button>
+        <button type="submit" class="btn btn-warning" onclick="switchForm()">Order now</button>
         {{else}}
         <button type="submit" class="btn btn-secondary disabled">Sold out</button>
         <a href="/group-tours" class="btn btn-primary mx-2">Continue shopping</a>
