@@ -5,7 +5,7 @@
     <h3>Orderer information</h3>
   </div>
   {{!-- order --}}
-  <form action="/order" method="POST" id="orderForm" onsubmit="return submitForms();">
+  <form action="/order" method="POST" id="orderForm" onsubmit="return submitForms()">
     <div class="card-body">
       <div class="order-Info my-3">
         <div class="row pb-3">
@@ -111,13 +111,13 @@
       <div class="row">
         <div class="col">
           Payment amount：</div>
-        <div class="col text-danger text-end">TWD {{totalPrice}}</div>
+        <div class="col text-danger text-end">TWD {{cart.totalPrice}}</div>
       </div>
     </div>
 
     <hr>
 
-    <form action="/order" method="POST" id="orderForm" onsubmit="return submitForms();">
+    <form action="/order" method="POST" id="orderForm" onsubmit="return submitForms()">
       <div class="text mt-5">
         <h4>Payment method：</h4>
         <div class="form-check pt-2">
@@ -133,7 +133,7 @@
         <div class="form-group d-flex justify-content-end">
           <input type="hidden" name="cartId" value="{{cart.id}}">
           <input type="hidden" name="amount" value="{{cart.cartedGroupTours.length}}">
-          <input type="hidden" name="confirmPrice" value="{{totalPrice}}">
+          <input type="hidden" name="confirmPrice" value="{{cart.totalPrice}}">
         </div>
       </div>
     </form>

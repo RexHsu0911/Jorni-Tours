@@ -1,4 +1,5 @@
-const { Cart, GroupTour, User, Order, OrderItem, CartItem } = require('../models')
+const { Cart, CartItem, GroupTour, User, Order, OrderItem, Payment } = require('../models')
+
 const { getTradeInfo } = require('../public/javascripts/payment')
 
 const orderController = {
@@ -56,7 +57,7 @@ const orderController = {
 
       user = user.toJSON()
 
-      return res.render('order', {
+      return res.render('order-info', {
         cart: result,
         user
       })
@@ -65,68 +66,71 @@ const orderController = {
       return next(err)
     }
   },
-  postOrder: (req, res, next) => {
-    const { firstName, lastName, country, phone, cartId, amount, confirmPrice } = req.body
+  postOrder: async (req, res, next) => {
+    try {
+      const { firstName, lastName, country, phone, cartId, amount, confirmPrice } = req.body
 
-    return Cart.findByPk(cartId, {
-      include: [
-        { model: GroupTour, as: 'cartedGroupTours' }
-      ]
-    })
-      .then(cart => {
-        cart = cart ? cart.toJSON() : { cartedGroupTours: [] }
-        console.log(cart)
-
-        // 判斷 CartItem 存不存在
-        if (!cart.cartedGroupTours.length) throw new Error("You don't have any item in your cart!")
-
-        // 判斷 CartItem 的數量是否大於 GroupTour 的庫存數量
-        for (const GroupTour of cart.cartedGroupTours) {
-          if (GroupTour.CartItem.quantity > GroupTour.quantity) throw new Error(`Sorry, ${GroupTour.name} only has ${GroupTour.quantity} left, please choose the quantity of it again!`)
-        }
-
-        // 創建 Order
-        return Order.create({
-          userId: req.user.id,
-          firstName,
-          lastName,
-          country,
-          phone,
-          amount,
-          confirmPrice,
-          orderStatus: 1, // (0:已取消, 1:處理中）
-          paymentStatus: 0 // (0:尚未付款, 1:已付款)
-        })
-          .then(order => {
-            order = order.toJSON()
-
-            cart.cartedGroupTours.forEach(item => {
-              return Promise.all([
-                // 建立與訂單有關的 OrderItem
-                OrderItem.create({
-                  orderId: order.id,
-                  groupTourId: item.id,
-                  price: item.price,
-                  quantity: item.CartItem.quantity
-                }),
-                // 更新 GroupTour 庫存數量
-                GroupTour.findByPk(item.id)
-                  .then(groupTour => groupTour.update({
-                    quantity: (groupTour.quantity -= item.CartItem.quantity)
-                  }))
-              ])
-            })
-
-            return order
-          })
-          .then(order => {
-            // 訂購完成後，刪除與訂單有關的 CartItem
-            CartItem.destroy({ where: { cartId: req.body.cartId } })
-
-            return res.redirect(`/order/${order.id}/payment`)
-          })
+      let cart = await Cart.findByPk(cartId, {
+        include: [
+          { model: GroupTour, as: 'cartedGroupTours' }
+        ]
       })
-      .catch(err => next(err))
+
+      cart = cart.toJSON()
+      console.log('新增訂單的購物車', cart.cartedGroupTours)
+
+      // 購物車不存在或為空的
+      if (!cart || !cart.cartedGroupTours.length) throw new Error("You don't have any item in your cart!")
+
+      // 購物車商品數量 > 庫存
+      for (const GroupTour of cart.cartedGroupTours) {
+        if (GroupTour.CartItem.quantity > GroupTour.quantity) throw new Error(`Sorry, ${GroupTour.name} only has ${GroupTour.quantity} left, please choose the quantity of it again!`)
+      }
+
+      // 創建訂單
+      const order = await Order.create({
+        userId: req.user.id,
+        firstName,
+        lastName,
+        country,
+        phone,
+        amount,
+        confirmPrice,
+        orderStatus: 1, // (0:已取消, 1:處理中）
+        paymentStatus: 0 // (0:尚未付款, 1:已付款)
+      })
+
+      const orderId = await order.id
+
+      await cart.cartedGroupTours.map(async gt => {
+        // 創建訂單商品
+        await OrderItem.create({
+          orderId,
+          groupTourId: gt.id,
+          price: gt.price,
+          quantity: gt.CartItem.quantity
+        })
+
+        const groupTour = await GroupTour.findByPk(gt.id)
+
+        // 更新商品庫存
+        await groupTour.update({
+          quantity: groupTour.quantity - gt.CartItem.quantity
+        })
+      })
+
+      await Payment.create({
+        orderId
+      })
+
+      // 訂購完成後，清空購物車
+      await cart.destroy()
+
+      return res.redirect(`/order/${order.id}/payment`)
+    } catch (err) {
+      console.log(err)
+      return next(err)
+    }
   },
   getPayment: (req, res, next) => {
     return Order.findByPk(req.params.id, {

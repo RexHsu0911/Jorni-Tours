@@ -1,25 +1,27 @@
-<nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+<nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb" class="d-flex justify-content-center">
   <ol class="breadcrumb h5 mb-5">
     {{#ifCond route 'cart'}}
     <li class="breadcrumb-item">Shopping cart</li>
-    <li class="breadcrumb-item active">Payment</li>
-    <li class="breadcrumb-item active">Order completed</li>
+    <li class="breadcrumb-item active">Order information</li>
+    <li class="breadcrumb-item active">Order confirmed & Payment</li>
     {{/ifCond}}
+
     {{#ifCond route 'order'}}
     <li class="breadcrumb-item">
       <a class="link-secondary text-decoration-none" href="/cart">Shopping cart</a>
     </li>
-    <li class="breadcrumb-item">Payment</li>
-    <li class="breadcrumb-item active">Order completed</li>
+    <li class="breadcrumb-item">Order confirmation</li>
+    <li class="breadcrumb-item active">Order confirmed & Payment</li>
     {{/ifCond}}
-    {{#ifCond route 'orderCompleted'}}
+
+    {{#ifCond route 'Payment'}}
     <li class="breadcrumb-item">
       <a class="link-secondary text-decoration-none" href="/cart">Shopping cart</a>
     </li>
     <li class="breadcrumb-item">
-      <a class="link-secondary text-decoration-none" href="/order">Payment</a>
+      <a class="link-secondary text-decoration-none" href="/order">Order information</a>
     </li>
-    <li class="breadcrumb-item">Order completed</li>
+    <li class="breadcrumb-item active">Order confirmed & Payment</li>
     {{/ifCond}}
   </ol>
 </nav>
