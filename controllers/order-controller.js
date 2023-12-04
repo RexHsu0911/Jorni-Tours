@@ -59,7 +59,7 @@ const orderController = {
 
       user = user.toJSON()
 
-      return res.render('order-info', {
+      return res.render('create-order', {
         cart: result,
         user
       })
@@ -128,7 +128,7 @@ const orderController = {
 
       await CartItem.destroy({ where: { cartId } })
 
-      return res.redirect(`/order/${order.id}/payment`)
+      return res.redirect(`/orders/${order.id}/payment`)
     } catch (err) {
       console.log(err)
       return next(err)
@@ -142,10 +142,12 @@ const orderController = {
         ]
       })
 
+      if (!order) throw new Error("Order didn't exist!")
+
       order = order.toJSON()
       console.log('訂單', order)
 
-      return res.render('order', { order })
+      return res.render('payment', { order })
     } catch (err) {
       console.log(err)
       return next(err)

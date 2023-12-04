@@ -49,7 +49,7 @@ function resetCount () {
 
 function switchForm () {
   // 切換表單的 action 和 method
-  document.getElementById('cartForm').action = '/order'
+  document.getElementById('cartForm').action = '/orders/create'
   document.getElementById('cartForm').method = 'GET'
 }
 
