@@ -8,7 +8,7 @@ function calculateTotal () {
   // 有選擇數量，顯示總金額
   if (quantity) {
     document.getElementById('total').innerText = 'Total： '
-    document.getElementById('subTotal').innerText = 'TWD' + subTotal
+    document.getElementById('subTotal').innerText = `TWD ${subTotal}`
   } else {
     document.getElementById('total').innerText = ''
     document.getElementById('subTotal').innerText = ''

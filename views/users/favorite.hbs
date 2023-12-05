@@ -1,89 +1,90 @@
-<div class="card">
-  <div class="card-header text-center bg-white">
-    <h1>My Favorite</h1>
-  </div>
-  <div class="card-body">
-
-    {{#if favorite}}
-    <div class="row">
-      {{!-- categories dropdown --}}
-      <div class="dropdown text-end mb-2">
-        <span class="h5">Sort by：</span>
-        <div class="btn-group">
-          <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="dropdownMenuClickableInside"
-            data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false"><span class="h5">All
-              Categories</span>
-          </button>
-          <ul class="dropdown-menu" aria-labelledby="dropdownMenuClickableInside">
-            <li><a class="dropdown-item" href="?categoryId=All" {{#ifCond '' categoryId}}active{{/ifCond}}>All
-                Categories</a></li>
-            {{#each categoryDropdown}}
-            <li><a class="dropdown-item" href="?categoryId={{this.id}}" {{#ifCond this.id
-                ../categoryId}}active{{/ifCond}}>{{this.name}}</a></li>
-            {{/each}}
-          </ul>
+<div class="container" style="width: 800px;">
+  <div class="card mb-5">
+    <div class="card-header text-center bg-white">
+      <h1>My Favorite</h1>
+    </div>
+    <div class="card-body my-3">
+      {{#if favorite}}
+      <div class="row">
+        {{!-- categories dropdown --}}
+        <div class="dropdown text-end">
+          <span class="h5">Sort by：</span>
+          <div class="btn-group">
+            <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="dropdownMenuClickableInside"
+              data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false"><span class="h5">All
+                Categories</span>
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenuClickableInside">
+              <li><a class="dropdown-item" href="?categoryId=All" {{#ifCond '' categoryId}}active{{/ifCond}}>All
+                  Categories</a></li>
+              {{#each categoryDropdown}}
+              <li><a class="dropdown-item" href="?categoryId={{this.id}}" {{#ifCond this.id
+                  ../categoryId}}active{{/ifCond}}>{{this.name}}</a></li>
+              {{/each}}
+            </ul>
+          </div>
         </div>
+
+        <h5 class="text-grey text-start pb-2">
+          <strong class="text-primary">{{favorite.length}}
+          </strong> group tours in your favorite
+        </h5>
+
       </div>
 
-      <h5 class="text-grey text-start pb-2">
-        <strong class="text-primary">{{favorite.length}}
-        </strong> group tours in your favorite
-      </h5>
+      {{!-- FavoritedGroupTours --}}
+      {{#each favorite}}
+      <a href="/group-tours/{{this.id}}" class="text-decoration-none link-dark">
+        <div class="card col-12 mt-3 h-100" style="break-inside: avoid;">
+          <div class="row no-gutters">
+            <div class="col-md-5 align-self-center">
+              <img class="card-img img-fluid" src="{{this.image}}" width="286px" height="180px"
+                style="transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+            </div>
 
-    </div>
+            <div class="col-md-7">
+              <div class="card-body">
+                <h4 class="card-title">{{this.name}}</h4>
 
-    {{!-- FavoritedGroupTours --}}
-    {{#each favorite}}
-    <a href="/group-tours/{{this.id}}" class="text-decoration-none link-dark">
-      <div class="card col-12 mb-3 h-100" style="break-inside: avoid;">
-        <div class="row no-gutters">
-          <div class="col-md-5 align-self-center">
-            <img class="card-img img-fluid" src="{{this.image}}" width="286px" height="180px"
-              style="transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
-          </div>
+                <span class="badge bg-secondary">{{this.Category.name}}</span>
 
-          <div class="col-md-7">
-            <div class="card-body">
-              <h4 class="card-title">{{this.name}}</h4>
+                <div class="float-end">
+                  <span class="badge rounded-pill bg-warning text-dark">{{this.rating}}</span>
+                  <span class="text-secondary">({{this.ratedCount}})</span>
+                </div>
 
-              <span class="badge bg-secondary">{{this.Category.name}}</span>
+                <p class="card-text text-truncate my-4">{{this.description}}</p>
 
-              <div class="float-end">
-                <span class="badge rounded-pill bg-warning text-dark">{{this.rating}}</span>
-                <span class="text-secondary">({{this.ratedCount}})</span>
-              </div>
+                {{!-- favorite button --}}
+                {{#if this.isFavorited }}
+                <form action="/favorite/{{this.id}}?_method=DELETE" method="POST" style="display: contents;">
+                  <button type="submit" class="btn">
+                    <i class="fa-solid fa-heart fa-2xl" style="color: brown;"></i>
+                  </button>
+                </form>
+                {{else}}
+                <form action="/favorite/{{this.id}}" method="POST" style="display: contents;">
+                  <button type="submit" class="btn">
+                    <i class="fa-regular fa-heart fa-2xl" style="color: gray;"></i>
+                  </button>
+                </form>
+                {{/if}}
 
-              <p class="card-text text-truncate my-4">{{this.description}}</p>
-
-              {{!-- favorite button --}}
-              {{#if this.isFavorited }}
-              <form action="/favorite/{{this.id}}?_method=DELETE" method="POST" style="display: contents;">
-                <button type="submit" class="btn">
-                  <i class="fa-solid fa-heart fa-2xl" style="color: brown;"></i>
-                </button>
-              </form>
-              {{else}}
-              <form action="/favorite/{{this.id}}" method="POST" style="display: contents;">
-                <button type="submit" class="btn">
-                  <i class="fa-regular fa-heart fa-2xl" style="color: gray;"></i>
-                </button>
-              </form>
-              {{/if}}
-
-              <div class="price float-end">
-                <h4 class="my-auto">TWD {{this.price}}</h4>
+                <div class="price float-end">
+                  <h4 class="text-danger pt-2">TWD {{this.price}}</h4>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
-    </a>
-    {{/each}}
-    {{else}}
-    <h4 class="text-secondary text-center my-5">Your favorite is empty</h4>
-    {{/if}}
-
-    <div class=" button-container d-flex justify-content-end">
+      </a>
+      {{/each}}
+      {{else}}
+      <h4 class="text-secondary text-center my-5">Your favorite is empty</h4>
+      {{/if}}
+    </div>
+    
+    <div class="button-container d-flex justify-content-end m-3">
       <a href="/group-tours" class="btn btn-secondary mx-2">Continue shopping</a>
     </div>
   </div>

@@ -182,6 +182,29 @@ const orderController = {
         tradeInfo
       }))
       .catch(err => next(err))
+  },
+  getOrders: async (req, res, next) => {
+    try {
+      const userId = req.user.id
+
+      let orders = await Order.findAll({
+        where: { userId },
+        include: [
+          { model: GroupTour, as: 'OrderedGroupTours' }
+        ]
+      })
+
+      // 訂單管理為空的
+      if (!orders.length) return res.render('orders', { orders })
+
+      orders = orders.toJSON()
+      console.log('訂單管理', orders)
+
+      return res.render('orders', { orders })
+    } catch (err) {
+      console.log(err)
+      return next(err)
+    }
   }
 }
 

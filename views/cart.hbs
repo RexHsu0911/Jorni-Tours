@@ -1,94 +1,103 @@
 {{> order-breadcrumb route='cart'}}
 
-<div class="card mb-5">
-  <div class="card-header text-center bg-white mt-2">
-    <h3>Shopping cart</h3>
-  </div>
-
-  <div class="card-body my-3">
-    {{#if cart}}
-    <table class="table align-middle">
-      <thead>
-        <tr>
-          <th scope="col">Product</th>
-          <th scope="col"></th>
-          <th scope="col">Date</th>
-          <th scope="col">Price</th>
-          <th scope="col">Quantity</th>
-          <th scope="col">Subtotal</th>
-          <th scope="col">Delete</th>
-        </tr>
-      </thead>
-      <tbody>
-        {{#each cart.cartedGroupTours}}
-        <tr>
-          <td>
-            <div>
-              <a href="/group-tours/{{this.id}}">
-                <img src="{{this.image}}" class="card-img" alt="..." style="height: 100px;width: auto;">
-              </a>
-            </div>
-          </td>
-          <td>
-            <a href="/group-tours/{{this.id}}">
-              <span>{{this.name}}</span>
-            </a>
-          </td>
-          <td>
-            <span>{{this.departureDate}}</span>
-          </td>
-          <td>
-            <span>{{this.price}}</span>
-          </td>
-          <td>
-            <div class="d-flex align-items-center">
-              {{#ifCond this.CartItem.quantity 1}}
-              <form action="/cartItem/{{this.CartItem.id}}?_method=DELETE" method="POST">
-                <button type="submit" class="btn btn-sm btn-outline-secondary"
-                  onclick="return confirm(`Confirm to delete 「{{this.name}}」 ？`)">-</button>
-              </form>
-              {{else}}
-              <form action="/cartItem/{{this.CartItem.id}}/sub" method="POST">
-                <button type="submit" class="btn btn-sm btn-outline-secondary">-</button>
-              </form>
-              {{/ifCond}}
-              <span class="mx-3">
-                {{this.CartItem.quantity}}
-              </span>
-              <form action="/cartItem/{{this.CartItem.id}}/add" method="POST">
-                <button type="submit" class="btn btn-sm btn-outline-secondary">+</button>
-              </form>
-            </div>
-          </td>
-          <td>
-            <span>{{multiplicate this.price this.CartItem.quantity}}</span>
-          </td>
-          <td>
-            <form action="/cartItem/{{this.CartItem.id}}?_method=DELETE" method="POST">
-              <button type="submit" class="btn btn-link"
-                onclick="return confirm(`Confirm to delete 「{{this.name}}」 ？`)">
-                <i class="fas fa-trash"></i>
-              </button>
-            </form>
-          </td>
-        </tr>
-        {{/each}}
-      </tbody>
-    </table>
-
-    <div class="h4 my-4">
-      <div class=" row">
-        <div class="col">Total：</div>
-        <div class="col text-danger text-end">TWD {{cart.totalPrice}}</div>
-      </div>
+<div class="container" style="width: 800px;">
+  <div class="card mb-5">
+    <div class="card-header text-center bg-white mt-2">
+      <h3>Shopping cart</h3>
     </div>
-    {{else}}
-    <h4 class="text-secondary text-center my-5">Your shopping cart is empty</h4>
-    {{/if}}
 
-    <div class=" button-container d-flex justify-content-end">
+    <div class="card-body my-3">
+      {{#if cart}}
+      <div class="row">
+        <h5 class="text-grey text-start pb-2">
+          <strong class="text-primary">{{cart.amount}}
+          </strong> cart items in your shopping cart
+        </h5>
+      </div>
+
+      <table class="table align-middle mt-3">
+        <thead>
+          <tr>
+            <th scope="col">Product</th>
+            <th scope="col"></th>
+            <th scope="col">Date</th>
+            <th scope="col">Price</th>
+            <th scope="col">Quantity</th>
+            <th scope="col">Subtotal</th>
+            <th scope="col">Delete</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#each cart.cartedGroupTours}}
+          <tr>
+            <td>
+              <div>
+                <a href="/group-tours/{{this.id}}">
+                  <img src="{{this.image}}" class="card-img" alt="..." style="height: 100px;width: auto;">
+                </a>
+              </div>
+            </td>
+            <td>
+              <a href="/group-tours/{{this.id}}">
+                <span>{{this.name}}</span>
+              </a>
+            </td>
+            <td>
+              <span>{{this.departureDate}}</span>
+            </td>
+            <td>
+              <span>{{this.price}}</span>
+            </td>
+            <td>
+              <div class="d-flex align-items-center">
+                {{#ifCond this.CartItem.quantity 1}}
+                <form action="/cartItem/{{this.CartItem.id}}?_method=DELETE" method="POST">
+                  <button type="submit" class="btn btn-sm btn-outline-secondary"
+                    onclick="return confirm(`Confirm to delete 「{{this.name}}」 ？`)">-</button>
+                </form>
+                {{else}}
+                <form action="/cartItem/{{this.CartItem.id}}/sub" method="POST">
+                  <button type="submit" class="btn btn-sm btn-outline-secondary">-</button>
+                </form>
+                {{/ifCond}}
+                <span class="mx-3">
+                  {{this.CartItem.quantity}}
+                </span>
+                <form action="/cartItem/{{this.CartItem.id}}/add" method="POST">
+                  <button type="submit" class="btn btn-sm btn-outline-secondary">+</button>
+                </form>
+              </div>
+            </td>
+            <td>
+              <span>{{multiplicate this.price this.CartItem.quantity}}</span>
+            </td>
+            <td>
+              <form action="/cartItem/{{this.CartItem.id}}?_method=DELETE" method="POST">
+                <button type="submit" class="btn btn-link"
+                  onclick="return confirm(`Confirm to delete 「{{this.name}}」 ？`)">
+                  <i class="fas fa-trash"></i>
+                </button>
+              </form>
+            </td>
+          </tr>
+          {{/each}}
+        </tbody>
+      </table>
+
+      <div class="h4 mt-4">
+        <div class=" row">
+          <div class="col">Total：</div>
+          <div class="col text-danger text-end">TWD {{cart.totalPrice}}</div>
+        </div>
+      </div>
+      {{else}}
+      <h4 class="text-secondary text-center my-5">Your shopping cart is empty</h4>
+      {{/if}}
+    </div>
+
+    <div class="button-container d-flex justify-content-end m-3">
       <a href="/group-tours" class="btn btn-secondary mx-2">Continue shopping</a>
-      <a href="/order" class="btn btn-warning">Go to checkout</a>
+      <a href="/orders/create" class="btn btn-warning">Go to checkout</a>
     </div>
   </div>
 </div>

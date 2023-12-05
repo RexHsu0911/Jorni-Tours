@@ -1,0 +1,66 @@
+<div class="container" style="width: 800px;">
+  <div class="card mb-5">
+    <div class="card-header text-center bg-white">
+      <h1>Order management</h1>
+    </div>
+    <div class="card-body my-3">
+      {{#if orders}}
+      <div class="row">
+        <h5 class="text-grey text-start pb-2">
+          <strong class="text-primary">{{orders.length}}
+          </strong> order items in your order management
+        </h5>
+      </div>
+
+      {{!-- OrderedGroupTours --}}
+      {{#each orders}}
+        <div class="card col-12 mt-3 h-100" style="break-inside: avoid;">
+          <div class="row no-gutters">
+            <div class="col-md-5  align-self-center">
+              <img class="card-img img-fluid" src="{{this.OrderedGroupTours.image}}" width="286px" height="180px"
+                style="transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+            </div>
+
+            <div class="col-md-7">
+              <div class="card-body">
+                <span class="badge bg-secondary mb-3">
+                  {{#if this.orderStatus}}Ordered{{/if}}
+                </span>
+
+                <a href="/orders/{{this.id}}"
+                  class="card-title h4 text-decoration-none link-dark stretched-link d-block">{{this.OrderedGroupTours.name}}
+                </a>
+
+                <p class="card-text text-truncate my-4">Order number：{{this.id}}</p>
+
+
+                <div class="price float-end">
+                  <h4 class="text-danger pt-2">TWD {{multiplicate this.OrderedGroupTours.price
+                    this.OrderedGroupTours.OrderItem.quantity}}
+                  </h4>
+                </div>
+                {{!-- comment --}}
+                <div class="btn p-0">
+                  {{#if Comment}}
+                  <a href="/orders/{{this.id}}/comment" class="btn btn-outline-primary">View your comments</a>
+                  {{else}}
+                  <a href="/orders/{{this.id}}/comment" class="btn btn-outline-primary">Give a comment</a>
+                  {{/if}}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        {{!--
+      </a> --}}
+      {{/each}}
+      {{else}}
+      <h4 class="text-secondary text-center my-5">Your order management is empty</h4>
+      {{/if}}
+    </div>
+
+    <div class="button-container d-flex justify-content-end m-3">
+      <a href="/group-tours" class="btn btn-secondary mx-2">Continue shopping</a>
+    </div>
+  </div>
+</div>
