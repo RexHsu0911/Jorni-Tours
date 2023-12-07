@@ -24,14 +24,14 @@
             <div class="col-md-7">
               <div class="card-body">
                 <h4 class="mb-3">
-                  {{#if ../order.orderStatus}}
-                  <span class="badge bg-success">Already departed</span>
+                  {{#if this.OrderedGroupTours.isSetOff}}
+                  <span class="badge bg-success">Already set off</span>
                   {{else}}
-                  <span class="badge bg-danger">Not yet departed</span>
+                  <span class="badge bg-danger">Not set out yet</span>
                   {{/if}}
                 </h4>
 
-                <a href="/orders/{{this.id}}"
+                <a href="/orders/{{this.id}}?groupTourId={{this.OrderedGroupTours.id}}"
                   class="card-title h4 text-decoration-none link-dark stretched-link d-block">{{this.OrderedGroupTours.name}}
                 </a>
 
@@ -44,7 +44,7 @@
                   </h4>
                 </div>
                 {{!-- comment --}}
-                <div class="btn p-0">
+                <div class="btn p-0 position-relative" style="z-index: 10;">
                   {{#if Comment}}
                   <a href="/orders/{{this.id}}/comment" class="btn btn-outline-primary">View your comment</a>
                   {{else}}
@@ -55,8 +55,6 @@
             </div>
           </div>
         </div>
-        {{!--
-      </a> --}}
       {{/each}}
       {{else}}
       <h4 class="text-secondary text-center my-5">Your order management is empty</h4>

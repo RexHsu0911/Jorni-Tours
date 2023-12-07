@@ -2,46 +2,43 @@
 <div class="container" style="width: 800px;">
   <div class="card mb-5">
     <div class="card-header text-center bg-white mt-2">
-      <h3>Order items</h3>
+      <h3>Order item</h3>
     </div>
 
-    {{#each order.OrderedGroupTours}}
-    <div class="card-body">
-      <div class="row m-3">
-        <a href="/group-tours/{{this.id}}" class="ratio ratio-21x9">
-          <img class="card-img-top img-fluid rounded-3" src="{{this.image}}" width="286px" height="180px"
-            style="transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
-        </a>
-      </div>
+    <div class="row m-3">
+      <a href="/group-tours/{{order.specificGroupTour.id}}" class="ratio ratio-21x9">
+        <img class="card-img-top img-fluid rounded-3" src="{{order.specificGroupTour.image}}" width="286px"
+          height="180px" style="transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+      </a>
+    </div>
 
-      <li class="list-group-item d-grid gap-1 mb-3 border-0">
-        <h4>
-          {{#if ../order.orderStatus}}
-          <span class="badge bg-success">Already departed</span>
-          {{else}}
-          <span class="badge bg-danger">Not yet departed</span>
-          {{/if}}
-        </h4>
-        <div class="row my-3">
-          <h4>
-            <a class="text-decoration-none link-dark" href="/group-tours/{{this.id}}">{{this.name}}</a>
-          </h4>
-        </div>
-        <div><strong>City：</strong>{{this.city}}</div>
-        <div><strong>Departure date：</strong>{{this.departureDate}}</div>
-        <div><strong>Duration：</strong>{{this.duration}}</div>
-      </li>
-
-      {{!-- comment --}}
-      <div class="btn text-end p-0 m-3">
-        {{#if Comment}}
-        <a href="/orders/{{this.id}}/comment" class="btn btn-outline-primary">View your comment</a>
+    <li class="list-group-item d-grid gap-1 py-0 border-0">
+      <h4>
+        {{#if order.specificGroupTour.isSetOff}}
+        <span class="badge bg-success">Already set off</span>
         {{else}}
-        <a href="/orders/{{this.id}}/comment" class="btn btn-outline-primary">Give a comment</a>
+        <span class="badge bg-danger">Not set out yet</span>
         {{/if}}
+      </h4>
+      <div class="row my-3">
+        <h4>
+          <a class="text-decoration-none link-dark"
+            href="/group-tours/{{order.specificGroupTour.id}}">{{order.specificGroupTour.name}}</a>
+        </h4>
       </div>
+      <div><strong>City：</strong>{{order.specificGroupTour.city}}</div>
+      <div><strong>Departure date：</strong>{{order.specificGroupTour.departureDate}}</div>
+      <div><strong>Duration：</strong>{{order.specificGroupTour.duration}}</div>
+    </li>
+
+    {{!-- comment --}}
+    <div class="btn text-end p-0 m-3">
+      {{#if Comment}}
+      <a href="/orders/{{order.id}}/comment" class="btn btn-outline-primary">View your comment</a>
+      {{else}}
+      <a href="/orders/{{order.id}}/comment" class="btn btn-outline-primary">Give a comment</a>
+      {{/if}}
     </div>
-    {{/each}}
   </div>
 
   {{!-- order --}}
@@ -50,7 +47,7 @@
       <h3>Order details</h3>
     </div>
 
-    <li class="list-group-item fw-bold d-grid gap-1 border-0 mb-3">
+    <li class="list-group-item fw-bold d-grid gap-1 py-3 border-0">
       <h4>Order number：{{order.sn}}</h4>
       <h4>Order status：
         {{#if order.orderStatus}}

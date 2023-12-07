@@ -202,9 +202,18 @@ const orderController = {
       // 訂單管理為空的
       if (!orders.length) return res.render('orders', { orders })
 
-      console.log('訂單管理', orders)
+      const result = orders.map(o => ({
+        ...o,
+        OrderedGroupTours: {
+          ...o.OrderedGroupTours,
+          // 是否已出發
+          isSetOff: new Date(o.OrderedGroupTours.departureDate) < new Date()
+        }
+      }))
 
-      return res.render('orders', { orders })
+      console.log('訂單管理', result)
+
+      return res.render('orders', { orders: result })
     } catch (err) {
       console.log(err)
       return next(err)
@@ -213,10 +222,14 @@ const orderController = {
   getOrder: async (req, res, next) => {
     try {
       const id = req.params.id
+      const groupTourId = Number(req.query.groupTourId)
 
       let order = await Order.findByPk(id, {
         include: [
-          { model: GroupTour, as: 'OrderedGroupTours' }
+          {
+            model: GroupTour,
+            as: 'OrderedGroupTours'
+          }
         ]
       })
 
@@ -226,7 +239,20 @@ const orderController = {
       order = order.toJSON()
       console.log('訂單', order.OrderedGroupTours)
 
-      return res.render('order', { order })
+      const specificGroupTour = order.OrderedGroupTours.find(ogt => ogt.id === groupTourId)
+
+      const result = {
+        ...order,
+        specificGroupTour: {
+          ...specificGroupTour,
+          isSetOff: new Date(specificGroupTour.departureDate) < new Date()
+        }
+      }
+
+      console.log('specificGroupTour', specificGroupTour)
+      console.log('訂單', result)
+
+      return res.render('order', { order: result })
     } catch (err) {
       console.log(err)
       return next(err)
