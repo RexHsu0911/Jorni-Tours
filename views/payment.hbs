@@ -15,7 +15,7 @@
           {{!-- {{#ifCond order.orderStatus '-1'}}Cancelled{{/ifCond}} --}}
         </span>
       </div>
-      <div>Order name：{{user.firstName}} {{user.lastName}}</div>
+      <div>Order name：{{order.firstName}} {{order.lastName}}</div>
       <div>Order phone：{{order.phone}}</div>
       <div>Order Time：{{order.createdAt}}</div>
     </li>
@@ -26,6 +26,7 @@
     <div class="card-header text-center bg-white mt-2">
       <h3>Payment</h3>
     </div>
+    
     <div class="card-body my-3">
       <table class="table align-middle">
         <thead>

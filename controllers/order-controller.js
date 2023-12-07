@@ -123,12 +123,15 @@ const orderController = {
         orderId: order.id
       })
 
+      // 儲存創建的訂單 id 到 session
+      req.session.orderId = order.id
+
       // 訂購完成後，清空購物車
       await Cart.destroy({ where: { id: cartId } })
 
       await CartItem.destroy({ where: { cartId } })
 
-      return res.redirect(`/orders/${order.id}/payment`)
+      return res.redirect('/payment')
     } catch (err) {
       console.log(err)
       return next(err)
@@ -136,7 +139,7 @@ const orderController = {
   },
   getPayment: async (req, res, next) => {
     try {
-      let order = await Order.findByPk(req.params.id, {
+      let order = await Order.findByPk(req.session.orderId, {
         include: [
           { model: GroupTour, as: 'OrderedGroupTours' }
         ]
@@ -187,20 +190,43 @@ const orderController = {
     try {
       const userId = req.user.id
 
-      let orders = await Order.findAll({
+      const orders = await Order.findAll({
         where: { userId },
+        include: [
+          { model: GroupTour, as: 'OrderedGroupTours' }
+        ],
+        raw: true,
+        nest: true
+      })
+
+      // 訂單管理為空的
+      if (!orders.length) return res.render('orders', { orders })
+
+      console.log('訂單管理', orders)
+
+      return res.render('orders', { orders })
+    } catch (err) {
+      console.log(err)
+      return next(err)
+    }
+  },
+  getOrder: async (req, res, next) => {
+    try {
+      const id = req.params.id
+
+      let order = await Order.findByPk(id, {
         include: [
           { model: GroupTour, as: 'OrderedGroupTours' }
         ]
       })
 
       // 訂單管理為空的
-      if (!orders.length) return res.render('orders', { orders })
+      if (!order) return res.render('order', { order })
 
-      orders = orders.toJSON()
-      console.log('訂單管理', orders)
+      order = order.toJSON()
+      console.log('訂單', order.OrderedGroupTours)
 
-      return res.render('orders', { orders })
+      return res.render('order', { order })
     } catch (err) {
       console.log(err)
       return next(err)

@@ -23,9 +23,13 @@
 
             <div class="col-md-7">
               <div class="card-body">
-                <span class="badge bg-secondary mb-3">
-                  {{#if this.orderStatus}}Ordered{{/if}}
-                </span>
+                <h4 class="mb-3">
+                  {{#if ../order.orderStatus}}
+                  <span class="badge bg-success">Already departed</span>
+                  {{else}}
+                  <span class="badge bg-danger">Not yet departed</span>
+                  {{/if}}
+                </h4>
 
                 <a href="/orders/{{this.id}}"
                   class="card-title h4 text-decoration-none link-dark stretched-link d-block">{{this.OrderedGroupTours.name}}
@@ -42,7 +46,7 @@
                 {{!-- comment --}}
                 <div class="btn p-0">
                   {{#if Comment}}
-                  <a href="/orders/{{this.id}}/comment" class="btn btn-outline-primary">View your comments</a>
+                  <a href="/orders/{{this.id}}/comment" class="btn btn-outline-primary">View your comment</a>
                   {{else}}
                   <a href="/orders/{{this.id}}/comment" class="btn btn-outline-primary">Give a comment</a>
                   {{/if}}
