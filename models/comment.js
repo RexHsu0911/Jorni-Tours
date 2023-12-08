@@ -12,6 +12,7 @@ module.exports = (sequelize, DataTypes) => {
     static associate (models) {
       Comment.belongsTo(models.User, { foreignKey: 'userId' })
       Comment.belongsTo(models.GroupTour, { foreignKey: 'groupTourId' })
+      Comment.belongsTo(models.Order, { foreignKey: 'orderId' })
     }
   }
   Comment.init({
@@ -19,7 +20,8 @@ module.exports = (sequelize, DataTypes) => {
     rating: DataTypes.FLOAT(2, 1),
     image: DataTypes.STRING,
     userId: DataTypes.INTEGER,
-    groupTourId: DataTypes.INTEGER
+    groupTourId: DataTypes.INTEGER,
+    orderId: DataTypes.INTEGER
   }, {
     sequelize,
     modelName: 'Comment',

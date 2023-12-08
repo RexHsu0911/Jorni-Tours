@@ -1,4 +1,4 @@
-const { Cart, CartItem, GroupTour, User, Order, OrderItem, Payment } = require('../models')
+const { Cart, CartItem, GroupTour, User, Order, OrderItem, Payment, Comment } = require('../models')
 
 const { getTradeInfo } = require('../public/javascripts/payment')
 
@@ -199,6 +199,12 @@ const orderController = {
         nest: true
       })
 
+      const comments = await Comment.findAll({
+        where: { userId },
+        raw: true,
+        nest: true
+      })
+
       // 訂單管理為空的
       if (!orders.length) return res.render('orders', { orders })
 
@@ -207,10 +213,13 @@ const orderController = {
         OrderedGroupTours: {
           ...o.OrderedGroupTours,
           // 是否已出發
-          isSetOff: new Date(o.OrderedGroupTours.departureDate) < new Date()
+          isSetOff: new Date(o.OrderedGroupTours.departureDate) < new Date(),
+          // 是否已評論
+          isComment: comments.some(c => (
+            c.groupTourId === o.OrderedGroupTours.id && c.orderId === o.id
+          ))
         }
       }))
-
       console.log('訂單管理', result)
 
       return res.render('orders', { orders: result })
@@ -223,21 +232,29 @@ const orderController = {
     try {
       const id = req.params.id
       const groupTourId = Number(req.query.groupTourId)
+      const userId = req.user.id
 
       let order = await Order.findByPk(id, {
         include: [
-          {
-            model: GroupTour,
-            as: 'OrderedGroupTours'
-          }
+          { model: GroupTour, as: 'OrderedGroupTours' },
+          Comment
         ]
+      })
+
+      const comment = await Comment.findOne({
+        where: {
+          userId,
+          groupTourId,
+          orderId: id
+        },
+        raw: true,
+        nest: true
       })
 
       // 訂單管理為空的
       if (!order) return res.render('order', { order })
 
       order = order.toJSON()
-      console.log('訂單', order.OrderedGroupTours)
 
       const specificGroupTour = order.OrderedGroupTours.find(ogt => ogt.id === groupTourId)
 
@@ -245,10 +262,11 @@ const orderController = {
         ...order,
         specificGroupTour: {
           ...specificGroupTour,
-          isSetOff: new Date(specificGroupTour.departureDate) < new Date()
+          isSetOff: new Date(specificGroupTour.departureDate) < new Date(),
+          // 轉換成布林值 !!
+          isComment: !!comment
         }
       }
-
       console.log('specificGroupTour', specificGroupTour)
       console.log('訂單', result)
 
@@ -262,6 +280,7 @@ const orderController = {
     try {
       const id = req.params.id
       const groupTourId = Number(req.query.groupTourId)
+      const userId = req.user.id
 
       let order = await Order.findByPk(id, {
         include: [
@@ -273,7 +292,7 @@ const orderController = {
       })
 
       // 訂單管理為空的
-      if (!order) return res.render('order', { order })
+      if (!order) return res.render('order-comment', { order })
 
       order = order.toJSON()
       console.log('訂單', order.OrderedGroupTours)
@@ -287,11 +306,28 @@ const orderController = {
           isSetOff: new Date(specificGroupTour.departureDate) < new Date()
         }
       }
-
       console.log('specificGroupTour', specificGroupTour)
       console.log('訂單', result)
 
-      return res.render('order-comment', { order: result })
+      let comment = await Comment.findOne({
+        where: {
+          userId,
+          groupTourId,
+          orderId: id
+        },
+        include: [User]
+      })
+
+      // 訂單評論為空的
+      if (!comment) return res.render('order-comment', { order: result, comment })
+
+      comment = comment.toJSON()
+      console.log('訂單評論', comment)
+
+      return res.render('order-comment', {
+        order: result,
+        comment
+      })
     } catch (err) {
       console.log(err)
       return next(err)

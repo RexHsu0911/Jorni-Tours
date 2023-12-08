@@ -43,7 +43,6 @@
           <div class="col text-danger text-end">TWD {{order.totalPrice}}</div>
         </div>
       </div>
-
     </div>
 
     {{!-- comment --}}
@@ -52,32 +51,37 @@
     </div>
   </div>
 
-  {{#if Comment}}
+  {{#if comment}}
   {{!-- comment --}}
-  <div class="card my-5">
+  <div class="card mb-5">
     <div class="card-header text-center bg-white mt-2">
       <h3>View your comment</h3>
     </div>
 
-    <div class="card-body my-3">
+    <div class="card-body">
       {{#if ../loginUser.isAdmin}}
-      <form action="/comments/{{groupTour.Comments.id}}?_method=DELETE" method="POST" class="float-end">
+      <form action="/comments/{{comment.id}}?_method=DELETE" method="POST" class="float-end">
         <button type="submit" class="btn btn-danger"
-          onclick="return confirm(`Confirm to delete 「{{groupTour.Comments.User.firstName}} {{groupTour.Comments.User.lastName}}」's comment ？`)">Delete</button>
+          onclick="return confirm(`Confirm to delete 「{{comment.User.firstName}} {{comment.User.lastName}}」's comment ？`)">Delete</button>
       </form>
       {{/if}}
 
-      <h4><a href="/users/{{groupTour.Comments.User.id}}">{{groupTour.Comments.User.firstName}}
-          {{groupTour.Comments.User.lastName}}</a></h4>
+      <h4 class="mb-0"><a href="/users/{{comment.User.id}}">{{comment.User.firstName}} {{comment.User.lastName}}</a>
+      </h4>
 
-      <span class="badge rounded-pill bg-secondary mb-2">Rating : {{groupTour.Comments.rating}}</span>
+      <span class="badge rounded-pill bg-secondary my-3">Rating : {{comment.rating}}</span>
 
-      <p>{{groupTour.Comments.text}}</p>
+      <p class="bg-light py-3 rounded-3">
+        <span class="text p-3">{{comment.text}}</span>
 
-      <img class="img-responsive center-block" src="{{groupTour.Comments.image}}"
-        style="width: 200px; margin-bottom: 25px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+        {{#if comment.image}}
+        <img class="img-responsive center-block" src="{{comment.image}}"
+          style="width: 200px; margin-bottom: 25px; transition: opacity 0.5s; opacity:0;"
+          onload="this.style.opacity=1;">
+        {{/if}}
+      </p>
 
-      <footer class="blockquote-footer">{{relativeTimeFromNow groupTour.Comments.createdAt}}</footer>
+      <footer class="blockquote-footer my-0">{{relativeTimeFromNow comment.createdAt}}</footer>
     </div>
   </div>
   {{else}}
@@ -98,8 +102,10 @@
           <label class="form-label" for="text">Comment</label>
           <textarea class="form-control" id="text" name="text" rows="3" placeholder="Enter comment"></textarea>
         </div>
-        {{!-- 把 groupTour.id 送到後端取用 --}}
-        <input type="hidden" name="groupTourId" value="{{groupTour.id}}">
+
+        {{!-- 把 groupTourId 送到後端取用 --}}
+        <input type="hidden" name="groupTourId" value="{{order.specificGroupTour.id}}">
+        <input type="hidden" name="orderId" value="{{order.id}}">
 
         <div class="form-row mb-3">
           <label class="form-label" for="image">Image</label>

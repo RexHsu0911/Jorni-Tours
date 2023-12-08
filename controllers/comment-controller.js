@@ -3,7 +3,7 @@ const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const commentController = {
   postComment: (req, res, next) => {
-    const { rating, text, groupTourId } = req.body
+    const { rating, text, groupTourId, orderId } = req.body
     if (!text) throw new Error('Comment text is required!')
     const { file } = req
     const userId = req.user.id
@@ -21,13 +21,14 @@ const commentController = {
           rating,
           text,
           image: filePath || null,
+          userId,
           groupTourId,
-          userId
+          orderId
         })
       })
       .then(() => {
         req.flash('success_messages', 'Comment was successfully shared!')
-        return res.redirect(`/group-tours/${groupTourId}`)
+        return res.redirect(`/orders/${orderId}/comment?groupTourId=${groupTourId}`)
       })
       .catch(err => next(err))
   },

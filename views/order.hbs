@@ -48,7 +48,7 @@
 
     {{!-- comment button --}}
     <div class="btn text-end p-0 m-3">
-      {{#if Comment}}
+      {{#if order.specificGroupTour.isComment}}
       <a href="/orders/{{order.id}}/comment?groupTourId={{order.specificGroupTour.id}}"
         class="btn btn-outline-primary mx-2">View your comment</a>
       {{else}}

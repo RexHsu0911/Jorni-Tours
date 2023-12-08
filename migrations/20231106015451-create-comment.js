@@ -24,6 +24,9 @@ module.exports = {
       group_tour_id: {
         type: Sequelize.INTEGER
       },
+      order_id: {
+        type: Sequelize.INTEGER
+      },
       created_at: {
         allowNull: false,
         type: Sequelize.DATE
