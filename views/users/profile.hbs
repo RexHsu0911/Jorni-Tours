@@ -1,12 +1,12 @@
 <div class="card">
   <div class="row align-items-center no-gutters">
-    <div class="col-md-4">
+    <div class="col-md-4 m-3">
       {{#if user.avatar}}
-      <img src="{{user.avatar}}" width="300px" height="300px" style="transition: opacity 0.5s; opacity:0;"
+      <img class="image rounded-circle" src="{{user.avatar}}" width="300px" height="300px" style="transition: opacity 0.5s; opacity:0;"
         onload="this.style.opacity=1;" />
       {{else}}
       {{!-- default user avatar --}}
-      <img src="https://fakeimg.pl/300" width="300px" height="300px" style="transition: opacity 0.5s; opacity:0;"
+      <img class="image rounded-circle" src="https://fakeimg.pl/300" width="300px" height="300px" style="transition: opacity 0.5s; opacity:0;"
         onload="this.style.opacity=1;" />
       {{/if}}
     </div>
@@ -65,10 +65,10 @@
           {{!-- 當元素被加載到網頁中時，觸發 onload 事件，它最初是不可見的（不透明度 opacity 為 0），然後透過 CSS 過渡(transition)效果 ，透明度平滑地在 0.5 秒內從 0 增加到
           1，使元素淡入可見（不透明度 opacity 為 1） --}}
           {{#if this.avatar}}
-          <img src="{{this.avatar}}" width="60" height="60" class="avatar m-1"
+          <img class="image rounded-circle" src="{{this.avatar}}" width="60" height="60" class="avatar m-1"
             style="transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;" />
           {{else}}
-          <img src="https://fakeimg.pl/300" width="60px" height="60px" style="transition: opacity 0.5s; opacity:0;"
+          <img class="image rounded-circle" src="https://fakeimg.pl/60" width="60px" height="60px" style="transition: opacity 0.5s; opacity:0;"
             onload="this.style.opacity=1;" />
           {{/if}}
         </a>
@@ -88,10 +88,10 @@
         {{#each user.Followers}}
         <a href="/users/{{this.id}}" class="text-decoration-none">
           {{#if this.avatar}}
-          <img src="{{this.avatar}}" width="60" height="60" class="avatar m-1"
+          <img class="image rounded-circle" src="{{this.avatar}}" width="60" height="60" class="avatar m-1"
             style="transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;" />
           {{else}}
-          <img src="https://fakeimg.pl/300" width="60px" height="60px" style="transition: opacity 0.5s; opacity:0;"
+          <img class="image rounded-circle" src="https://fakeimg.pl/60" width="60px" height="60px" style="transition: opacity 0.5s; opacity:0;"
             onload="this.style.opacity=1;" />
           {{/if}}
         </a>

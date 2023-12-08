@@ -46,7 +46,7 @@
 </div>
 
 {{!-- Select --}}
-<div class="card mt-5">
+<div class="card mb-5">
   <div class="card-header bg-white text-center mt-2">
     <h3 class="my-4">Select</h3>
   </div>
@@ -116,36 +116,57 @@
   </div>
 </div>
 
-<hr>
-
 {{!-- comments --}}
-<div class="row">
-  {{#if groupTour.Comments}}
-  <div class="col-md-12">
-    <h3 class="my-4">All comments</h3>
+<div class="card mb-5">
+  <div class="card-header text-center bg-white mt-2">
+    <h3>All comments</h3>
   </div>
-  {{/if}}
 
-  {{#each groupTour.Comments}}
-  <div class="col-md-12">
+  {{#if groupTour.Comments}}
+  <div class="card-body">
+    {{#each groupTour.Comments}}
     {{#if ../loginUser.isAdmin}}
-    <form action="/comments/{{this.id}}?_method=DELETE" method="POST" class="float-end">
+    <form action="/comments/{{comment.id}}?_method=DELETE" method="POST" class="float-end">
       <button type="submit" class="btn btn-danger"
-        onclick="return confirm(`Confirm to delete 「{{this.User.firstName}} {{this.User.lastName}}」's comment ？`)">Delete</button>
+        onclick="return confirm(`Confirm to delete 「{{comment.User.firstName}} {{comment.User.lastName}}」's comment ？`)">Delete</button>
     </form>
     {{/if}}
 
-    <h4><a href="/users/{{this.User.id}}">{{this.User.firstName}} {{this.User.lastName}}</a></h4>
+    <div class="image float-start" style="margin-right: 20px;">
+      <a href="/users/{{this.User.id}}">
+        {{#if this.User.avatar}}
+        <img class="image rounded-circle" src="{{this.User.avatar}}" width="60px" height="60px"
+          style="transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;" />
+        {{else}}
+        {{!-- default user avatar --}}
+        <img class="image rounded-circle" src="https://fakeimg.pl/60" width="60px" height="60px"
+          style="transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;" />
+        {{/if}}
+      </a>
+    </div>
 
-    <span class="badge rounded-pill bg-secondary mb-2">Rating : {{this.rating}}</span>
+    <div class="comment-detail overflow-hidden">
+      <h4 class="mb-0"><a href="/users/{{this.User.id}}">{{this.User.firstName}} {{this.User.lastName}}</a>
+      </h4>
 
-    <p>{{this.text}}</p>
+      <span class="badge rounded-pill bg-secondary my-3">Rating：{{this.rating}}</span>
 
-    <img class="img-responsive center-block" src="{{this.image}}"
-      style="width: 200px; margin-bottom: 25px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+      <div class="bg-light rounded-3">
+        <p class="text p-3 mb-0">{{this.text}}</p>
 
-    <footer class="blockquote-footer">{{relativeTimeFromNow this.createdAt}}</footer>
+        {{#if this.image}}
+        <img class="img-responsive d-block p-3 pt-0" src="{{this.image}}"
+          style="width: 200px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+        {{/if}}
+      </div>
+
+      <footer class="blockquote-footer mb-0 mt-3">{{relativeTimeFromNow this.createdAt}}</footer>
+    </div>
+
+    <hr>
+    {{/each}}
   </div>
-  <hr />
-  {{/each}}
+  {{else}}
+  <h4 class="text-secondary text-center my-5">No comments yet</h4>
+  {{/if}}
 </div>

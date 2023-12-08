@@ -58,17 +58,17 @@
             <a class="link-primary" href="/group-tours/{{this.GroupTour.id}}">{{this.GroupTour.name}}</a>
           </h4>
 
-          <span class="badge rounded-pill bg-secondary">Rating : {{this.rating}}</span>
+          <span class="badge rounded-pill bg-secondary">Rating：{{this.rating}}</span>
 
           <div class="row py-3">
             <div class="col-md-2">
               {{#if this.User.avatar}}
               <a href="/users/{{this.User.id}}">
-                <img src="{{this.User.avatar}}" width="60px" height="60px" style="transition: opacity 0.5s; opacity:0;"
+                <img class="image rounded-circle" src="{{this.User.avatar}}" width="60px" height="60px" style="transition: opacity 0.5s; opacity:0;"
                   onload="this.style.opacity=1;" />
               </a>
               {{else}}
-              <img src="https://fakeimg.pl/60" width="60px" height="60px" style="transition: opacity 0.5s; opacity:0;"
+              <img class="image rounded-circle" src="https://fakeimg.pl/60" width="60px" height="60px" style="transition: opacity 0.5s; opacity:0;"
                 onload="this.style.opacity=1;" />
               {{/if}}
             </div>

@@ -66,22 +66,35 @@
       </form>
       {{/if}}
 
-      <h4 class="mb-0"><a href="/users/{{comment.User.id}}">{{comment.User.firstName}} {{comment.User.lastName}}</a>
-      </h4>
-
-      <span class="badge rounded-pill bg-secondary my-3">Rating : {{comment.rating}}</span>
-
-      <p class="bg-light py-3 rounded-3">
-        <span class="text p-3">{{comment.text}}</span>
-
-        {{#if comment.image}}
-        <img class="img-responsive center-block" src="{{comment.image}}"
-          style="width: 200px; margin-bottom: 25px; transition: opacity 0.5s; opacity:0;"
-          onload="this.style.opacity=1;">
-        {{/if}}
-      </p>
-
-      <footer class="blockquote-footer my-0">{{relativeTimeFromNow comment.createdAt}}</footer>
+      <div class="image float-start" style="margin-right: 20px;">
+        <a href="/users/{{comment.User.id}}">
+          {{#if comment.User.avatar}}
+          <img class="image rounded-circle" src="{{comment.User.avatar}}" width="60px" height="60px"
+            style="transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;" />
+          {{else}}
+          <img class="image rounded-circle" src="https://fakeimg.pl/60" width="60px" height="60px"
+            style="transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;" />
+          {{/if}}
+        </a>
+      </div>
+      
+      <div class="comment-detail overflow-hidden">
+        <h4 class="mb-0"><a href="/users/{{comment.User.id}}">{{comment.User.firstName}} {{comment.User.lastName}}</a>
+        </h4>
+      
+        <span class="badge rounded-pill bg-secondary my-3">Rating：{{comment.rating}}</span>
+      
+        <div class="bg-light rounded-3">
+          <p class="text p-3 mb-0">{{comment.text}}</p>
+      
+          {{#if comment.image}}
+          <img class="img-responsive d-block p-3 pt-0" src="{{comment.image}}"
+            style="width: 200px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+          {{/if}}
+        </div>
+      
+        <footer class="blockquote-footer mb-0 mt-3">{{relativeTimeFromNow comment.createdAt}}</footer>
+      </div>
     </div>
   </div>
   {{else}}
