@@ -1,0 +1,115 @@
+{{!-- order --}}
+<div class="container" style="width: 800px;">
+  <div class="card mb-5">
+    <div class="card-header text-center bg-white mt-2">
+      <h3>Product</h3>
+    </div>
+
+    <div class="row m-3">
+      <a href="/group-tours/{{order.specificGroupTour.id}}" class="ratio ratio-21x9">
+        <img class="card-img-top img-fluid rounded-3" src="{{order.specificGroupTour.image}}" width="286px"
+          height="180px" style="transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+      </a>
+    </div>
+
+    <div class="card-body pt-0 mb-3">
+      <div class="d-grid gap-1">
+        <h4>
+          {{#if order.specificGroupTour.isSetOff}}
+          <span class="badge bg-success">Already set off</span>
+          {{else}}
+          <span class="badge bg-danger">Not set out yet</span>
+          {{/if}}
+        </h4>
+        <div class="row my-3">
+          <h4>
+            <a class="text-decoration-none link-dark"
+              href="/group-tours/{{order.specificGroupTour.id}}">{{order.specificGroupTour.name}}</a>
+          </h4>
+        </div>
+        <div><strong>City：</strong>{{order.specificGroupTour.city}}</div>
+        <div><strong>Departure date：</strong>{{order.specificGroupTour.departureDate}}</div>
+        <div><strong>Duration：</strong>{{order.specificGroupTour.duration}}</div>
+        <div><strong>Quantity：</strong>{{order.specificGroupTour.OrderItem.quantity}}</div>
+      </div>
+
+      <hr>
+
+      {{!-- payment --}}
+      <div class="text h4 mt-4">
+        <div class="row">
+          <div class="col">
+            Payment amount：</div>
+          <div class="col text-danger text-end">TWD {{order.totalPrice}}</div>
+        </div>
+      </div>
+
+    </div>
+
+    {{!-- comment --}}
+    <div class="btn text-end p-0 m-3">
+      <a class="btn btn-outline-secondary" href="javascript:history.back()">Back</a>
+    </div>
+  </div>
+
+  {{#if Comment}}
+  {{!-- comment --}}
+  <div class="card my-5">
+    <div class="card-header text-center bg-white mt-2">
+      <h3>View your comment</h3>
+    </div>
+
+    <div class="card-body my-3">
+      {{#if ../loginUser.isAdmin}}
+      <form action="/comments/{{groupTour.Comments.id}}?_method=DELETE" method="POST" class="float-end">
+        <button type="submit" class="btn btn-danger"
+          onclick="return confirm(`Confirm to delete 「{{groupTour.Comments.User.firstName}} {{groupTour.Comments.User.lastName}}」's comment ？`)">Delete</button>
+      </form>
+      {{/if}}
+
+      <h4><a href="/users/{{groupTour.Comments.User.id}}">{{groupTour.Comments.User.firstName}}
+          {{groupTour.Comments.User.lastName}}</a></h4>
+
+      <span class="badge rounded-pill bg-secondary mb-2">Rating : {{groupTour.Comments.rating}}</span>
+
+      <p>{{groupTour.Comments.text}}</p>
+
+      <img class="img-responsive center-block" src="{{groupTour.Comments.image}}"
+        style="width: 200px; margin-bottom: 25px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+
+      <footer class="blockquote-footer">{{relativeTimeFromNow groupTour.Comments.createdAt}}</footer>
+    </div>
+  </div>
+  {{else}}
+  {{!-- comment form --}}
+  <div class="card my-5">
+    <div class="card-header text-center bg-white mt-2">
+      <h3>Give a comment</h3>
+    </div>
+    <form action="/comments" method="POST" enctype="multipart/form-data">
+      <div class="card-body my-3">
+        <div class="form-row mb-3">
+          <label class="form-label" for="rating">Rating</label>
+          <input class="form-control" type="number" min="1" max="5" step="0.1" placeholder="Enter rating(1.0 ~ 5.0)"
+            name="rating" id="rating" required>
+        </div>
+
+        <div class="form-row mb-3">
+          <label class="form-label" for="text">Comment</label>
+          <textarea class="form-control" id="text" name="text" rows="3" placeholder="Enter comment"></textarea>
+        </div>
+        {{!-- 把 groupTour.id 送到後端取用 --}}
+        <input type="hidden" name="groupTourId" value="{{groupTour.id}}">
+
+        <div class="form-row mb-3">
+          <label class="form-label" for="image">Image</label>
+          <input class="form-control" type="file" name="image" id="image">
+        </div>
+      </div>
+      <div class="button-container d-flex justify-content-end m-3">
+        <button type="submit" class="btn btn-primary">Submit</button>
+      </div>
+    </form>
+  </div>
+  {{/if}}
+</div>

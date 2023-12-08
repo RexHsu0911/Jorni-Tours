@@ -43,12 +43,13 @@
                     this.OrderedGroupTours.OrderItem.quantity}}
                   </h4>
                 </div>
-                {{!-- comment --}}
+
+                {{!-- comment button --}}
                 <div class="btn p-0 position-relative" style="z-index: 10;">
                   {{#if Comment}}
-                  <a href="/orders/{{this.id}}/comment" class="btn btn-outline-primary">View your comment</a>
+                  <a href="/orders/{{this.id}}/comment?groupTourId={{this.OrderedGroupTours.id}}" class="btn btn-outline-primary">View your comment</a>
                   {{else}}
-                  <a href="/orders/{{this.id}}/comment" class="btn btn-outline-primary">Give a comment</a>
+                  <a href="/orders/{{this.id}}/comment?groupTourId={{this.OrderedGroupTours.id}}" class="btn btn-outline-primary">Give a comment</a>
                   {{/if}}
                 </div>
               </div>

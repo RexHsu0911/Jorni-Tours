@@ -2,7 +2,7 @@
 <div class="container" style="width: 800px;">
   <div class="card mb-5">
     <div class="card-header text-center bg-white mt-2">
-      <h3>Order item</h3>
+      <h3>Product</h3>
     </div>
 
     <div class="row m-3">
@@ -12,32 +12,50 @@
       </a>
     </div>
 
-    <li class="list-group-item d-grid gap-1 py-0 border-0">
-      <h4>
-        {{#if order.specificGroupTour.isSetOff}}
-        <span class="badge bg-success">Already set off</span>
-        {{else}}
-        <span class="badge bg-danger">Not set out yet</span>
-        {{/if}}
-      </h4>
-      <div class="row my-3">
+    <div class="card-body pt-0 mb-3">
+      <div class="d-grid gap-1">
         <h4>
-          <a class="text-decoration-none link-dark"
-            href="/group-tours/{{order.specificGroupTour.id}}">{{order.specificGroupTour.name}}</a>
+          {{#if order.specificGroupTour.isSetOff}}
+          <span class="badge bg-success">Already set off</span>
+          {{else}}
+          <span class="badge bg-danger">Not set out yet</span>
+          {{/if}}
         </h4>
+        <div class="row my-3">
+          <h4>
+            <a class="text-decoration-none link-dark"
+              href="/group-tours/{{order.specificGroupTour.id}}">{{order.specificGroupTour.name}}</a>
+          </h4>
+        </div>
+        <div><strong>City：</strong>{{order.specificGroupTour.city}}</div>
+        <div><strong>Departure date：</strong>{{order.specificGroupTour.departureDate}}</div>
+        <div><strong>Duration：</strong>{{order.specificGroupTour.duration}}</div>
+        <div><strong>Quantity：</strong>{{order.specificGroupTour.OrderItem.quantity}}</div>
       </div>
-      <div><strong>City：</strong>{{order.specificGroupTour.city}}</div>
-      <div><strong>Departure date：</strong>{{order.specificGroupTour.departureDate}}</div>
-      <div><strong>Duration：</strong>{{order.specificGroupTour.duration}}</div>
-    </li>
 
-    {{!-- comment --}}
+      <hr>
+
+      {{!-- payment --}}
+      <div class="text h4 mt-4">
+        <div class="row">
+          <div class="col">
+            Payment amount：</div>
+          <div class="col text-danger text-end">TWD {{order.totalPrice}}</div>
+        </div>
+      </div>
+
+    </div>
+
+    {{!-- comment button --}}
     <div class="btn text-end p-0 m-3">
       {{#if Comment}}
-      <a href="/orders/{{order.id}}/comment" class="btn btn-outline-primary">View your comment</a>
+      <a href="/orders/{{order.id}}/comment?groupTourId={{order.specificGroupTour.id}}"
+        class="btn btn-outline-primary mx-2">View your comment</a>
       {{else}}
-      <a href="/orders/{{order.id}}/comment" class="btn btn-outline-primary">Give a comment</a>
+      <a href="/orders/{{order.id}}/comment?groupTourId={{order.specificGroupTour.id}}"
+        class="btn btn-outline-primary mx-2">Give a comment</a>
       {{/if}}
+      <a class="btn btn-outline-secondary" href="javascript:history.back()">Back</a>
     </div>
   </div>
 
@@ -62,138 +80,75 @@
       <div>Order date：{{order.createdAt}}</div>
     </li>
   </div>
-</div>
 
-{{!-- payment --}}
-<div class="card my-5">
-  <div class="card-header text-center bg-white mt-2">
-    <h3>Payment details</h3>
-  </div>
+  {{!-- payment --}}
+  <div class="card my-5">
+    <div class="card-header text-center bg-white mt-2">
+      <h3>Payment details</h3>
+    </div>
 
-  <li class="list-group-item fw-bold d-grid gap-1 border-0">
-    <div>
-      <h4>Payment status：
-        {{#if order.paymentStatus}}
-        <span class="badge bg-success">Paid</span>
-        {{else}}
-        <span class="badge bg-danger">Unpaid</span>
-        {{/if}}
-      </h4>
-  </li>
+    <li class="list-group-item fw-bold d-grid gap-1 border-0">
+      <div>
+        <h4>Payment status：
+          {{#if order.paymentStatus}}
+          <span class="badge bg-success">Paid</span>
+          {{else}}
+          <span class="badge bg-danger">Unpaid</span>
+          {{/if}}
+        </h4>
+    </li>
 
-  <div class="card-body mb-3">
-    <table class="table align-middle">
-      <thead>
-        <tr>
-          <th scope="col">Product</th>
-          <th scope="col"></th>
-          <th scope="col">Quantity</th>
-          <th scope="col">Subtotal</th>
-        </tr>
-      </thead>
-      <tbody>
-        {{#each order.OrderedGroupTours}}
-        <tr>
-          <td>
-            <div>
+    <div class="card-body mb-3">
+      <table class="table align-middle">
+        <thead>
+          <tr>
+            <th scope="col">Product</th>
+            <th scope="col"></th>
+            <th scope="col">Quantity</th>
+            <th scope="col">Subtotal</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#each order.OrderedGroupTours}}
+          <tr>
+            <td>
+              <div>
+                <a href="/group-tours/{{this.id}}">
+                  <img src="{{this.image}}" class="card-img" alt="..." style="height: 100px;width: auto;">
+                </a>
+              </div>
+            </td>
+            <td>
               <a href="/group-tours/{{this.id}}">
-                <img src="{{this.image}}" class="card-img" alt="..." style="height: 100px;width: auto;">
+                <span>{{this.name}}</span>
               </a>
-            </div>
-          </td>
-          <td>
-            <a href="/group-tours/{{this.id}}">
-              <span>{{this.name}}</span>
-            </a>
-          </td>
-          <td>
-            <span>{{this.OrderItem.quantity}}</span>
-          </td>
-          <td>
-            <span>{{multiplicate this.price this.OrderItem.quantity}}</span>
-          </td>
-        </tr>
-        {{/each}}
-      </tbody>
-    </table>
+            </td>
+            <td>
+              <span>{{this.OrderItem.quantity}}</span>
+            </td>
+            <td>
+              <span>{{multiplicate this.price this.OrderItem.quantity}}</span>
+            </td>
+          </tr>
+          {{/each}}
+        </tbody>
+      </table>
 
-    <div class="text h4 mt-4">
-      <p class="text-secondary fs-6">Total order amount ({{order.amount}} items)</p>
-      <div class="row">
-        <div class="col">
-          Payment amount：</div>
-        <div class="col text-danger text-end">TWD {{order.totalPrice}}</div>
+      <div class="text h4 mt-4">
+        <p class="text-secondary fs-6">Total order amount ({{order.amount}} items)</p>
+        <div class="row">
+          <div class="col">
+            Payment amount：</div>
+          <div class="col text-danger text-end">TWD {{order.totalPrice}}</div>
+        </div>
       </div>
     </div>
-  </div>
 
-  <div class="button-container d-flex justify-content-end m-3">
-    {{!-- cancel button --}}
-    <form action="/orders/{{this.id}}/cancel" method="POST">
-      <button type="submit" class="btn btn-secondary mx-2">Cancel</button>
-    </form>
-    <a class="btn btn-outline-secondary" href="javascript:history.back()">Back</a>
-  </div>
-</div>
-
-{{#if Comment}}
-{{!-- comment --}}
-<div class="card my-5">
-  <div class="card-header text-center bg-white mt-2">
-    <h3>View your comment</h3>
-  </div>
-
-  <div class="card-body my-3">
-    {{#if ../loginUser.isAdmin}}
-    <form action="/comments/{{groupTour.Comments.id}}?_method=DELETE" method="POST" class="float-end">
-      <button type="submit" class="btn btn-danger"
-        onclick="return confirm(`Confirm to delete 「{{groupTour.Comments.User.firstName}} {{groupTour.Comments.User.lastName}}」's comment ？`)">Delete</button>
-    </form>
-    {{/if}}
-
-    <h4><a href="/users/{{groupTour.Comments.User.id}}">{{groupTour.Comments.User.firstName}}
-        {{groupTour.Comments.User.lastName}}</a></h4>
-
-    <span class="badge rounded-pill bg-secondary mb-2">Rating : {{groupTour.Comments.rating}}</span>
-
-    <p>{{groupTour.Comments.text}}</p>
-
-    <img class="img-responsive center-block" src="{{groupTour.Comments.image}}"
-      style="width: 200px; margin-bottom: 25px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
-
-    <footer class="blockquote-footer">{{relativeTimeFromNow groupTour.Comments.createdAt}}</footer>
-  </div>
-</div>
-{{else}}
-{{!-- comment form --}}
-<div class="card my-5">
-  <div class="card-header text-center bg-white mt-2">
-    <h3>Give a comment</h3>
-  </div>
-  <form action="/comments" method="POST" enctype="multipart/form-data">
-    <div class="card-body my-3">
-      <div class="form-row mb-3">
-        <label class="form-label" for="rating">Rating</label>
-        <input class="form-control" type="number" min="1" max="5" step="0.1" placeholder="Enter rating(1.0 ~ 5.0)"
-          name="rating" id="rating" required>
-      </div>
-
-      <div class="form-row mb-3">
-        <label class="form-label" for="text">Comment</label>
-        <textarea class="form-control" id="text" name="text" rows="3" placeholder="Enter comment"></textarea>
-      </div>
-      {{!-- 把 groupTour.id 送到後端取用 --}}
-      <input type="hidden" name="groupTourId" value="{{groupTour.id}}">
-
-      <div class="form-row mb-3">
-        <label class="form-label" for="image">Image</label>
-        <input class="form-control" type="file" name="image" id="image">
-      </div>
+    <div class="btn text-end p-0 m-3">
+      {{!-- cancel button --}}
+      <form action="/orders/{{this.id}}/cancel" method="POST">
+        <button type="submit" class="btn btn-secondary">Cancel</button>
+      </form>
     </div>
-    <div class="button-container d-flex justify-content-end m-3">
-      <button type="submit" class="btn btn-primary">Submit</button>
-    </div>
-  </form>
-</div>
-{{/if}}
+  </div>
 </div>

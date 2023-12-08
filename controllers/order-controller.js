@@ -257,6 +257,45 @@ const orderController = {
       console.log(err)
       return next(err)
     }
+  },
+  getOrderComment: async (req, res, next) => {
+    try {
+      const id = req.params.id
+      const groupTourId = Number(req.query.groupTourId)
+
+      let order = await Order.findByPk(id, {
+        include: [
+          {
+            model: GroupTour,
+            as: 'OrderedGroupTours'
+          }
+        ]
+      })
+
+      // 訂單管理為空的
+      if (!order) return res.render('order', { order })
+
+      order = order.toJSON()
+      console.log('訂單', order.OrderedGroupTours)
+
+      const specificGroupTour = order.OrderedGroupTours.find(ogt => ogt.id === groupTourId)
+
+      const result = {
+        ...order,
+        specificGroupTour: {
+          ...specificGroupTour,
+          isSetOff: new Date(specificGroupTour.departureDate) < new Date()
+        }
+      }
+
+      console.log('specificGroupTour', specificGroupTour)
+      console.log('訂單', result)
+
+      return res.render('order-comment', { order: result })
+    } catch (err) {
+      console.log(err)
+      return next(err)
+    }
   }
 }
 
