@@ -241,14 +241,14 @@ const orderController = {
         ]
       })
 
+      if (!order) throw new Error("Order didn't exist!")
+
       const comment = await Comment.findOne({
         where: {
           userId,
           groupTourId,
           orderId: id
-        },
-        raw: true,
-        nest: true
+        }
       })
 
       // 訂單管理為空的
