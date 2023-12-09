@@ -10,45 +10,57 @@
         <span class="navbar-toggler-icon"></span>
       </button>
 
-      <div class="collapse navbar-collapse" id="navbarCollapse">
+      <div class="collapse navbar-collapse ms-auto" id="navbarCollapse">
         <ul class="navbar-nav ms-auto mb-2 mb-md-0 gap-3">
+        {{!-- role --}}
+        <span class="navbar-brand"><strong>Hi, {{#if
+            loginUser}}{{loginUser.firstName}} {{loginUser.lastName}}{{else}}Visitor{{/if}}</strong></span>
+
           {{!-- admin --}}
           {{#if loginUser.isAdmin}}
           <li class="nav-item d-inline-flex align-items-center">
-            <a href="/admin" class="text-danger nav-link">Admin Backstage</a>
+            <a href="/admin" class="text-danger nav-link">
+              <i class="fa-solid fa-screwdriver-wrench fa-2xl"></i>
+              <span class="d-inline m-1">Admin Backstage</span>
+            </a>
           </li>
           {{/if}}
 
-          {{!-- email --}}
-          <li class="nav-item d-inline-flex align-items-center">
-            <span class="text-dark nav-link"><strong>Hi, {{#if
-                loginUser}}{{loginUser.email}}{{else}}Visitor{{/if}}</strong></span>
-          </li>
-
           {{!-- cart --}}
           <li class="nav-item">
-            <a href="/cart" class="btn btn-sm">
-              <i class="fas fa-shopping-cart fa-2x"></i>
+            <a href="/cart" class="nav-link">
+              <i class="fas fa-shopping-cart fa-2xl"></i>
               {{#if session.cartAmount}}
-              <span class="badge rounded-pill badge-danger text-danger bg-light">{{session.cartAmount}}</span>
+              <span class="badge rounded-pill badge-danger text-light bg-danger"
+                style="position:relative; bottom: 15px; right: 15px;">{{session.cartAmount}}</span>
               {{/if}}
+              <span class="d-inline m-1">Shopping Cart</span>
             </a>
           </li>
 
           {{#if loginUser}}
           {{!-- profile --}}
           <li class="nav-item d-inline-flex align-items-center">
-            <a href="/users/{{loginUser.id}}" class="nav-link">Profile</a>
+            <a href="/users/{{loginUser.id}}" class="nav-link">
+              <i class="fa-solid fa-circle-user fa-2xl"></i>
+              <span class="d-inline m-1">Profile</span>
+            </a>
           </li>
 
           {{!-- favorite --}}
           <li class="nav-item d-inline-flex align-items-center">
-            <a href="/favorite" class="nav-link">My Favorite</a>
+            <a href="/favorite" class="nav-link">
+              <i class="fa-brands fa-gratipay fa-2xl"></i>
+              <span class="d-inline m-1">My Favorite</span>
+            </a>
           </li>
 
           {{!-- order --}}
           <li class="nav-item d-inline-flex align-items-center">
-            <a href="/orders" class="nav-link">Order management</a>
+            <a href="/orders" class="nav-link">
+              <i class="fa-solid fa-rectangle-list fa-2xl"></i>
+              <span class="d-inline m-1">Order Management</span>
+            </a>
           </li>
 
           {{!-- logout --}}
