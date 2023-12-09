@@ -1,14 +1,15 @@
 // onchange input
 function calculateTotal () {
   const quantity = parseInt(document.getElementById('count').value)
-  const price = parseInt(document.getElementById('groupTourPrice').innerText)
+  // 由 , 替換成 ''，g 是正則表達式的標誌，替換所有匹配的項目
+  const price = parseInt(document.getElementById('groupTourPrice').innerText.replace(/,/g, ''))
 
   const subTotal = price * quantity
 
   // 有選擇數量，顯示總金額
   if (quantity) {
     document.getElementById('total').innerText = 'Total： '
-    document.getElementById('subTotal').innerText = `TWD ${subTotal}`
+    document.getElementById('subTotal').innerText = `TWD ${subTotal.toLocaleString()}`
   } else {
     document.getElementById('total').innerText = ''
     document.getElementById('subTotal').innerText = ''

@@ -40,7 +40,7 @@
         <div class="row">
           <div class="col">
             Payment amount：</div>
-          <div class="col text-danger text-end">TWD {{order.totalPrice}}</div>
+          <div class="col text-danger text-end">TWD {{formatPrice order.totalPrice}}</div>
         </div>
       </div>
 
@@ -127,7 +127,7 @@
               <span>{{this.OrderItem.quantity}}</span>
             </td>
             <td>
-              <span>{{multiplicate this.price this.OrderItem.quantity}}</span>
+              <span>{{formatPrice (multiplicate this.price this.OrderItem.quantity)}}</span>
             </td>
           </tr>
           {{/each}}
@@ -139,7 +139,7 @@
         <div class="row">
           <div class="col">
             Payment amount：</div>
-          <div class="col text-danger text-end">TWD {{order.totalPrice}}</div>
+          <div class="col text-danger text-end">TWD {{formatPrice order.totalPrice}}</div>
         </div>
       </div>
     </div>

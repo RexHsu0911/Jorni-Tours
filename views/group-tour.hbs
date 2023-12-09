@@ -1,58 +1,64 @@
 {{!-- groupTour --}}
-<div class="row">
-  <div class="col-md-6">
-    <h1>{{groupTour.name}}</h1>
-    <p>[ {{groupTour.Category.name}} ]</p>
-  </div>
-  <div class="col-md-6 text-end">
-    {{!-- favorite button --}}
-    {{#if isFavorited }}
-    <form action="/favorite/{{groupTour.id}}?_method=DELETE" method="POST" style="display: contents;">
-      <button type="submit" class="btn">
-        <i class="fa-solid fa-heart fa-2xl" style="color: brown;"></i>
-      </button>
-    </form>
-    {{else}}
-    <form action="/favorite/{{groupTour.id}}" method="POST" style="display: contents;">
-      <button type="submit" class="btn">
-        <i class="fa-regular fa-heart fa-2xl" style="color: gray;"></i>
-      </button>
-    </form>
-    {{/if}}
-  </div>
-
-  <div class="col-md-6">
-    <img class="img-responsive center-block" src="{{groupTour.image}}"
-      style="width: 300px; margin-bottom: 25px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
-    <br>
-
-    <div class="well">
-      <ul class="list-unstyled">
-        <li><span class="badge rounded-pill bg-warning text-dark mb-2">Rating : {{groupTour.rating}}</span></li>
-        <li><strong>City:</strong> {{groupTour.city}}</li>
-        <li><strong>Departure Date:</strong> {{groupTour.departureDate}}</li>
-        <li><strong>Return Date:</strong> {{groupTour.returnDate}}</li>
-        <li><strong>Duration:</strong> {{groupTour.duration}}</li>
-        <li id="inventory" value="{{groupTour.quantity}}"><strong>Quantity:</strong> {{groupTour.quantity}}</li>
-        <li><strong>Price:</strong> {{groupTour.price}}</li>
-        <li><strong>Can Be Cancel:</strong>{{#if groupTour.canBeCancel}} Yes{{else}} No{{/if}}</li>
-      </ul>
+<div class="card mb-5">
+  <div class="image m-3">
+    <div class="ratio ratio-16x9">
+      <img class="card-img-top img-fluid rounded-3" src="{{groupTour.image}}" width="320px" height="180px"
+        style="transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
     </div>
   </div>
 
-  <div class="col-md-6">
-    <p class="mb-5" style="white-space: break-spaces;">{{groupTour.description}}</p>
+  <div class="card-body pt-0">
+    {{!-- favorite button --}}
+    <div class="button float-end">
+      {{#if isFavorited }}
+      <form action="/favorite/{{groupTour.id}}?_method=DELETE" method="POST" style="display: contents;">
+        <button type="submit" class="btn">
+          <i class="fa-solid fa-heart fa-2xl" style="color: brown;"></i>
+        </button>
+      </form>
+      {{else}}
+      <form action="/favorite/{{groupTour.id}}" method="POST" style="display: contents;">
+        <button type="submit" class="btn">
+          <i class="fa-regular fa-heart fa-2xl" style="color: gray;"></i>
+        </button>
+      </form>
+      {{/if}}
+    </div>
+
+    <h2 class="mb-0">{{groupTour.name}}</h2>
+    <p class="mb-0">[ {{groupTour.Category.name}} ]</p>
+
+    <div><span class="badge rounded-pill bg-warning text-dark my-3">Rating：{{groupTour.rating}}</span></div>
+
+    <div class="product-detail d-grid gap-1">
+      <div><strong>City：</strong>{{groupTour.city}}</div>
+      <div><strong>Departure Date：</strong>{{groupTour.departureDate}}</div>
+      <div><strong>Return Date：</strong>{{groupTour.returnDate}}</div>
+      <div><strong>Duration：</strong>{{groupTour.duration}}</div>
+      <li id="inventory" value="{{groupTour.quantity}}" style="list-style-type: none;"><strong>Quantity：</strong>{{groupTour.quantity}}</li>
+      <div><strong>Price：</strong>{{formatPrice groupTour.price}}</div>
+      <div><strong>Can Be Cancel：</strong>{{#if groupTour.canBeCancel}}Yes{{else}}No{{/if}}</div>
+
+      <div class="bg-light rounded-3 mt-3">
+        <p class="text p-3 mb-0" style="white-space: break-spaces;">{{groupTour.description}}</p>
+      </div>
+    </div>
+  </div>
+  
+  <div class="btn text-end p-0 m-3">
+    <a class="btn btn-outline-secondary" href="javascript:history.back()">Back</a>
   </div>
 </div>
 
 {{!-- Select --}}
 <div class="card mb-5">
-  <div class="card-header bg-white text-center mt-2">
-    <h3 class="my-4">Select</h3>
+  <div class="card-header text-center bg-white mt-2">
+    <h3>Select</h3>
   </div>
-  <div class="card-body">
-    <form id="cartForm" action="/cart" method="POST">
-      <table class="table align-middle">
+
+  <form id="cartForm" action="/cart" method="POST">
+    <div class="card-body">
+      <table class="table align-middle mt-3">
         <thead>
           <tr>
             <th scope="col">Date</th>
@@ -67,7 +73,7 @@
               <span>{{groupTour.departureDate}}</span>
             </td>
             <td>
-              <span id="groupTourPrice">{{groupTour.price}}</span>
+              <span id="groupTourPrice">{{formatPrice groupTour.price}}</span>
             </td>
             <td>
               <div class="counter d-flex align-items-center">
@@ -75,8 +81,10 @@
                   onclick="decrementCount(); return false">
                   <i class="fa-solid fa-minus"></i>
                 </button>
+
                 <input type="number" class="text-center mx-2" id="count" placeholder="0" name="quantity"
-                  onchange="calculateTotal()" {{#if cartItem}}value="{{cartItem.quantity}}" {{/if}} readonly required>
+                  onchange="calculateTotal()" {{#if cartItem}}value="{{cartItem.quantity}}"{{/if}} readonly required>
+
                 <button class="btn btn-sm btn-outline-secondary" style="width: 30px;"
                   onclick="incrementCount(); return false">
                   <i class="fa-solid fa-plus"></i>
@@ -93,7 +101,7 @@
       </table>
 
       <div class="h4 my-4">
-        <div class=" row">
+        <div class="row">
           <div class="col" id="total"></div>
           <div class="col text-danger text-end" id="subTotal">
           </div>
@@ -101,19 +109,19 @@
       </div>
 
       <input type="hidden" name="groupTourId" value="{{groupTour.id}}">
+    </div>
 
-      {{!-- cart button --}}
-      <div class="text-end">
-        {{#if groupTour.quantity}}
-        <button type="submit" class="btn btn-primary mx-2">Add to the cart</button>
-        <button type="submit" class="btn btn-warning" onclick="switchForm()">Order now</button>
-        {{else}}
-        <button type="submit" class="btn btn-secondary disabled">Sold out</button>
-        <a href="/group-tours" class="btn btn-primary mx-2">Continue shopping</a>
-        {{/if}}
-      </div>
-    </form>
-  </div>
+    {{!-- cart button --}}
+    <div class="button-container d-flex justify-content-end m-3">
+      {{#if groupTour.quantity}}
+      <button type="submit" class="btn btn-primary mx-2">Add to the cart</button>
+      <button type="submit" class="btn btn-warning" onclick="switchForm()">Order now</button>
+      {{else}}
+      <button type="submit" class="btn btn-secondary disabled mx-2">Sold out</button>
+      <a href="/group-tours" class="btn btn-primary">Continue shopping</a>
+      {{/if}}
+    </div>
+  </form>
 </div>
 
 {{!-- comments --}}
