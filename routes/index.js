@@ -68,9 +68,10 @@ router.post('/cart', cartController.postCart)
 router.get('/orders/create', authenticated, orderController.getOrderCreate)
 router.get('/orders/:id/comment', authenticated, orderController.getOrderComment)
 router.get('/orders/:id', authenticated, orderController.getOrder)
-router.post('/orders', authenticated, orderController.postOrder)
 router.get('/orders', authenticated, orderController.getOrders)
+router.post('/orders', authenticated, orderController.postOrder)
 router.get('/payment', authenticated, orderController.getPayment)
+router.post('/newebpay/callback', authenticated, orderController.newebpayCallback)
 
 // 設定 fallback 路由
 router.use('/', (req, res) => res.redirect('/group-tours'))

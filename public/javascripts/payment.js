@@ -6,10 +6,10 @@ const MerchantID = process.env.MERCHANT_ID
 const HashKey = process.env.HASH_KEY
 const HashIV = process.env.HASH_IV
 
-const PayGateWay = 'https://ccore.spgateway.com/MPG/mpg_gateway'
-const ReturnURL = URL + '/spgateway/callback?from=ReturnURL'
-const NotifyURL = URL + '/spgateway/callback?from=NotifyURL'
-const ClientBackURL = URL + '/order'
+const PayGateWay = 'https://ccore.newebpay.com/MPG/mpg_gateway'
+const ReturnURL = URL + '/newebpay/callback?from=ReturnURL'
+const NotifyURL = URL + '/newebpay/callback?from=NotifyURL'
+const ClientBackURL = URL + '/orders'
 
 // Step1: 生成請求字串
 function genDataChain (TradeInfo) {
@@ -52,8 +52,8 @@ function createAesDecrypt (TradeInfo) {
   return result
 }
 
-function getTradeInfo (Amt, Desc, email) {
-  console.log(Amt, Desc, email)
+function getTradeInfo (confirmPrice, productDesc, email) {
+  // console.log(confirmPrice, productDesc, email)
 
   // 使用 Unix Timestamp 作為訂單編號（金流也需要加入時間戳記）
   const TimeStamp = Math.round(new Date().getTime() / 1000)
@@ -65,14 +65,14 @@ function getTradeInfo (Amt, Desc, email) {
     Version: 2.0, // 串接程式版本
     MerchantOrderNo: TimeStamp, // 商店訂單編號
     LoginType: 0, // 智付通會員
-    Amt, // 訂單金額
-    ItemDesc: Desc, // 商品資訊
+    Amt: confirmPrice, // 訂單金額
+    ItemDesc: productDesc, // 商品資訊
     Email: email, // 付款人電子信箱
     ReturnURL, // 支付完成返回商店網址
     NotifyURL, // 支付通知網址/每期授權結果通知
     ClientBackURL // 支付取消返回商店網址
   }
-  console.log('data:', data)
+  // console.log('data:', data)
 
   // 進行訂單加密
   // 加密第一段字串，此段主要是提供交易內容給予藍新金流
@@ -80,8 +80,8 @@ function getTradeInfo (Amt, Desc, email) {
   // 使用 HASH 再次 SHA 加密字串，作為驗證使用
   const shaEncrypt = createShaEncrypt(aesEncrypt)
 
-  console.log('aesEncrypt:', aesEncrypt)
-  console.log('shaEncrypt:', shaEncrypt)
+  // console.log('aesEncrypt:', aesEncrypt)
+  // console.log('shaEncrypt:', shaEncrypt)
 
   const tradeInfo = {
     MerchantID, // 商店代號

@@ -1,6 +1,6 @@
 const { Cart, CartItem, GroupTour, User, Order, OrderItem, Payment, Comment } = require('../models')
 
-const { getTradeInfo } = require('../public/javascripts/payment')
+const { getTradeInfo, createAesDecrypt } = require('../public/javascripts/payment')
 
 const orderController = {
   getOrderCreate: async (req, res, next) => {
@@ -52,7 +52,7 @@ const orderController = {
         ...cart,
         totalPrice: cart.cartedGroupTours.reduce((acc, cgt) => acc + (cgt.price * cgt.CartItem.quantity), 0)
       }
-      console.log('使用者購物車:', cart.cartedGroupTours)
+      // console.log('使用者/暫時性購物車:', cart.cartedGroupTours)
 
       // 填入使用者資料
       let user = await User.findByPk(userId)
@@ -79,7 +79,7 @@ const orderController = {
       })
 
       cart = cart.toJSON()
-      console.log('新增訂單的購物車', cart.cartedGroupTours)
+      // console.log('新增訂單:', cart.cartedGroupTours)
 
       // 購物車不存在或為空的
       if (!cart || !cart.amount) throw new Error("You don't have any item in your cart!")
@@ -119,10 +119,6 @@ const orderController = {
         })
       })
 
-      await Payment.create({
-        orderId: order.id
-      })
-
       // 儲存創建的訂單 id 到 session
       req.session.orderId = order.id
 
@@ -147,49 +143,68 @@ const orderController = {
 
       if (!order) throw new Error("Order didn't exist!")
 
-      order = order.toJSON()
-      console.log('訂單', order)
+      // 取得要付款的訂單資料
+      const tradeInfo = getTradeInfo(
+        order.totalPrice,
+        order.id,
+        req.user.email
+      )
 
-      return res.render('payment', { order })
+      // 創建訂單編號
+      await order.update({ sn: tradeInfo.MerchantOrderNo })
+
+      order = order.toJSON()
+      // console.log('成立訂單:', order)
+
+      return res.render('payment', { order, tradeInfo })
     } catch (err) {
       console.log(err)
       return next(err)
     }
   },
-  newebpayCallback: (req, res, next) => {
-    return Order.findByPk(req.params.id, {
-      include: [
-        User,
-        { model: GroupTour, as: 'OrderedGroupTours' }
-      ]
-    })
-      .then(order => {
-        order = order.toJSON()
+  newebpayCallback: async (req, res, next) => {
+    try {
+      const tradeInfo = req.body.TradeInfo
+      const data = JSON.parse(createAesDecrypt(tradeInfo))
 
-        const tradeInfo = getTradeInfo(
-          order.confirmPrice,
-          order.id,
-          order.User.email
-        )
-
-        return Promise.all([
-          tradeInfo,
-          order.update({
-            ...req.body,
-            sn: tradeInfo.MerchantOrderNo
-          })
-        ])
+      const order = await Order.findOne({
+        where: { sn: data.Result.MerchantOrderNo }
       })
-      .then(([order, tradeInfo]) => res.render('payment', {
-        order,
-        tradeInfo
-      }))
-      .catch(err => next(err))
+
+      const [payment] = await Payment.findOrCreate({
+        where: { orderId: order.id },
+        defaults: {
+          paymentMethod: data.Result.PaymentType
+        }
+      })
+
+      if (data.Status === 'SUCCESS') {
+        await payment.update({
+          paymentMethod: data.Result.PaymentType,
+          paidAt: Date.now()
+        })
+
+        await order.update({
+          paymentStatus: 1
+        })
+        console.log('付款成功:', data)
+
+        req.flash('success_messages', 'Payment successful!')
+        return res.redirect('/orders')
+      } else {
+        console.log('付款失敗:', data)
+
+        req.flash('warning_messages', `Payment failed! (${data.Message})`)
+        return res.redirect('/orders')
+      }
+    } catch (err) {
+      console.log(err)
+      return next(err)
+    }
   },
   getOrders: async (req, res, next) => {
     try {
       const userId = req.user.id
-
       const orders = await Order.findAll({
         where: { userId },
         include: [
@@ -220,7 +235,7 @@ const orderController = {
           ))
         }
       }))
-      console.log('訂單管理', result)
+      console.log('訂單管理:', result)
 
       return res.render('orders', { orders: result })
     } catch (err) {
@@ -268,7 +283,7 @@ const orderController = {
         }
       }
       console.log('specificGroupTour', specificGroupTour)
-      console.log('訂單', result)
+      console.log('訂單:', result)
 
       return res.render('order', { order: result })
     } catch (err) {
@@ -284,10 +299,7 @@ const orderController = {
 
       let order = await Order.findByPk(id, {
         include: [
-          {
-            model: GroupTour,
-            as: 'OrderedGroupTours'
-          }
+          { model: GroupTour, as: 'OrderedGroupTours' }
         ]
       })
 
@@ -295,7 +307,7 @@ const orderController = {
       if (!order) return res.render('order-comment', { order })
 
       order = order.toJSON()
-      console.log('訂單', order.OrderedGroupTours)
+      console.log('order.OrderedGroupTours', order.OrderedGroupTours)
 
       const specificGroupTour = order.OrderedGroupTours.find(ogt => ogt.id === groupTourId)
 
@@ -307,7 +319,7 @@ const orderController = {
         }
       }
       console.log('specificGroupTour', specificGroupTour)
-      console.log('訂單', result)
+      console.log('訂單:', result)
 
       let comment = await Comment.findOne({
         where: {
@@ -322,7 +334,7 @@ const orderController = {
       if (!comment) return res.render('order-comment', { order: result, comment })
 
       comment = comment.toJSON()
-      console.log('訂單評論', comment)
+      console.log('訂單評論:', comment)
 
       return res.render('order-comment', {
         order: result,
