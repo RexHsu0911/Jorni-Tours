@@ -97,8 +97,8 @@ const orderController = {
         phone,
         amount,
         totalPrice,
-        orderStatus: 1, // (0:已取消, 1:處理中）
-        paymentStatus: 0, // (0:尚未付款, 1:已付款)
+        orderStatus: 1, // (0:已取消, 1:已訂購)
+        paymentStatus: 0, // (0:未付款, 1:已付款)
         userId: req.user.id
       })
 
@@ -172,30 +172,30 @@ const orderController = {
       })
 
       const [payment] = await Payment.findOrCreate({
-        where: { orderId: order.id },
-        defaults: {
-          paymentMethod: data.Result.PaymentType
-        }
+        where: { orderId: order.id }
       })
 
+      // 付款成功
       if (data.Status === 'SUCCESS') {
         await payment.update({
-          paymentMethod: data.Result.PaymentType,
+          sn: data.Result.MerchantOrderNo,
+          paymentType: data.Result.PaymentType,
           paidAt: Date.now()
         })
 
         await order.update({
-          paymentStatus: 1
+          paymentStatus: 1 // (0:未付款, 1:已付款)
         })
         console.log('付款成功:', data)
 
         req.flash('success_messages', 'Payment successful!')
         return res.redirect('/orders')
+        // 付款失敗
       } else {
         console.log('付款失敗:', data)
 
         req.flash('warning_messages', `Payment failed! (${data.Message})`)
-        return res.redirect('/orders')
+        return res.redirect('/payment')
       }
     } catch (err) {
       console.log(err)
