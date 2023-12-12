@@ -72,11 +72,11 @@
     <li class="list-group-item fw-bold d-grid gap-1 py-3 border-0">
       <h4>Order number：#{{order.sn}}</h4>
       <h4>Order status：
-        {{#if order.orderStatus}}
+        {{#ifCond order.orderStatus '1'}}
         <span class="badge bg-success">Ordered</span>
         {{else}}
-        <span class="badge bg-danger">Canceled</span>
-        {{/if}}
+        <span class="badge bg-secondary">Canceled</span>
+        {{/ifCond}}
       </h4>
       </span>
       <div>Orderer's name：{{order.firstName}} {{order.lastName}}, {{order.country}}</div>
@@ -91,20 +91,22 @@
       <h3>Payment details</h3>
     </div>
 
+    {{#ifCond order.orderStatus '1'}}
     <li class="list-group-item fw-bold d-grid gap-1 border-0">
-        <h4 class="pt-3">Payment status：
-          {{#ifCond order.paymentStatus '1'}}
-          <span class="badge bg-success">Paid</span>
-          {{/ifCond}}
-          {{#ifCond order.paymentStatus '0'}}
-          <span class="badge bg-danger">Unpaid</span>
-          {{/ifCond}}
-          {{#ifCond order.paymentStatus '-1'}}
-          <span class="badge bg-danger">Payment failed</span>
-          <p class="text-danger h5 mt-2">(Note：Payment must be made by creating a new order)</p>
-          {{/ifCond}}
-        </h4>
+      <h4 class="pt-3">Payment status：
+        {{#ifCond order.paymentStatus '1'}}
+        <span class="badge bg-success">Paid</span>
+        {{/ifCond}}
+        {{#ifCond order.paymentStatus '0'}}
+        <span class="badge bg-danger">Unpaid</span>
+        {{/ifCond}}
+        {{#ifCond order.paymentStatus '-1'}}
+        <span class="badge bg-danger">Payment failed</span>
+        <p class="text-danger h5 mt-2">(Note：Payment must be made by creating a new order)</p>
+        {{/ifCond}}
+      </h4>
     </li>
+    {{/ifCond}}
 
     <div class="card-body mb-3">
       <table class="table align-middle">
@@ -152,17 +154,20 @@
       </div>
     </div>
 
+    {{#ifCond order.orderStatus '1'}}
     {{#ifCond order.paymentStatus '1'}}
     {{else}}
     <div class="btn d-flex justify-content-end m-3 p-0">
       {{!-- cancel button --}}
       <form action="/orders/{{order.id}}/cancel" method="POST">
-        <button type="submit" class="btn btn-secondary mx-2">Cancel</button>
+        <button type="submit" class="btn btn-secondary mx-2"
+          onclick="return confirm(`Confirm to cancel order number：#{{order.sn}}？`)">Cancel</button>
       </form>
 
       {{!-- payment button --}}
       <a href="/orders/{{order.id}}/payment" class="btn btn-warning">Go to Payment</a>
     </div>
+    {{/ifCond}}
     {{/ifCond}}
   </div>
 </div>

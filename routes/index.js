@@ -67,6 +67,7 @@ router.post('/cart', cartController.postCart)
 // order 路由
 router.get('/orders/create', authenticated, orderController.getOrderCreate)
 router.get('/orders/:id/payment', authenticated, orderController.getPayment)
+router.post('/orders/:id/cancel', authenticated, orderController.cancelOrder)
 router.get('/orders/:id/comment', authenticated, orderController.getOrderComment)
 router.get('/orders/:id', authenticated, orderController.getOrder)
 router.get('/orders', authenticated, orderController.getOrders)

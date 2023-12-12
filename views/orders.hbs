@@ -24,6 +24,7 @@
           <div class="col-md-7">
             <div class="card-body">
               <h4 class="mb-3">
+                {{#ifCond this.orderStatus '1'}}
                 {{#ifCond this.paymentStatus '1'}}
                 {{!-- isSetOff --}}
                 {{#if this.OrderedGroupTours.isSetOff}}
@@ -37,6 +38,9 @@
                 {{/ifCond}}
                 {{#ifCond this.paymentStatus '-1'}}
                 <span class="badge bg-danger">Payment failed</span>
+                {{/ifCond}}
+                {{else}}
+                <span class="badge bg-secondary">Canceled</span>
                 {{/ifCond}}
               </h4>
 
@@ -53,6 +57,7 @@
                 </h4>
               </div>
 
+              {{#ifCond this.orderStatus '1'}}
               {{#ifCond this.paymentStatus '1'}}
               {{!-- comment button --}}
               <div class="btn p-0 position-relative" style="z-index: 10;">
@@ -64,6 +69,7 @@
                   class="btn btn-outline-primary">Give a comment</a>
                 {{/if}}
               </div>
+              {{/ifCond}}
               {{/ifCond}}
             </div>
           </div>

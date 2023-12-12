@@ -103,7 +103,7 @@ const orderController = {
       })
 
       await cart.cartedGroupTours.map(async gt => {
-      // 創建訂單商品
+        // 創建訂單商品
         await OrderItem.create({
           orderId: order.id,
           groupTourId: gt.id,
@@ -166,6 +166,43 @@ const orderController = {
       // console.log('成立訂單:', order)
 
       return res.render('payment', { order, tradeInfo })
+    } catch (err) {
+      console.log(err)
+      return next(err)
+    }
+  },
+  cancelOrder: async (req, res, next) => {
+    try {
+      const id = req.params.id
+
+      const order = await Order.findByPk(id, {
+        include: [
+          { model: GroupTour, as: 'OrderedGroupTours' }
+        ]
+      })
+
+      // 訂單已付款，則不能取消
+      if (order.paymentStatus === '1') {
+        req.flash('error_messages', "Order has been paid for and can't be canceled")
+        // 訂單已取消
+      } else {
+        await order.update({
+          orderStatus: '-1'
+        })
+
+        await order.OrderedGroupTours.map(async gt => {
+          const groupTour = await GroupTour.findByPk(gt.id)
+
+          // 更新商品庫存
+          await groupTour.update({
+            quantity: groupTour.quantity + gt.OrderItem.quantity
+          })
+        })
+
+        req.flash('success_messages', 'Order has been canceled!')
+      }
+
+      return res.redirect('/orders')
     } catch (err) {
       console.log(err)
       return next(err)
