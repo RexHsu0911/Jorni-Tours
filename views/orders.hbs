@@ -14,48 +14,57 @@
 
       {{!-- OrderedGroupTours --}}
       {{#each orders}}
-        <div class="card col-12 mt-3 h-100" style="break-inside: avoid;">
-          <div class="row no-gutters">
-            <div class="col-md-5  align-self-center">
-              <img class="card-img img-fluid" src="{{this.OrderedGroupTours.image}}" width="286px" height="180px"
-                style="transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
-            </div>
+      <div class="card col-12 mt-3 h-100" style="break-inside: avoid;">
+        <div class="row no-gutters">
+          <div class="col-md-5  align-self-center">
+            <img class="card-img img-fluid" src="{{this.OrderedGroupTours.image}}" width="286px" height="180px"
+              style="transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+          </div>
 
-            <div class="col-md-7">
-              <div class="card-body">
-                <h4 class="mb-3">
-                  {{#if this.OrderedGroupTours.isSetOff}}
-                  <span class="badge bg-success">Already set off</span>
-                  {{else}}
-                  <span class="badge bg-danger">Not set out yet</span>
-                  {{/if}}
+          <div class="col-md-7">
+            <div class="card-body">
+              <h4 class="mb-3">
+                {{#if this.paymentStatus}}
+                {{!-- isSetOff --}}
+                {{#if this.OrderedGroupTours.isSetOff}}
+                <span class="badge bg-success">Already set off</span>
+                {{else}}
+                <span class="badge bg-danger">Not set off yet</span>
+                {{/if}}
+                {{else}}
+                <span class="badge bg-danger">Unpaid</span>
+                {{/if}}
+              </h4>
+
+              <a href="/orders/{{this.id}}?groupTourId={{this.OrderedGroupTours.id}}"
+                class="card-title h4 text-decoration-none link-dark stretched-link d-block">{{this.OrderedGroupTours.name}}
+              </a>
+
+              <p class="card-text text-truncate my-4">Order number：#{{this.sn}}</p>
+
+
+              <div class="price float-end">
+                <h4 class="text-danger pt-2">TWD {{formatPrice (multiplicate this.OrderedGroupTours.price
+                  this.OrderedGroupTours.OrderItem.quantity)}}
                 </h4>
-
-                <a href="/orders/{{this.id}}?groupTourId={{this.OrderedGroupTours.id}}"
-                  class="card-title h4 text-decoration-none link-dark stretched-link d-block">{{this.OrderedGroupTours.name}}
-                </a>
-
-                <p class="card-text text-truncate my-4">Order number：{{this.id}}</p>
-
-
-                <div class="price float-end">
-                  <h4 class="text-danger pt-2">TWD {{formatPrice (multiplicate this.OrderedGroupTours.price
-                    this.OrderedGroupTours.OrderItem.quantity)}}
-                  </h4>
-                </div>
-
-                {{!-- comment button --}}
-                <div class="btn p-0 position-relative" style="z-index: 10;">
-                  {{#if this.OrderedGroupTours.isComment}}
-                  <a href="/orders/{{this.id}}/comment?groupTourId={{this.OrderedGroupTours.id}}" class="btn btn-outline-primary">View your comment</a>
-                  {{else}}
-                  <a href="/orders/{{this.id}}/comment?groupTourId={{this.OrderedGroupTours.id}}" class="btn btn-outline-primary">Give a comment</a>
-                  {{/if}}
-                </div>
               </div>
+
+              {{#if this.paymentStatus}}
+              {{!-- comment button --}}
+              <div class="btn p-0 position-relative" style="z-index: 10;">
+                {{#if this.OrderedGroupTours.isComment}}
+                <a href="/orders/{{this.id}}/comment?groupTourId={{this.OrderedGroupTours.id}}"
+                  class="btn btn-outline-primary">View your comment</a>
+                {{else}}
+                <a href="/orders/{{this.id}}/comment?groupTourId={{this.OrderedGroupTours.id}}"
+                  class="btn btn-outline-primary">Give a comment</a>
+                {{/if}}
+              </div>
+              {{/if}}
             </div>
           </div>
         </div>
+      </div>
       {{/each}}
       {{else}}
       <h4 class="text-secondary text-center my-5">Your order management is empty</h4>

@@ -52,7 +52,7 @@ function createAesDecrypt (TradeInfo) {
   return result
 }
 
-function getTradeInfo (confirmPrice, productDesc, email) {
+function getTradeInfo (confirmPrice, productDesc, email, sn) {
   // console.log(confirmPrice, productDesc, email)
 
   // 使用 Unix Timestamp 作為訂單編號（金流也需要加入時間戳記）
@@ -63,7 +63,7 @@ function getTradeInfo (confirmPrice, productDesc, email) {
     RespondType: 'JSON', // 回傳格式
     TimeStamp, // 時間戳記
     Version: 2.0, // 串接程式版本
-    MerchantOrderNo: TimeStamp, // 商店訂單編號
+    MerchantOrderNo: sn || TimeStamp, // 商店訂單編號
     LoginType: 0, // 智付通會員
     Amt: confirmPrice, // 訂單金額
     ItemDesc: productDesc, // 商品資訊
@@ -72,7 +72,7 @@ function getTradeInfo (confirmPrice, productDesc, email) {
     NotifyURL, // 支付通知網址/每期授權結果通知
     ClientBackURL // 支付取消返回商店網址
   }
-  // console.log('data:', data)
+  console.log('data:', data)
 
   // 進行訂單加密
   // 加密第一段字串，此段主要是提供交易內容給予藍新金流

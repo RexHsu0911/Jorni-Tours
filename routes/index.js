@@ -66,11 +66,12 @@ router.post('/cart', cartController.postCart)
 
 // order 路由
 router.get('/orders/create', authenticated, orderController.getOrderCreate)
+router.get('/orders/:id/payment', authenticated, orderController.getPayment)
 router.get('/orders/:id/comment', authenticated, orderController.getOrderComment)
 router.get('/orders/:id', authenticated, orderController.getOrder)
 router.get('/orders', authenticated, orderController.getOrders)
 router.post('/orders', authenticated, orderController.postOrder)
-router.get('/payment', authenticated, orderController.getPayment)
+
 router.post('/newebpay/callback', authenticated, orderController.newebpayCallback)
 
 // 設定 fallback 路由

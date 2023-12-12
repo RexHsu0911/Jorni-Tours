@@ -7,17 +7,19 @@
       <h3>Order confirmed</h3>
     </div>
 
-    <li class="list-group-item fw-bold d-grid gap-1 border-0">
-      <h4>Order id：{{order.id}}</h4>
-      <div>
-        <span class="badge bg-primary mb-2">Order status：
-          {{#if order.orderStatus}}Ordered{{/if}}
-          {{!-- {{#ifCond order.orderStatus '-1'}}Cancelled{{/ifCond}} --}}
-        </span>
-      </div>
-      <div>Order name：{{order.firstName}} {{order.lastName}}</div>
-      <div>Order phone：{{order.phone}}</div>
-      <div>Order Time：{{order.createdAt}}</div>
+    <li class="list-group-item fw-bold d-grid gap-1 py-3 border-0">
+      <h4>Order number：#{{order.sn}}</h4>
+      <h4>Order status：
+        {{#if order.orderStatus}}
+        <span class="badge bg-success">Ordered</span>
+        {{else}}
+        <span class="badge bg-danger">Canceled</span>
+        {{/if}}
+      </h4>
+      </span>
+      <div>Orderer's name：{{order.firstName}} {{order.lastName}}, {{order.country}}</div>
+      <div>Telephone number：{{order.phone}}</div>
+      <div>Order date：{{order.createdAt}}</div>
     </li>
   </div>
 
@@ -76,7 +78,8 @@
         </div>
       </div>
     </div>
-    {{!-- payment params--}}
+
+    {{!-- payment button --}}
     <form name="Newebpay" action="{{tradeInfo.PayGateWay}}" method="POST">
       <input class="form-control mt-2" type="hidden" name="MerchantID" value="{{tradeInfo.MerchantID}}">
       <input class="form-control mt-2" type="hidden" name="TradeInfo" value="{{tradeInfo.TradeInfo}}">

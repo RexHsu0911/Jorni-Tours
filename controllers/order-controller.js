@@ -103,7 +103,7 @@ const orderController = {
       })
 
       await cart.cartedGroupTours.map(async gt => {
-        // 創建訂單商品
+      // 創建訂單商品
         await OrderItem.create({
           orderId: order.id,
           groupTourId: gt.id,
@@ -119,15 +119,12 @@ const orderController = {
         })
       })
 
-      // 儲存創建的訂單 id 到 session
-      req.session.orderId = order.id
-
       // 訂購完成後，清空購物車
       await Cart.destroy({ where: { id: cartId } })
 
       await CartItem.destroy({ where: { cartId } })
 
-      return res.redirect('/payment')
+      return res.redirect(`/orders/${order.id}/payment`)
     } catch (err) {
       console.log(err)
       return next(err)
@@ -135,7 +132,9 @@ const orderController = {
   },
   getPayment: async (req, res, next) => {
     try {
-      let order = await Order.findByPk(req.session.orderId, {
+      const id = req.params.id
+
+      let order = await Order.findByPk(id, {
         include: [
           { model: GroupTour, as: 'OrderedGroupTours' }
         ]
@@ -147,11 +146,14 @@ const orderController = {
       const tradeInfo = getTradeInfo(
         order.totalPrice,
         order.id,
-        req.user.email
+        req.user.email,
+        order.sn
       )
 
-      // 創建訂單編號
-      await order.update({ sn: tradeInfo.MerchantOrderNo })
+      if (!order.sn) {
+        // 創建訂單編號
+        await order.update({ sn: tradeInfo.MerchantOrderNo })
+      }
 
       order = order.toJSON()
       // console.log('成立訂單:', order)
@@ -162,10 +164,13 @@ const orderController = {
       return next(err)
     }
   },
+  // 信用卡一次付清的測試卡號為 4000–2211–1111–1111，有效年月以及背面末三碼自由輸入
+  // 當訂單金額超過 49,999，則啟用 WEBATM 及 ATM轉帳
   newebpayCallback: async (req, res, next) => {
     try {
       const tradeInfo = req.body.TradeInfo
       const data = JSON.parse(createAesDecrypt(tradeInfo))
+      console.log(data)
 
       const order = await Order.findOne({
         where: { sn: data.Result.MerchantOrderNo }
@@ -195,7 +200,7 @@ const orderController = {
         console.log('付款失敗:', data)
 
         req.flash('warning_messages', `Payment failed! (${data.Message})`)
-        return res.redirect('/payment')
+        return res.redirect(`/orders/${order.id}/payment`)
       }
     } catch (err) {
       console.log(err)
@@ -268,6 +273,18 @@ const orderController = {
 
       // 訂單管理為空的
       if (!order) return res.render('order', { order })
+
+      // let tradeInfo = {}
+
+      // // 未付款
+      // if (!order.paymentStatus) {
+      //   // 取得要付款的訂單資料
+      //   tradeInfo = getTradeInfo(
+      //     order.totalPrice,
+      //     order.id,
+      //     req.user.email
+      //   )
+      // }
 
       order = order.toJSON()
 
