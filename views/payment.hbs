@@ -29,7 +29,22 @@
       <h3>Payment</h3>
     </div>
 
-    <div class="card-body my-3">
+    <li class="list-group-item fw-bold d-grid gap-1 border-0">
+      <h4 class="pt-3">Payment status：
+        {{#ifCond order.paymentStatus '1'}}
+        <span class="badge bg-success">Paid</span>
+        {{/ifCond}}
+        {{#ifCond order.paymentStatus '0'}}
+        <span class="badge bg-danger">Unpaid</span>
+        {{/ifCond}}
+        {{#ifCond order.paymentStatus '-1'}}
+        <span class="badge bg-danger">Payment failed</span>
+        <p class="text-danger h5 mt-2">(Note：Payment must be made by creating a new order)</p>
+        {{/ifCond}}
+      </h4>
+    </li>
+
+    <div class="card-body">
       <table class="table align-middle">
         <thead>
           <tr>

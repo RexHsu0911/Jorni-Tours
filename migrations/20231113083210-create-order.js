@@ -31,10 +31,10 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       order_status: {
-        type: Sequelize.BOOLEAN
+        type: Sequelize.STRING
       },
       payment_status: {
-        type: Sequelize.BOOLEAN
+        type: Sequelize.STRING
       },
       user_id: {
         type: Sequelize.INTEGER

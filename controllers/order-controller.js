@@ -97,8 +97,8 @@ const orderController = {
         phone,
         amount,
         totalPrice,
-        orderStatus: 1, // (0:已取消, 1:已訂購)
-        paymentStatus: 0, // (0:未付款, 1:已付款)
+        orderStatus: '1', // (1:已成立訂單, -1:已取消訂單)
+        paymentStatus: '0', // (0:未付款, 1:已付款, -1:付款失敗)
         userId: req.user.id
       })
 
@@ -142,6 +142,12 @@ const orderController = {
 
       if (!order) throw new Error("Order didn't exist!")
 
+      // 付款失敗訂單
+      if (order.paymentStatus === '-1') {
+        // 清除訂單編號
+        await order.update({ sn: null })
+      }
+
       // 取得要付款的訂單資料
       const tradeInfo = getTradeInfo(
         order.totalPrice,
@@ -150,7 +156,8 @@ const orderController = {
         order.sn
       )
 
-      if (!order.sn) {
+      // 創建訂單或付款失敗訂單(重新建立)
+      if (!order.sn || order.paymentStatus === '-1') {
         // 創建訂單編號
         await order.update({ sn: tradeInfo.MerchantOrderNo })
       }
@@ -170,26 +177,29 @@ const orderController = {
     try {
       const tradeInfo = req.body.TradeInfo
       const data = JSON.parse(createAesDecrypt(tradeInfo))
-      console.log(data)
 
       const order = await Order.findOne({
         where: { sn: data.Result.MerchantOrderNo }
       })
 
       const [payment] = await Payment.findOrCreate({
-        where: { orderId: order.id }
+        where: {
+          sn: data.Result.MerchantOrderNo,
+          orderId: order.id
+        }
+      })
+
+      await payment.update({
+        sn: data.Result.MerchantOrderNo,
+        paymentType: data.Result.PaymentType,
+        paymentStatus: data.Status === 'SUCCESS' ? '1' : '-1',
+        paidAt: Date.now()
       })
 
       // 付款成功
       if (data.Status === 'SUCCESS') {
-        await payment.update({
-          sn: data.Result.MerchantOrderNo,
-          paymentType: data.Result.PaymentType,
-          paidAt: Date.now()
-        })
-
         await order.update({
-          paymentStatus: 1 // (0:未付款, 1:已付款)
+          paymentStatus: '1'
         })
         console.log('付款成功:', data)
 
@@ -197,8 +207,10 @@ const orderController = {
         return res.redirect('/orders')
         // 付款失敗
       } else {
+        await order.update({
+          paymentStatus: '-1'
+        })
         console.log('付款失敗:', data)
-
         req.flash('warning_messages', `Payment failed! (${data.Message})`)
         return res.redirect(`/orders/${order.id}/payment`)
       }
@@ -273,18 +285,6 @@ const orderController = {
 
       // 訂單管理為空的
       if (!order) return res.render('order', { order })
-
-      // let tradeInfo = {}
-
-      // // 未付款
-      // if (!order.paymentStatus) {
-      //   // 取得要付款的訂單資料
-      //   tradeInfo = getTradeInfo(
-      //     order.totalPrice,
-      //     order.id,
-      //     req.user.email
-      //   )
-      // }
 
       order = order.toJSON()
 
