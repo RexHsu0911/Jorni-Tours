@@ -1,24 +1,41 @@
 <div class="mb-4 text-center">
-  <h1 class="h3 font-weight-normal mb-3">Login</h1>
+  <h1 class="h3 fw-bold mb-5">Login</h1>
 </div>
 
-<form class="form-login" action="/login" method="POST">
-  <div class="form-row mb-3">
-    <label class="form-label" for="email">Email</label>
-    <input class="form-control" id="email" type="text" name="email" class="form-control" placeholder="Enter email"
-      required autofocus>
-  </div>
-  <div class="form-row mb-3">
-    <label class="form-label" for="password">Password</label>
-    <input class="form-control" id="password" type="password" name="password" class="form-control"
-      placeholder="Enter password" required>
-  </div>
+<br>
 
-  <button class="btn btn-primary btn-block" type="submit">Submit</button>
-</form>
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    <form class="form-login" action="/login" method="POST">
+      <div class="form-row mb-3">
+        <label class="form-label" for="email">Email</label>
+        <input class="form-control" id="email" type="text" name="email" class="form-control" placeholder="Enter email"
+          required autofocus>
+      </div>
+      <div class="form-row mb-3">
+        <label class="form-label" for="password">Password</label>
+        <input class="form-control" id="password" type="password" name="password" class="form-control"
+          placeholder="Enter password" required>
+      </div>
 
-<div class="mb-4 text-center">
-  <a href="/register">
-    <button class="btn btn-outline-secondary my-sm-0 my-2">Register</button>
-  </a>
+      <div class="text-center mt-5">
+        <button class="btn btn-dark btn-block col-6" type="submit">Submit</button>
+      </div>
+    </form>
+
+    <div class="mt-3 text-center d-grid gap-3">
+      <span class="text-secondary">- or -</span>
+
+      {{!-- Facebook --}}
+      <form class="facebook" action="/oauth/login/facebook" method="GET">
+        <button class="btn btn-primary col-6" type="submit">Facebook login</button>
+      </form>
+
+      <hr>
+
+      <a href="/register">
+        <button class="btn btn-outline-secondary my-sm-0 my-2 col-6">Register</button>
+      </a>
+    </div>
+  </div>
 </div>

@@ -29,6 +29,14 @@ router.post('/register', upload.single('avatar'), userController.register)
 router.get('/login', userController.getLogin)
 // 使用 Passport 做本地身分驗證
 router.post('/login', passport.authenticate('local', { failureRedirect: '/login', failureFlash: true }), userController.login)
+// Facebook 策略的身份驗證，請求 email 權限
+router.get('/oauth/login/facebook', passport.authenticate('facebook', { scope: ['email'] }))
+// Facebook 登入請求轉址路由
+router.get('/oauth/facebook/callback', passport.authenticate('facebook', {
+  successRedirect: '/',
+  failureRedirect: '/login',
+  failureFlash: true
+}))
 // logout 路由
 router.get('/logout', authenticated, userController.logout)
 
