@@ -1,4 +1,4 @@
-const { Favorite, GroupTour, User, Category, Comment } = require('../models')
+const { Favorite, GroupTour, User, Category } = require('../models')
 
 const favoriteController = {
   addFavorite: async (req, res, next) => {

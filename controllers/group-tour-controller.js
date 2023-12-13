@@ -1,34 +1,49 @@
 const { GroupTour, Category, Comment, User, Cart, CartItem } = require('../models')
 // 分頁
 const { getOffset, getPagination } = require('../helpers/pagination-helper')
+// （Operators）物件是用來定義不同的 SQL 操作符的工具
+const { Op } = require('sequelize')
 
 const groupTourController = {
   getGroupTours: async (req, res, next) => {
     try {
+      // 關鍵字
+      const keyword = req.query.keyword?.trim() || ''
+      // 分類
       // 從網址上查詢參數 categoryId 是字串，先轉成 Number 再操作
-      // 分類參數
       const categoryId = Number(req.query.categoryId) || ''
       // 分頁參數
       const DEFAULT_LIMIT = 9
       const page = Number(req.query.page) || 1
       const limit = Number(req.query.limit) || DEFAULT_LIMIT
       const offset = getOffset(page, limit)
+      // 查詢條件
+      const whereQuery = {}
 
-      // 顯示商品
-      const groupTours = await GroupTour.findAndCountAll({
-        raw: true,
-        nest: true,
-        include: Category,
-        // 選取分類
-        where: {
-          ...categoryId ? { categoryId } : {} // 檢查 categoryId 是否為空值
-        },
-        limit, // 每頁限制
-        offset // 每次偏移
-      })
+      if (categoryId) {
+        // 搜尋分類
+        whereQuery.categoryId = categoryId
+      }
 
-      // 顯示分類列
-      const categories = await Category.findAll({ raw: true })
+      if (keyword) {
+      // 搜尋關鍵字
+      // Op.like 運算符用於執行模糊查詢，% 不限定在開頭或結尾
+        whereQuery.name = { [Op.like]: '%' + keyword + '%' }
+      }
+
+      const [groupTours, categories] = await Promise.all([
+        // 顯示商品
+        GroupTour.findAndCountAll({
+          raw: true,
+          nest: true,
+          include: Category,
+          where: whereQuery,
+          limit, // 每頁限制
+          offset // 每次偏移
+        }),
+        // 顯示分類列
+        Category.findAll({ raw: true })
+      ])
 
       if (!groupTours) throw new Error("Group tours didn't exist!")
       if (!categories) throw new Error("Categories didn't exist!")
@@ -161,6 +176,8 @@ const groupTourController = {
         groupTours: groupToursResult,
         categories,
         categoryId,
+        keyword,
+        searchCount: groupTours.count,
         // findAndCountAll 回傳 count 資料量
         pagination: getPagination(page, limit, groupTours.count),
         cart: cartResult
