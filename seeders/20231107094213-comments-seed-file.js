@@ -47,9 +47,9 @@ module.exports = {
         // 取出各 GroupTours 的 id
         const groupTourId = groupTour.id
         if (groupTourId) {
-        // 計算各 groupTourId 所有 Comments 給予的 rating 平均值
+          // 計算各 groupTourId 所有 Comments 給予的 rating 平均值和數量
           const result = await queryInterface.sequelize.query(
-            'SELECT ROUND(AVG(rating), 1) as avg_rating FROM Comments WHERE group_tour_id = ?', // AVG 平均值;ROUND(..., 1) 四捨五入到小數點後一位
+            'SELECT ROUND(AVG(rating), 1) as avg_rating, COUNT(*) as rating_count FROM Comments WHERE group_tour_id = ?', // AVG 平均值;ROUND(..., 1) 四捨五入到小數點後一位
             {
               replacements: [groupTourId], // 替換到 SQL 查詢的語句(?)中
               type: queryInterface.sequelize.QueryTypes.SELECT,
@@ -57,16 +57,18 @@ module.exports = {
             }
           )
 
-          // 取出計算後的 rating 平均值
+          // 取出計算後的 rating 平均值和數量
           const avgRating = result[0].avg_rating
+          const ratingCount = result[0].rating_count
+
           // console.log(result)
           // 判斷 Comments 的 rating 存在
           if (avgRating) {
           // 更新 GroupTours 的 rating
             await queryInterface.sequelize.query(
-              'UPDATE GroupTours SET rating = ? WHERE id = ?',
+              'UPDATE GroupTours SET rating = ?, rating_count = ? WHERE id = ?',
               {
-                replacements: [avgRating, groupTourId],
+                replacements: [avgRating, ratingCount, groupTourId],
                 type: queryInterface.sequelize.QueryTypes.UPDATE,
                 transaction
               }

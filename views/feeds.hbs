@@ -7,31 +7,34 @@
 <div class="row mt-3">
   <div class="col-md-6">
     <div class="card">
-      <div class="card-header">
+      <div class="card-header text-center">
         Latest Group Tours
       </div>
 
       <div class="card-body">
         {{#each groupTours}}
         <div>
-          <div class="row">
+          <div class="row mb-1">
             <h4>
-              <a class="link-primary" href="/group-tours/{{this.id}}">{{this.name}}</a>
+              <a class="text-dark text-decoration-none fw-bold" href="/group-tours/{{this.id}}">{{this.name}}</a>
             </h4>
           </div>
 
-          <div class="row py-3">
+          <div class="row pb-3">
             <a href="/group-tours/{{this.id}}">
               <img class="card-img-top img-fluid" src="{{this.image}}" width="286px" height="180px"
                 style="transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
             </a>
           </div>
 
-          <small class="fs-6">
-            [ <a class="link-primary" href="/group-tours?categoryId={{this.Category.id}}">{{this.Category.name}}</a> ]
-          </small>
+          <a class="badge bg-secondary text-decoration-none"
+            href="/group-tours?categoryId={{this.Category.id}}">{{this.Category.name}}</a>
 
-          <span class="badge rounded-pill bg-warning text-dark float-end">{{this.rating}}</span>
+
+          <div class="text float-end">
+            <span class="badge rounded-pill bg-warning text-dark">{{this.rating}}</span>
+            <span class="text-secondary">({{this.ratingCount}})</span>
+          </div>
 
           <p class="text-truncate my-4">{{this.description}}</p>
 
@@ -47,7 +50,7 @@
   {{!-- comments --}}
   <div class="col-md-6">
     <div class="card">
-      <div class="card-header">
+      <div class="card-header text-center">
         Latest Comments
       </div>
 
@@ -55,22 +58,23 @@
         {{#each comments}}
         <div>
           <h4>
-            <a class="link-primary" href="/group-tours/{{this.GroupTour.id}}">{{this.GroupTour.name}}</a>
+            <a class="text-dark text-decoration-none fw-bold"
+              href="/group-tours/{{this.GroupTour.id}}">{{this.GroupTour.name}}</a>
           </h4>
 
           <span class="badge rounded-pill bg-secondary">Rating：{{this.rating}}</span>
 
           <div class="row py-3">
             <div class="col-md-2">
-              {{#if this.User.avatar}}
               <a href="/users/{{this.User.id}}">
-                <img class="image rounded-circle" src="{{this.User.avatar}}" width="60px" height="60px" style="transition: opacity 0.5s; opacity:0;"
-                  onload="this.style.opacity=1;" />
+                {{#if this.User.avatar}}
+                <img class="image rounded-circle" src="{{this.User.avatar}}" width="60px" height="60px"
+                  style="transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;" />
+                {{else}}
+                <img class="image rounded-circle" src="https://fakeimg.pl/60" width="60px" height="60px"
+                  style="transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;" />
+                {{/if}}
               </a>
-              {{else}}
-              <img class="image rounded-circle" src="https://fakeimg.pl/60" width="60px" height="60px" style="transition: opacity 0.5s; opacity:0;"
-                onload="this.style.opacity=1;" />
-              {{/if}}
             </div>
 
             <div class="col-md-10 px-4">
@@ -79,7 +83,7 @@
             </div>
           </div>
 
-          - <a class="link-secondary" href="/users/{{this.User.id}}">{{this.User.firstName}} {{this.User.lastName}}</a>
+          - <a class="text-dark fw-bold" href="/users/{{this.User.id}}">{{this.User.firstName}} {{this.User.lastName}}</a>
           <small>at {{relativeTimeFromNow this.createdAt}}</small>
           <hr>
         </div>

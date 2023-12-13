@@ -36,12 +36,15 @@ module.exports = {
       price: {
         type: Sequelize.INTEGER
       },
+      rating: {
+        type: Sequelize.FLOAT(2, 1)
+      },
+      rating_count: {
+        type: Sequelize.INTEGER
+      },
       can_be_cancel: {
         type: Sequelize.BOOLEAN,
         defaultValue: false
-      },
-      rating: {
-        type: Sequelize.FLOAT(2, 1)
       },
       created_at: {
         allowNull: false,

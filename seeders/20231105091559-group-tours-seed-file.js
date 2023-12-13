@@ -35,6 +35,7 @@ module.exports = {
             image: `https://loremflickr.com/320/240/tourist,attractions/?random=${Math.floor(Math.random() * 100 + 1)}`, // LoremFlickr 圖庫 API(random 1 ~ 100)
             quantity: faker.datatype.number({ min: 10, max: 30 }),
             price: `${faker.commerce.price(200, 1200, 0) * 100}`,
+            rating_count: 0,
             can_be_cancel: faker.datatype.boolean(0.5),
             created_at: new Date(),
             updated_at: new Date(),

@@ -148,17 +148,21 @@ const groupTourController = {
 
       // findAndCountAll 回傳 rows 資料集合
       const groupToursResult = groupTours.rows.map(gt => ({
-        ...gt, // ... 展開運算子
-        description: gt.description?.substring(0, 50), // substring 截取字串
-        isFavorited: favoritedGroupToursId.includes(gt.id) //  includes 比對是否收藏
+        // ... 展開運算子
+        ...gt,
+        // substring 截取字串
+        description: gt.description?.substring(0, 50),
+        // includes 比對是否收藏
+        isFavorited: favoritedGroupToursId.includes(gt.id)
       }))
-      // console.log(result)
+      console.log('所有商品資料', groupToursResult)
 
       res.render('group-tours', {
         groupTours: groupToursResult,
         categories,
         categoryId,
-        pagination: getPagination(page, limit, groupTours.count), // findAndCountAll 回傳 count 資料量
+        // findAndCountAll 回傳 count 資料量
+        pagination: getPagination(page, limit, groupTours.count),
         cart: cartResult
       })
     } catch (err) {
@@ -221,68 +225,74 @@ const groupTourController = {
         cartItem = cartItemExist ? cartItemExist.toJSON() : null
       }
 
-      const isFavorited = req.user ? groupTour.FavoritedUsers.some(fu => fu.id === req.user.id) : false // some 找到一個符合條件的項目，就會立刻回傳 true
-
-      // console.log(groupTour.toJSON())
-      // console.log(cart.toJSON())
-      // console.log(isFavorited)
-
-      return res.render('group-tour', {
-        groupTour: groupTour.toJSON(), // 使用 toJSON() 把關聯資料轉成 JSON(不破壞一對多關係，{{#each}} 陣列才取得到資料)
-        isFavorited,
+      const result = {
+        // 使用 toJSON() 把關聯資料轉成 JSON(不破壞一對多關係，{{#each}} 陣列才取得到資料)
+        ...groupTour.toJSON(),
+        // some 找到一個符合條件的項目，就會立刻回傳 true
+        isFavorited: req.user ? groupTour.FavoritedUsers.some(fu => fu.id === req.user.id) : false,
         cartItem
-      })
+      }
+      // console.log(cart.toJSON())
+      console.log('商品資料', result)
+
+      return res.render('group-tour', { groupTour: result })
     } catch (err) {
       console.log(err)
       return next(err)
     }
   },
-  getFeeds: (req, res, next) => {
-    return Promise.all([
-      GroupTour.findAll({
-        raw: true,
-        nest: true,
-        limit: 10,
-        include: Category,
-        order: [['createdAt', 'DESC']] // 排序條件
-      }),
-      Comment.findAll({
-        raw: true,
-        nest: true,
-        limit: 10,
-        include: [User, GroupTour],
-        order: [['createdAt', 'DESC']]
-      })
-    ])
-      .then(([groupTours, comments]) => {
-        if (!groupTours) throw new Error("Group tours didn't exist!")
-        if (!comments) throw new Error("Comments didn't exist!")
-        // console.log(groupTours)
-        // console.log(comments)
+  getFeeds: async (req, res, next) => {
+    try {
+      const [groupTours, comments] = await Promise.all([
+        GroupTour.findAll({
+          raw: true,
+          nest: true,
+          limit: 5,
+          include: [Category, Comment],
+          order: [['createdAt', 'DESC']] // 排序條件
+        }),
+        Comment.findAll({
+          raw: true,
+          nest: true,
+          limit: 5,
+          include: [User, GroupTour],
+          order: [['createdAt', 'DESC']]
+        })
+      ])
 
-        return res.render('feeds', { groupTours, comments })
-      })
-      .catch(err => next(err))
+      if (!groupTours) throw new Error("Group tours didn't exist!")
+      if (!comments) throw new Error("Comments didn't exist!")
+      // console.log(groupTours)
+      // console.log(comments)
+
+      return res.render('feeds', { groupTours, comments })
+    } catch (err) {
+      console.log(err)
+      return next(err)
+    }
   },
-  getTopGroupTours: (req, res, next) => {
-    return GroupTour.findAll({
-      include: [{ model: User, as: 'FavoritedUsers' }]
-    })
-      .then(groupTours => {
-        if (!groupTours) throw new Error("Group tours didn't exist!")
-
-        const result = groupTours.map(gt => ({
-          ...gt.toJSON(),
-          description: gt.description?.substring(0, 50),
-          favoritedCount: gt.FavoritedUsers.length,
-          isFavorited: req.user?.FavoritedGroupTours.some(fgt => fgt.id === gt.id)
-        }))
-          .sort((a, b) => b.favoritedCount - a.favoritedCount)
-          .slice(0, 10)
-
-        return res.render('top-group-tours', { groupTours: result })
+  getTopGroupTours: async (req, res, next) => {
+    try {
+      const groupTours = await GroupTour.findAll({
+        include: [{ model: User, as: 'FavoritedUsers' }]
       })
-      .catch(err => next(err))
+
+      if (!groupTours) throw new Error("Group tours didn't exist!")
+
+      const result = groupTours.map(gt => ({
+        ...gt.toJSON(),
+        description: gt.description?.substring(0, 50),
+        favoritedCount: gt.FavoritedUsers.length,
+        isFavorited: req.user?.FavoritedGroupTours.some(fgt => fgt.id === gt.id)
+      }))
+        .sort((a, b) => b.favoritedCount - a.favoritedCount)
+        .slice(0, 5)
+
+      return res.render('top-group-tours', { groupTours: result })
+    } catch (err) {
+      console.log(err)
+      return next(err)
+    }
   }
 }
 

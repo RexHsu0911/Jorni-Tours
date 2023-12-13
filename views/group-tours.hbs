@@ -24,21 +24,25 @@
           style="transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
       </a>
       <div class="card-body">
-        <p class="card-text">
-          <a href="/group-tours/{{this.id}}">
+        <p class="card-text h5">
+          <a class="text-dark text-decoration-none fw-bold" href="/group-tours/{{this.id}}">
             {{this.name}}
           </a>
         </p>
+
         <span class="badge bg-secondary">{{this.Category.name}}</span>
 
-        <span class="badge rounded-pill bg-warning text-dark float-end">{{this.rating}}</span>
+        <div class="rating float-end">
+          <span class="badge rounded-pill bg-warning text-dark">{{this.rating}}</span>
+          <span class="text-secondary">({{this.ratingCount}})</span>
+        </div>
 
         {{!-- .text-truncate 使用刪節號截斷較長的字串 --}}
         <p class="card-text text-truncate mt-4">{{this.description}}</p>
 
         {{!-- favorite button--}}
         <div class="position-absolute top-0 end-0">
-          {{#if isFavorited}}
+          {{#if this.isFavorited}}
           <form action="/favorite/{{this.id}}?_method=DELETE" method="POST">
             <button type="submit" class="btn m-1">
               <i class="fa-solid fa-heart fa-2xl" style="color: brown;"></i>

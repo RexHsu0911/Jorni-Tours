@@ -40,6 +40,7 @@ module.exports = (sequelize, DataTypes) => {
     quantity: DataTypes.INTEGER,
     price: DataTypes.INTEGER,
     rating: DataTypes.FLOAT(2, 1), // FLOAT(n, m)，n=總位數，m=小數位數
+    ratingCount: DataTypes.INTEGER,
     canBeCancel: DataTypes.BOOLEAN
   }, {
     sequelize,

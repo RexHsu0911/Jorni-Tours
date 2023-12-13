@@ -75,7 +75,7 @@ const favoriteController = {
           {
             model: GroupTour,
             as: 'FavoritedGroupTours',
-            include: [Category, Comment],
+            include: Category,
             order: [['createdAt', 'DESC']],
             where: { ...categoryId ? { categoryId } : {} }
           }
@@ -86,8 +86,6 @@ const favoriteController = {
 
       const result = favorite.FavoritedGroupTours.map(gt => ({
         ...gt,
-        // 評論數量
-        ratedCount: gt.Comments.length,
         // 存在我的最愛中
         isFavorited: favorite.FavoritedGroupTours.some(fgt => fgt.id === gt.id)
       }))

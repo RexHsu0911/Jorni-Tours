@@ -1,5 +1,7 @@
 const { Comment, User, GroupTour } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
+// 平均值
+const getAverage = require('../helpers/average-helper')
 
 const commentController = {
   postComment: async (req, res, next) => {
@@ -27,6 +29,11 @@ const commentController = {
         groupTourId,
         orderId
       })
+
+      const ratings = groupTour.Comments.map(user => user.rating)
+
+      // 更新評論分數平均值
+      await groupTour.update({ rating: getAverage(ratings) })
 
       req.flash('success_messages', 'Comment was successfully shared!')
       return res.redirect(`/orders/${orderId}/comment?groupTourId=${groupTourId}`)

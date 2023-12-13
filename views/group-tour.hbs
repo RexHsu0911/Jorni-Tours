@@ -10,7 +10,7 @@
   <div class="card-body pt-0">
     {{!-- favorite button --}}
     <div class="button float-end">
-      {{#if isFavorited }}
+      {{#if groupTour.isFavorited }}
       <form action="/favorite/{{groupTour.id}}?_method=DELETE" method="POST" style="display: contents;">
         <button type="submit" class="btn">
           <i class="fa-solid fa-heart fa-2xl" style="color: brown;"></i>
@@ -25,10 +25,15 @@
       {{/if}}
     </div>
 
-    <h2 class="mb-0">{{groupTour.name}}</h2>
-    <p class="mb-0">[ {{groupTour.Category.name}} ]</p>
+    <h2 class="title">{{groupTour.name}}</h2>
+    <p class="badge bg-secondary mb-0">{{groupTour.Category.name}}</p>
 
-    <div><span class="badge rounded-pill bg-warning text-dark my-3">Rating：{{groupTour.rating}}</span></div>
+    <div class="rating my-3">
+      {{#if groupTour.rating}}
+      <span class="badge rounded-pill bg-warning text-dark d-inline">{{groupTour.rating}}</span>
+      {{/if}}
+      <span class="text-secondary">({{groupTour.ratingCount}})</span>
+    </div>
 
     <div class="product-detail d-grid gap-1">
       <div><strong>City：</strong>{{groupTour.city}}</div>
@@ -83,7 +88,7 @@
                 </button>
 
                 <input type="number" class="text-center mx-2" id="count" placeholder="0" name="quantity"
-                  onchange="calculateTotal()" {{#if cartItem}}value="{{cartItem.quantity}}"{{/if}} readonly required>
+                  onchange="calculateTotal()" {{#if groupTour.cartItem}}value="{{groupTour.cartItem.quantity}}"{{/if}} readonly required>
 
                 <button class="btn btn-sm btn-outline-secondary" style="width: 30px;"
                   onclick="incrementCount(); return false">
