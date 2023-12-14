@@ -170,7 +170,7 @@ const groupTourController = {
         // includes 比對是否收藏
         isFavorited: favoritedGroupToursId.includes(gt.id)
       }))
-      console.log('所有商品資料', groupToursResult)
+      // console.log('所有商品資料', groupToursResult)
 
       res.render('group-tours', {
         groupTours: groupToursResult,
@@ -250,7 +250,7 @@ const groupTourController = {
         cartItem
       }
       // console.log(cart.toJSON())
-      console.log('商品資料', result)
+      // console.log('商品資料', result)
 
       return res.render('group-tour', { groupTour: result })
     } catch (err) {

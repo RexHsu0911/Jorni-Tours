@@ -219,18 +219,11 @@ const orderController = {
         where: { sn: data.Result.MerchantOrderNo }
       })
 
-      const [payment] = await Payment.findOrCreate({
-        where: {
-          sn: data.Result.MerchantOrderNo,
-          orderId: order.id
-        }
-      })
-
-      await payment.update({
+      await Payment.create({
         sn: data.Result.MerchantOrderNo,
         paymentType: data.Result.PaymentType,
         paymentStatus: data.Status === 'SUCCESS' ? '1' : '-1',
-        paidAt: Date.now()
+        orderId: order.id
       })
 
       // 付款成功
@@ -259,20 +252,21 @@ const orderController = {
   getOrders: async (req, res, next) => {
     try {
       const userId = req.user.id
-      const orders = await Order.findAll({
-        where: { userId },
-        include: [
-          { model: GroupTour, as: 'OrderedGroupTours' }
-        ],
-        raw: true,
-        nest: true
-      })
 
-      const comments = await Comment.findAll({
-        where: { userId },
-        raw: true,
-        nest: true
-      })
+      const [orders, comments] = await Promise.all([
+        Order.findAll({
+          where: { userId },
+          include: [
+            { model: GroupTour, as: 'OrderedGroupTours' }
+          ],
+          raw: true,
+          nest: true
+        }),
+        Comment.findAll({
+          where: { userId },
+          raw: true
+        })
+      ])
 
       // 訂單管理為空的
       if (!orders.length) return res.render('orders', { orders })
@@ -301,31 +295,24 @@ const orderController = {
     try {
       const id = req.params.id
       const groupTourId = Number(req.query.groupTourId)
-      const userId = req.user.id
 
       let order = await Order.findByPk(id, {
         include: [
           { model: GroupTour, as: 'OrderedGroupTours' },
-          Comment
+          Comment,
+          Payment
         ]
       })
 
       if (!order) throw new Error("Order didn't exist!")
 
-      const comment = await Comment.findOne({
-        where: {
-          userId,
-          groupTourId,
-          orderId: id
-        }
-      })
-
-      // 訂單管理為空的
-      if (!order) return res.render('order', { order })
-
       order = order.toJSON()
 
       const specificGroupTour = order.OrderedGroupTours.find(ogt => ogt.id === groupTourId)
+
+      const comment = order.Comments.find(oc => oc.groupTourId === groupTourId)
+
+      const payment = order.Payments.find(op => op.sn === order.sn)
 
       const result = {
         ...order,
@@ -333,7 +320,8 @@ const orderController = {
           ...specificGroupTour,
           isSetOff: new Date(specificGroupTour.departureDate) < new Date(),
           // 轉換成布林值 !!
-          isComment: !!comment
+          isComment: !!comment,
+          payment
         }
       }
       console.log('specificGroupTour', specificGroupTour)

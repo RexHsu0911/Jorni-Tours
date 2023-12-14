@@ -26,7 +26,6 @@ module.exports = {
                   sn: currentOrder.sn,
                   payment_type: paymentType,
                   payment_status: currentOrder.paymentStatus,
-                  paid_at: new Date(),
                   order_id: currentOrder.id,
                   created_at: new Date(),
                   updated_at: new Date()

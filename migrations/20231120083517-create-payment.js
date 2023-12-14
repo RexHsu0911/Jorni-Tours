@@ -18,9 +18,6 @@ module.exports = {
       payment_status: {
         type: Sequelize.STRING
       },
-      paid_at: {
-        type: Sequelize.DATE
-      },
       order_id: {
         type: Sequelize.INTEGER
       },
