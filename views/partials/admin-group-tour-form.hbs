@@ -7,7 +7,7 @@
 <div class="form-row mb-3">
   <label class="form-label" for="categoryId">Category</label>
   <select class="form-select" id="categoryId" name="categoryId">
-    <option selected>Type to choose...</option>
+    <option class="text-secondary">Type to choose...</option>
     {{#each categories}}
     {{!-- 在 {{#each}} 裡需加入路徑 ../ 找到外層資料 --}}
     <option value="{{this.id}}" {{#ifCond this.id ../groupTour.categoryId}}selected{{/ifCond}}>{{this.name}}</option>
@@ -22,12 +22,12 @@
 
 <div class="form-row mb-3">
   <label class="form-label" for="departureDate">Departure Date</label>
-  <input class="form-control" type="date" name="departureDate" id="departureDate" value="{{groupTour.departureDate}}">
+  <input class="form-control" type="date" name="departureDate" id="departureDate" value="{{groupTour.departureDate}}" oninput="calculateDuration()">
 </div>
 
 <div class="form-row mb-3">
   <label class="form-label" for="returnDate">Return Date</label>
-  <input class="form-control" type="date" name="returnDate" id="returnDate" value="{{groupTour.returnDate}}">
+  <input class="form-control" type="date" name="returnDate" id="returnDate" value="{{groupTour.returnDate}}" oninput="calculateDuration()">
 </div>
 
 <div class="form-row mb-3">
@@ -41,7 +41,7 @@
 <div class="form-row mb-3">
   <label class="form-label" for="quantity">Quantity</label>
   <input class="form-control" type="number" name="quantity" id="quantity" placeholder="Enter quantity"
-    value="{{groupTour.quantity}}">
+    min="1" value="{{groupTour.quantity}}">
 </div>
 
 <div class="form-row mb-3">
@@ -55,7 +55,7 @@
 
 <div class="form-row mb-3">
   <label class="form-label" for="description">Description</label>
-  <textarea class="form-control" id="description" name="description" rows="3">{{groupTour.description}}</textarea>
+  <textarea class="form-control" id="description" name="description" rows="3" placeholder="Enter description">{{groupTour.description}}</textarea>
 </div>
 
 <div class="form-row mb-3">
@@ -66,7 +66,7 @@
 <div class="form-row mb-3">
   <label class="form-label" for="canBeCancel">Can Be Cancel</label>
   <select class="form-select" name="canBeCancel" id="canBeCancel">
-    <option selected>Type to choose...</option>
+    <option class="text-secondary">Type to choose...</option>
     <option value="true" {{#ifCond groupTour.canBeCancel 1}}selected{{/ifCond}}>Yes</option>
     <option value="false" {{#ifCond groupTour.canBeCancel 0}}selected{{/ifCond}}>No</option>
   </select>
@@ -75,3 +75,27 @@
 <button type="submit" class="btn btn-primary">Submit</button>
 
 <a class="btn btn-outline-secondary" href="javascript:history.back()">Back</a>
+
+<script>
+  function calculateDuration() {
+    const departureDateInput = document.getElementById('departureDate').value
+    const returnDateInput = document.getElementById('returnDate').value
+    const durationOutput = document.getElementById('duration')
+
+    // 解析日期字符串為 Date 對象
+    const departureDate = new Date(departureDateInput)
+    const returnDate = new Date(returnDateInput)
+
+    const daysDiff = differenceTime(departureDate, returnDate)
+
+    durationOutput.textContent = daysDiff
+  }
+
+  // 計算兩個日期之間天數差異
+  function differenceTime(startDate, endDate) {
+    const oneDay = 24 * 60 * 60 * 1000
+    const diffDays = Math.round(Math.abs((startDate - endDate) / oneDay - 1))
+
+    return diffDays
+  }
+</script>

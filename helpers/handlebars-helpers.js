@@ -21,5 +21,8 @@ module.exports = {
   // 將金額由數字轉換為包含千位數逗號的格式
   formatPrice: function (price) {
     return price.toLocaleString()
+  },
+  formatTime: function (t) {
+    return dayjs(t).format('YYYY-MM-DD HH:mm ([GMT]Z)')
   }
 }

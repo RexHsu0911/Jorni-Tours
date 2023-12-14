@@ -80,7 +80,7 @@
       </h4>
       <div>Orderer's name：{{order.firstName}} {{order.lastName}}, {{order.country}}</div>
       <div>Telephone number：{{order.phone}}</div>
-      <div>Order date：{{order.createdAt}}</div>
+      <div>Order date：{{formatTime order.updatedAt}}</div>
     </li>
   </div>
 
@@ -117,7 +117,7 @@
         Web ATM transfer
         {{/ifCond}}
       </div>
-      <div>Payment date：{{order.specificGroupTour.payment.createdAt}}</div>
+      <div>Payment date：{{formatTime order.specificGroupTour.payment.createdAt}}</div>
       {{/ifCond}}
     </li>
     {{/ifCond}}
