@@ -1,3 +1,10 @@
+try {
+
+} catch (err) {
+  console.log(err)
+  return next(err)
+}
+
 const { Cart, GroupTour, CartItem } = require('../models')
 
 const cartController = {
