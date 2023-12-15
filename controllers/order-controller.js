@@ -6,63 +6,79 @@ const orderController = {
   getOrderCreate: async (req, res, next) => {
     try {
       const userId = req.user.id
-      let cart = {}
 
-      // 直接購買，query 取得商品參數
-      const groupTourId = Number(req.query.groupTourId)
-      const quantity = Number(req.query.quantity)
-
-      // 商品頁面直接購買(有商品參數)
-      if (groupTourId && quantity) {
-        // 創建臨時性的購物車(userId = null)
-        const temporaryCart = await Cart.create({
-          amount: 1
-        })
-
-        await CartItem.create({
-          cartId: temporaryCart.id,
-          groupTourId,
-          quantity
-        })
-
-        cart = await Cart.findByPk(temporaryCart.id, {
-          include: [
-            { model: GroupTour, as: 'cartedGroupTours' }
-          ]
-        })
-        // 購物車頁面購買
-      } else {
-        cart = await Cart.findOne({
+      // 購物車頁面購買(有 req.session.cartId)
+      let [user, cart] = await Promise.all([
+        User.findByPk(userId),
+        Cart.findOne({
           include: [
             { model: GroupTour, as: 'cartedGroupTours' }
           ],
-          where: { userId }
+          where: req.session.cartId ? { id: req.session.cartId } : { userId }
         })
+      ])
+
+      if (req.session.cartId) {
+        req.session.cartId = null
       }
+      console.log('session:', req.session.cartId)
 
       // 購物車不存在或為空的
       if (!cart || !cart.amount) {
         req.flash('warning_messages', 'Your shopping cart is empty. Please add products to your cart before placing an order!')
-        return res.redirect('cart')
+        return res.redirect('back')
       }
 
       cart = cart.toJSON()
+      user = user.toJSON()
 
       const result = {
         ...cart,
         totalPrice: cart.cartedGroupTours.reduce((acc, cgt) => acc + (cgt.price * cgt.CartItem.quantity), 0)
       }
-      // console.log('使用者/暫時性購物車:', cart.cartedGroupTours)
+      console.log('使用者/暫時性購物車:', cart.cartedGroupTours)
 
-      // 填入使用者資料
-      let user = await User.findByPk(userId)
+      return res.render('create-order', { cart: result, user })
+    } catch (err) {
+      console.log(err)
+      return next(err)
+    }
+  },
+  postOrderCreate: async (req, res, next) => {
+    try {
+      // 直接購買，query 取得商品參數
+      const groupTourId = Number(req.body.groupTourId) || null
+      const quantity = Number(req.body.quantity) > 0 ? Number(req.body.quantity) : null
 
-      user = user.toJSON()
+      if (groupTourId && !quantity) {
+        req.flash('warning_messages', "Group tour's quantity must be greater than 「0」!")
+        return res.redirect('back')
+      }
 
-      return res.render('create-order', {
-        cart: result,
-        user
-      })
+      const groupTour = await GroupTour.findByPk(groupTourId)
+
+      // 購物車商品數量 > 庫存
+      if (quantity > groupTour.quantity) {
+        req.flash('warning_messages', `Sorry, ${groupTour.name} only has ${groupTour.quantity} left, please choose the quantity of it again!`)
+        return res.redirect('back')
+      }
+
+      // 商品頁面直接購買
+      if (groupTourId && quantity) {
+        // 創建臨時性購物車
+        const cart = await Cart.create({ amount: 1 })
+
+        await CartItem.create({
+          cartId: cart.id,
+          groupTourId,
+          quantity
+        })
+
+        // 儲存臨時性購物車 id 到 session
+        req.session.cartId = cart.id
+
+        return res.redirect('/orders/create')
+      }
     } catch (err) {
       console.log(err)
       return next(err)
@@ -71,22 +87,33 @@ const orderController = {
   postOrder: async (req, res, next) => {
     try {
       const { firstName, lastName, country, phone, cartId, amount, totalPrice } = req.body
+      const userId = req.user.id
 
-      let cart = await Cart.findByPk(cartId, {
-        include: [
-          { model: GroupTour, as: 'cartedGroupTours' }
-        ]
-      })
+      const [cart, userCart] = await Promise.all([
+        Cart.findByPk(cartId, {
+          include: [
+            { model: GroupTour, as: 'cartedGroupTours' }
+          ]
+        }),
+        Cart.findOne({
+          include: [
+            { model: GroupTour, as: 'cartedGroupTours' }
+          ],
+          where: { userId }
+        })
+      ])
 
-      cart = cart.toJSON()
-      // console.log('新增訂單:', cart.cartedGroupTours)
+      console.log('新增訂單:', cart.cartedGroupTours)
 
       // 購物車不存在或為空的
       if (!cart || !cart.amount) throw new Error("You don't have any item in your cart!")
 
       // 購物車商品數量 > 庫存
       for (const GroupTour of cart.cartedGroupTours) {
-        if (GroupTour.CartItem.quantity > GroupTour.quantity) throw new Error(`Sorry, ${GroupTour.name} only has ${GroupTour.quantity} left, please choose the quantity of it again!`)
+        if (GroupTour.CartItem.quantity > GroupTour.quantity) {
+          req.flash('warning_messages', `Sorry, ${GroupTour.name} only has ${GroupTour.quantity} left, please choose the quantity of it again!`)
+          return res.redirect('back')
+        }
       }
 
       // 創建訂單
@@ -102,24 +129,47 @@ const orderController = {
         userId: req.user.id
       })
 
-      await cart.cartedGroupTours.map(async gt => {
+      await Promise.all(cart.cartedGroupTours.map(async cgt => {
         // 創建訂單商品
         await OrderItem.create({
           orderId: order.id,
-          groupTourId: gt.id,
-          price: gt.price,
-          quantity: gt.CartItem.quantity
+          groupTourId: cgt.id,
+          price: cgt.price,
+          quantity: cgt.CartItem.quantity
         })
 
-        const groupTour = await GroupTour.findByPk(gt.id)
+        const groupTour = await GroupTour.findByPk(cgt.id)
 
         // 更新商品庫存
         await groupTour.update({
-          quantity: groupTour.quantity - gt.CartItem.quantity
+          quantity: groupTour.quantity - cgt.CartItem.quantity
         })
-      })
 
-      // 訂購完成後，清空購物車
+        // 檢查使用者購物車商品
+        userCart.cartedGroupTours.forEach(async ucgt => {
+          // 存在重複的購物車商品
+          if (cgt.id === ucgt.id) {
+            // 使用者購物車商品
+            const userCartItem = await CartItem.findOne({ where: { cartId: userCart.id, groupTourId: ucgt.id } })
+
+            // 商品於訂購數量 >= 使用者購物車數量
+            if (cgt.CartItem.quantity >= ucgt.CartItem.quantity) {
+              // 刪除 CartItem
+              await userCartItem.destroy()
+
+              // 更新顯示購物車數量 - 1
+              await userCart.update({ amount: userCart.amount > 1 ? userCart.amount - 1 : null })
+            } else {
+              // 更新 CartItem 的數量
+              userCartItem.update({ quantity: ucgt.quantity - cgt.quantity })
+            }
+          }
+        })
+      }))
+
+      req.session.cartAmount = userCart.amount
+
+      // 刪除使用者/暫時性購物車
       await Cart.destroy({ where: { id: cartId } })
 
       await CartItem.destroy({ where: { cartId } })

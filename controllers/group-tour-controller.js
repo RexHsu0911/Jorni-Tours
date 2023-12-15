@@ -231,7 +231,7 @@ const groupTourController = {
         })
 
         // 存在購物車項目
-        if (cartItem) {
+        if (cartItemExist) {
           // 購物車項目數量 > 庫存
           if (cartItem.quantity > groupTour.quantity) {
             req.flash('warning_messages', `The quantity remaining for the group tour named「${groupTour.name}」is「${groupTour.quantity}」!`)

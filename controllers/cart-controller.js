@@ -25,7 +25,7 @@ const cartController = {
         // 計算購物車的總金額
         totalPrice: cart.cartedGroupTours.reduce((acc, cgt) => acc + (cgt.price * cgt.CartItem.quantity), 0)
       }
-      console.log('使用者購物車:', cart.cartedGroupTours)
+      // console.log('使用者購物車:', cart.cartedGroupTours)
 
       return res.render('cart', { cart: result })
     } catch (err) {
