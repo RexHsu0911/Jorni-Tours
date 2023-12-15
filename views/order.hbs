@@ -1,67 +1,6 @@
-{{!-- product --}}
 <div class="container" style="width: 800px;">
-  <div class="card mb-5">
-    <div class="card-header text-center bg-white mt-2">
-      <h3>Product</h3>
-    </div>
-
-    <div class="row m-3">
-      <a href="/group-tours/{{order.specificGroupTour.id}}" class="ratio ratio-21x9">
-        <img class="card-img-top img-fluid rounded-3" src="{{order.specificGroupTour.image}}" width="286px"
-          height="180px" style="transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
-      </a>
-    </div>
-
-    <div class="card-body pt-0 mb-3">
-      <div class="d-grid gap-1">
-        {{#ifCond order.paymentStatus '1'}}
-        <h4>
-          {{!-- isSetOff --}}
-          {{#if order.specificGroupTour.isSetOff}}
-          <span class="fw-bold text-primary">Already set off</span>
-          {{else}}
-          <span class="fw-bold text-primary">Not set off yet</span>
-          {{/if}}
-        </h4>
-        {{/ifCond}}
-        <div class="row my-3">
-          <h4>
-            <a class="text-decoration-none link-dark"
-              href="/group-tours/{{order.specificGroupTour.id}}">{{order.specificGroupTour.name}}</a>
-          </h4>
-        </div>
-        <div><strong>City：</strong>{{order.specificGroupTour.city}}</div>
-        <div><strong>Departure date：</strong>{{order.specificGroupTour.departureDate}}</div>
-        <div><strong>Duration：</strong>{{order.specificGroupTour.duration}}</div>
-        <div><strong>Quantity：</strong>{{order.specificGroupTour.OrderItem.quantity}}</div>
-      </div>
-
-      <hr>
-
-      <div class="text h4 mt-4">
-        <div class="row">
-          <div class="col">
-            Payment amount：</div>
-          <div class="col text-danger text-end">TWD {{formatPrice order.totalPrice}}</div>
-        </div>
-      </div>
-
-    </div>
-
-    <div class="btn text-end p-0 m-3">
-      {{#ifCond order.paymentStatus '1'}}
-      {{!-- comment button --}}
-      {{#if order.specificGroupTour.isComment}}
-      <a href="/orders/{{order.id}}/comment?groupTourId={{order.specificGroupTour.id}}"
-        class="btn btn-outline-primary mx-2">View your comment</a>
-      {{else}}
-      <a href="/orders/{{order.id}}/comment?groupTourId={{order.specificGroupTour.id}}"
-        class="btn btn-outline-primary mx-2">Give a comment</a>
-      {{/if}}
-      {{/ifCond}}
-      <a class="btn btn-outline-secondary" href="javascript:history.back()">Back</a>
-    </div>
-  </div>
+  {{!-- product information --}}
+  {{> order-group-tour-information route='orderPage'}}
 
   {{!-- order --}}
   <div class="card mb-5">
@@ -78,6 +17,7 @@
         <span class="badge bg-secondary">Canceled</span>
         {{/ifCond}}
       </h4>
+
       <div>Orderer's name：{{order.firstName}} {{order.lastName}}, {{order.country}}</div>
       <div>Telephone number：{{order.phone}}</div>
       <div>Order date：{{formatTime order.updatedAt}}</div>
@@ -89,7 +29,6 @@
     <div class="card-header text-center bg-white mt-2">
       <h3>Payment details</h3>
     </div>
-
     {{#ifCond order.orderStatus '1'}}
     <li class="list-group-item fw-bold d-grid gap-1 border-0">
       <h4 class="pt-3 mb-0">Payment status：
@@ -104,20 +43,21 @@
         <p class="text-danger h5 mt-2">(Note：Payment must be made by creating a new order)</p>
         {{/ifCond}}
       </h4>
+
       {{#ifCond order.paymentStatus '0'}}
       {{else}}
       <div>Payment type：
-        {{#ifCond order.specificGroupTour.payment.paymentType 'CREDIT'}}
+        {{#ifCond order.Payments.paymentType 'CREDIT'}}
         Credit Card
         {{/ifCond}}
-        {{#ifCond order.specificGroupTour.payment.paymentType 'VACC'}}
+        {{#ifCond order.Payments.paymentType 'VACC'}}
         Bank ATM transfer
         {{/ifCond}}
-        {{#ifCond order.specificGroupTour.payment.paymentType 'WEBATM'}}
+        {{#ifCond order.Payments.paymentType 'WEBATM'}}
         Web ATM transfer
         {{/ifCond}}
       </div>
-      <div>Payment date：{{formatTime order.specificGroupTour.payment.createdAt}}</div>
+      <div>Payment date：{{formatTime order.Payments.createdAt}}</div>
       {{/ifCond}}
     </li>
     {{/ifCond}}

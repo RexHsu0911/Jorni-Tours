@@ -12,7 +12,7 @@
         </h5>
       </div>
 
-      {{!-- OrderedGroupTours --}}
+      {{!-- Orders --}}
       {{#each orders}}
       <div class="card col-12 mt-3 h-100" style="break-inside: avoid;">
         <div class="row no-gutters">
@@ -26,13 +26,15 @@
               <h4 class="mb-3">
                 {{#ifCond this.orderStatus '1'}}
                 {{#ifCond this.paymentStatus '1'}}
-                {{!-- isSetOff --}}
                 {{#if this.OrderedGroupTours.isSetOff}}
+                {{!-- isSetOff --}}
                 <span class="fw-bold text-primary">Already set off</span>
                 {{else}}
                 <span class="fw-bold text-primary">Not set off yet</span>
                 {{/if}}
                 {{/ifCond}}
+
+                {{!-- payment status --}}
                 {{#ifCond this.paymentStatus '0'}}
                 <span class="badge bg-danger">Unpaid</span>
                 {{/ifCond}}
@@ -59,7 +61,8 @@
 
               {{#ifCond this.orderStatus '1'}}
               {{#ifCond this.paymentStatus '1'}}
-              {{!-- comment button --}}
+              {{#if this.OrderedGroupTours.isSetOff}}
+              {{!-- isComment(comment button) --}}
               <div class="btn p-0 position-relative" style="z-index: 10;">
                 {{#if this.OrderedGroupTours.isComment}}
                 <a href="/orders/{{this.id}}/comment?groupTourId={{this.OrderedGroupTours.id}}"
@@ -69,6 +72,7 @@
                   class="btn btn-outline-primary">Give a comment</a>
                 {{/if}}
               </div>
+              {{/if}}
               {{/ifCond}}
               {{/ifCond}}
             </div>

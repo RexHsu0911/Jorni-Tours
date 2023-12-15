@@ -1,57 +1,12 @@
-{{!-- order --}}
 <div class="container" style="width: 800px;">
-  <div class="card mb-5">
-    <div class="card-header text-center bg-white mt-2">
-      <h3>Product</h3>
-    </div>
+  {{!-- product information --}}
+  {{> order-group-tour-information route='commentPage'}}
 
-    <div class="row m-3">
-      <a href="/group-tours/{{order.specificGroupTour.id}}" class="ratio ratio-21x9">
-        <img class="card-img-top img-fluid rounded-3" src="{{order.specificGroupTour.image}}" width="286px"
-          height="180px" style="transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
-      </a>
-    </div>
-
-    <div class="card-body pt-0 mb-3">
-      <div class="d-grid gap-1">
-        <h4>
-          {{#if order.specificGroupTour.isSetOff}}
-          <span class="fw-bold text-primary">Already set off</span>
-          {{else}}
-          <span class="fw-bold text-primary">Not set out yet</span>
-          {{/if}}
-        </h4>
-        <div class="row my-3">
-          <h4>
-            <a class="text-decoration-none link-dark"
-              href="/group-tours/{{order.specificGroupTour.id}}">{{order.specificGroupTour.name}}</a>
-          </h4>
-        </div>
-        <div><strong>City：</strong>{{order.specificGroupTour.city}}</div>
-        <div><strong>Departure date：</strong>{{order.specificGroupTour.departureDate}}</div>
-        <div><strong>Duration：</strong>{{order.specificGroupTour.duration}}</div>
-        <div><strong>Quantity：</strong>{{order.specificGroupTour.OrderItem.quantity}}</div>
-      </div>
-
-      <hr>
-
-      {{!-- payment --}}
-      <div class="text h4 mt-4">
-        <div class="row">
-          <div class="col">
-            Payment amount：</div>
-          <div class="col text-danger text-end">TWD {{formatPrice order.totalPrice}}</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="btn text-end p-0 m-3">
-      <a class="btn btn-outline-secondary" href="javascript:history.back()">Back</a>
-    </div>
-  </div>
-
-  {{#if comment}}
-  {{!-- comment --}}
+  {{#each order.OrderedGroupTours}}
+  {{#if this.isSetOff}}
+  {{#each ../order.Comments}}
+  {{#if this}}
+  {{!-- view comment --}}
   <div class="card mb-5">
     <div class="card-header text-center bg-white mt-2">
       <h3>View your comment</h3>
@@ -59,16 +14,16 @@
 
     <div class="card-body">
       {{#if ../loginUser.isAdmin}}
-      <form action="/comments/{{comment.id}}?_method=DELETE" method="POST" class="float-end">
+      <form action="/comments/{{this.id}}?_method=DELETE" method="POST" class="float-end">
         <button type="submit" class="btn btn-danger"
-          onclick="return confirm(`Confirm to delete 「{{comment.User.firstName}} {{comment.User.lastName}}」's comment ？`)">Delete</button>
+          onclick="return confirm(`Confirm to delete 「{{this.User.firstName}} {{this.User.lastName}}」's comment ？`)">Delete</button>
       </form>
       {{/if}}
 
       <div class="image float-start" style="margin-right: 20px;">
-        <a href="/users/{{comment.User.id}}">
-          {{#if comment.User.avatar}}
-          <img class="image rounded-circle" src="{{comment.User.avatar}}" width="60px" height="60px"
+        <a href="/users/{{this.User.id}}">
+          {{#if this.User.avatar}}
+          <img class="image rounded-circle" src="{{this.User.avatar}}" width="60px" height="60px"
             style="transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;" />
           {{else}}
           <img class="image rounded-circle" src="https://fakeimg.pl/60" width="60px" height="60px"
@@ -76,28 +31,28 @@
           {{/if}}
         </a>
       </div>
-      
+
       <div class="comment-detail overflow-hidden">
-        <h4 class="mb-0"><a href="/users/{{comment.User.id}}">{{comment.User.firstName}} {{comment.User.lastName}}</a>
+        <h4 class="mb-0"><a href="/users/{{this.User.id}}">{{this.User.firstName}} {{this.User.lastName}}</a>
         </h4>
-      
-        <span class="badge rounded-pill bg-secondary my-3">Rating：{{comment.rating}}</span>
-      
+
+        <span class="badge rounded-pill bg-secondary my-3">Rating：{{this.rating}}</span>
+
         <div class="bg-light rounded-3">
-          <p class="text p-3 mb-0">{{comment.text}}</p>
-      
-          {{#if comment.image}}
-          <img class="img-responsive d-block p-3 pt-0" src="{{comment.image}}"
+          <p class="text p-3 mb-0">{{this.text}}</p>
+
+          {{#if this.image}}
+          <img class="img-responsive d-block p-3 pt-0" src="{{this.image}}"
             style="width: 200px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
           {{/if}}
         </div>
-      
-        <footer class="blockquote-footer mb-0 mt-3">{{relativeTimeFromNow comment.createdAt}}</footer>
+
+        <footer class="blockquote-footer mb-0 mt-3">{{relativeTimeFromNow this.createdAt}}</footer>
       </div>
     </div>
   </div>
   {{else}}
-  {{!-- comment form --}}
+  {{!-- give comment --}}
   <div class="card my-5">
     <div class="card-header text-center bg-white mt-2">
       <h3>Give a comment</h3>
@@ -116,8 +71,8 @@
         </div>
 
         {{!-- 把 groupTourId 送到後端取用 --}}
-        <input type="hidden" name="groupTourId" value="{{order.specificGroupTour.id}}">
-        <input type="hidden" name="orderId" value="{{order.id}}">
+        <input type="hidden" name="groupTourId" value="{{../this.id}}">
+        <input type="hidden" name="orderId" value="{{../../order.id}}">
 
         <div class="form-row mb-3">
           <label class="form-label" for="image">Image</label>
@@ -130,4 +85,7 @@
     </form>
   </div>
   {{/if}}
+  {{/each}}
+  {{/if}}
+  {{/each}}
 </div>

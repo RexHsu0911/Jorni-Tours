@@ -1,0 +1,70 @@
+{{#each order.OrderedGroupTours}}
+{{#if this.isOrderItem}}
+{{!-- product information--}}
+<div class="card mb-5">
+  <div class="card-header text-center bg-white mt-2">
+    <h3>Product information</h3>
+  </div>
+
+  <div class="row m-3">
+    <a href="/group-tours/{{this.id}}" class="ratio ratio-21x9">
+      <img class="card-img-top img-fluid rounded-3" src="{{this.image}}" width="286px" height="180px"
+        style="transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+    </a>
+  </div>
+
+  <div class="card-body pt-0 mb-3">
+    <div class="d-grid gap-1">
+      {{#ifCond ../order.paymentStatus '1'}}
+      <h4>
+        {{!-- isSetOff --}}
+        {{#if this.isSetOff}}
+        <span class="fw-bold text-primary">Already set off</span>
+        {{else}}
+        <span class="fw-bold text-primary">Not set off yet</span>
+        {{/if}}
+      </h4>
+      {{/ifCond}}
+      <div class="row my-3">
+        <h4>
+          <a class="text-decoration-none link-dark" href="/group-tours/{{this.id}}">{{this.name}}</a>
+        </h4>
+      </div>
+      <div><strong>City：</strong>{{this.city}}</div>
+      <div><strong>Departure date：</strong>{{this.departureDate}}</div>
+      <div><strong>Duration：</strong>{{this.duration}}</div>
+      <div><strong>Quantity：</strong>{{this.OrderItem.quantity}}</div>
+    </div>
+
+    <hr>
+
+    <div class="text h4 mt-4">
+      <div class="row">
+        <div class="col">
+          Payment amount：</div>
+        <div class="col text-danger text-end">TWD {{formatPrice (multiplicate this.price this.OrderItem.quantity)}}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="btn text-end p-0 m-3">
+    {{#ifCond ../route 'orderPage'}}
+    {{#ifCond ../order.paymentStatus '1'}}
+    {{#if this.isSetOff}}
+    {{#if this.isComment}}
+    {{!-- isComment(comment button) --}}
+    <a href="/orders/{{../order.id}}/comment?groupTourId={{this.id}}" class="btn btn-outline-primary mx-2">View your
+      comment</a>
+    {{else}}
+    <a href="/orders/{{../order.id}}/comment?groupTourId={{this.id}}" class="btn btn-outline-primary mx-2">Give a
+      comment</a>
+    {{/if}}
+    {{/if}}
+    {{/ifCond}}
+    {{/ifCond}}
+    <a class="btn btn-outline-secondary" href="javascript:history.back()">Back</a>
+  </div>
+</div>
+{{/if}}
+{{/each}}

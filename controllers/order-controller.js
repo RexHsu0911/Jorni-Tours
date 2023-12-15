@@ -358,23 +358,21 @@ const orderController = {
 
       order = order.toJSON()
 
-      const specificGroupTour = order.OrderedGroupTours.find(ogt => ogt.id === groupTourId)
-
-      const comment = order.Comments.find(oc => oc.groupTourId === groupTourId)
-
-      const payment = order.Payments.find(op => op.sn === order.sn)
-
       const result = {
         ...order,
-        specificGroupTour: {
-          ...specificGroupTour,
-          isSetOff: new Date(specificGroupTour.departureDate) < new Date(),
-          // 轉換成布林值 !!
-          isComment: !!comment,
-          payment
-        }
+        OrderedGroupTours: order.OrderedGroupTours.map(ogt =>
+          (ogt.id === groupTourId)
+            ? {
+                ...ogt,
+                isOrderItem: true,
+                isSetOff: new Date(ogt.departureDate) < new Date(),
+                isComment: order.Comments.some(oc => oc.groupTourId === groupTourId)
+              }
+            : ogt
+        ),
+        Payments: order.Payments.find(op => op.sn === order.sn)
       }
-      console.log('specificGroupTour', specificGroupTour)
+      // console.log('specificGroupTour', specificGroupTour)
       console.log('訂單:', result)
 
       return res.render('order', { order: result })
@@ -387,51 +385,30 @@ const orderController = {
     try {
       const id = req.params.id
       const groupTourId = Number(req.query.groupTourId)
-      const userId = req.user.id
 
       let order = await Order.findByPk(id, {
         include: [
-          { model: GroupTour, as: 'OrderedGroupTours' }
+          { model: GroupTour, as: 'OrderedGroupTours', where: { id: groupTourId } },
+          { model: Comment, include: User, where: { groupTourId } }
         ]
       })
 
-      // 訂單管理為空的
-      if (!order) return res.render('order-comment', { order })
+      if (!order) throw new Error("Order didn't exist!")
 
       order = order.toJSON()
-      console.log('order.OrderedGroupTours', order.OrderedGroupTours)
-
-      const specificGroupTour = order.OrderedGroupTours.find(ogt => ogt.id === groupTourId)
 
       const result = {
         ...order,
-        specificGroupTour: {
-          ...specificGroupTour,
-          isSetOff: new Date(specificGroupTour.departureDate) < new Date()
-        }
+        OrderedGroupTours: order.OrderedGroupTours.map(ogt => ({
+          ...ogt,
+          isOrderItem: true,
+          isSetOff: new Date(ogt.departureDate) < new Date()
+        }))
       }
-      console.log('specificGroupTour', specificGroupTour)
-      console.log('訂單:', result)
+      // console.log('specificGroupTour', specificGroupTour)
+      console.log('訂單評論:', result)
 
-      let comment = await Comment.findOne({
-        where: {
-          userId,
-          groupTourId,
-          orderId: id
-        },
-        include: [User]
-      })
-
-      // 訂單評論為空的
-      if (!comment) return res.render('order-comment', { order: result, comment })
-
-      comment = comment.toJSON()
-      console.log('訂單評論:', comment)
-
-      return res.render('order-comment', {
-        order: result,
-        comment
-      })
+      return res.render('order-comment', { order: result })
     } catch (err) {
       console.log(err)
       return next(err)
