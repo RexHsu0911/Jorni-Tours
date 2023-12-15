@@ -116,6 +116,7 @@ const adminController = {
 
       await groupTour.destroy()
 
+      req.flash('success_messages', 'Group tour was successfully deleted!')
       return res.redirect('/admin/group-tours')
     } catch (err) {
       console.log(err)
@@ -145,6 +146,7 @@ const adminController = {
         isAdmin: !user.isAdmin
       })
 
+      req.flash('success_messages', 'User permission was successfully updated!')
       return res.redirect('/admin/users')
     } catch (err) {
       console.log(err)
