@@ -34,15 +34,24 @@ const adminController = {
   },
   postGroupTour: async (req, res, next) => {
     try {
-      const { name } = req.body
+      const { name, city, departureDate, returnDate, duration, quantity, price, description, canBeCancel, categoryId } = req.body
 
       if (!name) throw new Error('Group tour name is required!')
 
       const filePath = await imgurFileHandler(req.file)
 
       await GroupTour.create({
-        ...req.body,
-        image: filePath || null
+        name,
+        city,
+        departureDate,
+        returnDate,
+        duration,
+        quantity,
+        price,
+        description,
+        canBeCancel,
+        image: filePath || null,
+        categoryId
       })
 
       req.flash('success_messages', 'Group tour was successfully created!')
@@ -85,7 +94,7 @@ const adminController = {
   },
   putGroupTour: async (req, res, next) => {
     try {
-      const { name } = req.body
+      const { name, city, departureDate, returnDate, duration, quantity, price, description, canBeCancel, categoryId } = req.body
 
       if (!name) throw new Error('Group tour name is required!')
 
@@ -97,8 +106,17 @@ const adminController = {
       if (!groupTour) throw new Error("Group tour didn't exist!")
 
       await groupTour.update({
-        ...req.body,
-        image: filePath || groupTour.image
+        name,
+        city,
+        departureDate,
+        returnDate,
+        duration,
+        quantity,
+        price,
+        description,
+        canBeCancel,
+        image: filePath || groupTour.image,
+        categoryId
       })
 
       req.flash('success_messages', 'Group tour was successfully updated!')
