@@ -7,41 +7,43 @@ const userController = {
   getRegister: (req, res) => {
     return res.render('register')
   },
-  register: (req, res, next) => {
-    const { firstName, lastName, email, password, passwordCheck, gender, birthday, country, phone, description } = req.body
-    if (!firstName) throw new Error('First name is required!')
-    if (!lastName) throw new Error('Last name is required!')
-    if (password !== passwordCheck) throw new Error("Password don't match!")
-    const { file } = req
+  register: async (req, res, next) => {
+    try {
+      const { firstName, lastName, email, password, passwordCheck, gender, birthday, country, phone, description } = req.body
 
-    return User.findOne({ where: { email } })
-      .then(user => {
-        if (user) throw new Error('Email already exists!')
-        // 密碼轉成暗碼(複雜度係數為 10)
-        return Promise.all([
-          bcrypt.hash(password, 10),
-          imgurFileHandler(file)
-        ])
-          .then(([hash, filePath]) => {
-            return User.create({
-              firstName,
-              lastName,
-              email,
-              password: hash,
-              gender,
-              birthday,
-              country,
-              phone,
-              avatar: filePath || null,
-              description
-            })
-          })
+      if (!firstName) throw new Error('First name is required!')
+      if (!lastName) throw new Error('Last name is required!')
+      if (password !== passwordCheck) throw new Error("Password don't match!")
+
+      const user = await User.findOne({ where: { email } })
+
+      if (user) throw new Error('Email already exists!')
+
+      // 密碼轉成暗碼(複雜度係數為 10)
+      const [hash, filePath] = await Promise.all([
+        bcrypt.hash(password, 10),
+        imgurFileHandler(req.file)
+      ])
+
+      await User.create({
+        firstName,
+        lastName,
+        email,
+        password: hash,
+        gender,
+        birthday,
+        country,
+        phone,
+        avatar: filePath || null,
+        description
       })
-      .then(() => {
-        req.flash('success_messages', 'Visitor has successfully registered an account!')
-        return res.redirect('/login')
-      })
-      .catch(err => next(err))
+
+      req.flash('success_messages', 'Visitor has successfully registered an account!')
+      return res.redirect('/login')
+    } catch (err) {
+      console.log(err)
+      return next(err)
+    }
   },
   getLogin: (req, res) => {
     return res.render('login')
@@ -60,95 +62,107 @@ const userController = {
     req.logout()
     return res.redirect('/login')
   },
-  getUser: (req, res, next) => {
-    return User.findByPk(req.params.id, {
-      include: [
-        { model: Comment, include: GroupTour },
-        { model: GroupTour, as: 'FavoritedGroupTours' },
-        { model: User, as: 'Followings' },
-        { model: User, as: 'Followers' }
-      ]
-    })
-      .then(user => {
-        if (!user) throw new Error("User didn't exist!")
-
-        const result = {
-          ...user.toJSON(),
-          // reduce 對陣列轉化為單一值
-          // acc 是累加器，初始值為 []
-          commentedGroupTours: user.Comments?.reduce((acc, comment) => {
-            // 檢查 groupTour 不存在重複，則回傳到 user.commentedGroupTours
-            if (!acc.some(groupTour => groupTour.id === comment.groupTourId)) {
-              acc.push(comment.GroupTour.toJSON())
-            }
-            return acc
-          }, []),
-          isFollowed: req.user?.Followings.some(fu => fu.id === user.id)
-        }
-        // console.log(result)
-
-        return res.render('users/profile', { user: result })
+  getUser: async (req, res, next) => {
+    try {
+      const user = await User.findByPk(req.params.id, {
+        include: [
+          { model: Comment, include: GroupTour },
+          { model: GroupTour, as: 'FavoritedGroupTours' },
+          { model: User, as: 'Followings' },
+          { model: User, as: 'Followers' }
+        ]
       })
-      .catch(err => next(err))
+
+      if (!user) throw new Error("User didn't exist!")
+
+      const result = {
+        ...user.toJSON(),
+        // reduce 對陣列轉化為單一值
+        // acc 是累加器，初始值為 []
+        commentedGroupTours: user.Comments?.reduce((acc, comment) => {
+          // 檢查 groupTour 不存在重複，則回傳到 user.commentedGroupTours
+          if (!acc.some(groupTour => groupTour.id === comment.groupTourId)) {
+            acc.push(comment.GroupTour.toJSON())
+          }
+          return acc
+        }, []),
+        isFollowed: req.user?.Followings.some(fu => fu.id === user.id)
+      }
+      // console.log(result)
+
+      return res.render('users/profile', { user: result })
+    } catch (err) {
+      console.log(err)
+      return next(err)
+    }
   },
-  getUserEdit: (req, res, next) => {
-    return User.findByPk(req.params.id, { raw: true })
-      .then(user => {
-        if (!user) throw new Error("User didn't exist!")
-        return res.render('users/edit', { user })
-      })
-      .catch(err => next(err))
+  getUserEdit: async (req, res, next) => {
+    try {
+      const user = await User.findByPk(req.params.id, { raw: true })
+
+      if (!user) throw new Error("User didn't exist!")
+
+      return res.render('users/edit', { user })
+    } catch (err) {
+      console.log(err)
+      return next(err)
+    }
   },
-  putUser: (req, res, next) => {
-    const { firstName, lastName, gender, birthday, country, phone, description } = req.body
-    if (req.user.id !== Number(req.params.id)) throw new Error('User can only edit your own profile!')
-    if (!firstName) throw new Error('User first name is required!')
-    if (!lastName) throw new Error('User last name is required!')
-    const { file } = req
+  putUser: async (req, res, next) => {
+    try {
+      const { firstName, lastName, gender, birthday, country, phone, description } = req.body
 
-    return Promise.all([
-      User.findByPk(req.params.id),
-      imgurFileHandler(file)
-    ])
-      .then(([user, filePath]) => {
-        if (!user) throw new Error("User didn't exist!")
+      if (req.user.id !== Number(req.params.id)) throw new Error('User can only edit your own profile!')
+      if (!firstName) throw new Error('User first name is required!')
+      if (!lastName) throw new Error('User last name is required!')
 
-        return user.update({
-          firstName,
-          lastName,
-          gender,
-          birthday,
-          country,
-          phone,
-          avatar: filePath || user.avatar,
-          description
-        })
+      const [user, filePath] = await Promise.all([
+        User.findByPk(req.params.id),
+        imgurFileHandler(req.file)
+      ])
+
+      if (!user) throw new Error("User didn't exist!")
+
+      await user.update({
+        firstName,
+        lastName,
+        gender,
+        birthday,
+        country,
+        phone,
+        avatar: filePath || user.avatar,
+        description
       })
-      .then(user => {
-        req.flash('success_messages', 'User profile was successfully updated!')
-        return res.redirect(`/users/${user.id}`)
-      })
-      .catch(err => next(err))
+
+      req.flash('success_messages', 'User profile was successfully updated!')
+      return res.redirect(`/users/${user.id}`)
+    } catch (err) {
+      console.log(err)
+      return next(err)
+    }
   },
-  getTopUsers: (req, res, next) => {
-    return User.findAll({
-      include: [{ model: User, as: 'Followers' }]
-    })
-      .then(users => {
-        if (!users) throw new Error("Users didn't exist!")
-
-        const result = users.map(u => ({
-          ...u.toJSON(),
-          followerCount: u.Followers.length,
-          isFollowed: req.user?.Followings.some(fu => fu.id === u.id) // 目前登入 user 是否已追蹤該 user 物件
-        }))
-          // 使用 sort 排序 followerCount 由大排到小(若 b - a 為正數，則 b 排到前面)
-          .sort((a, b) => b.followerCount - a.followerCount)
-          .slice(0, 10)
-
-        return res.render('top-users', { users: result })
+  getTopUsers: async (req, res, next) => {
+    try {
+      const users = await User.findAll({
+        include: [{ model: User, as: 'Followers' }]
       })
-      .catch(err => next(err))
+
+      if (!users) throw new Error("Users didn't exist!")
+
+      const result = users.map(u => ({
+        ...u.toJSON(),
+        followerCount: u.Followers.length,
+        isFollowed: req.user?.Followings.some(fu => fu.id === u.id) // 目前登入 user 是否已追蹤該 user 物件
+      }))
+        // 使用 sort 排序 followerCount 由大排到小(若 b - a 為正數，則 b 排到前面)
+        .sort((a, b) => b.followerCount - a.followerCount)
+        .slice(0, 10)
+
+      return res.render('top-users', { users: result })
+    } catch (err) {
+      console.log(err)
+      return next(err)
+    }
   }
 }
 
