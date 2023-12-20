@@ -1,6 +1,6 @@
 const { Cart, CartItem, GroupTour, User, Order, OrderItem, Payment, Comment } = require('../models')
 
-const { getTradeInfo, createAesDecrypt } = require('../public/javascripts/payment')
+const { getTradeInfo, createAesDecrypt } = require('../helpers/payment-helper')
 
 const orderController = {
   getOrderCreate: async (req, res, next) => {

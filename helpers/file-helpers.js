@@ -1,5 +1,5 @@
 // Node 提供原生模組 fs 處理檔案
-const fs = require('fs')
+const fs = require('fs').promises
 // 串接 imgur API 網路相簿服務，並上傳到指定相簿
 const { ImgurClient } = require('imgur')
 const client = new ImgurClient({
@@ -9,33 +9,43 @@ const client = new ImgurClient({
 })
 
 // 本地伺服器處理圖片(開發階段)
-const localFileHandler = file => { // file 是 multer 處理完的檔案
-  return new Promise((resolve, reject) => {
-    if (!file) return resolve(null)
+// file 是 multer 處理完的檔案
+const localFileHandler = async (file) => {
+  try {
+    if (!file) return null
 
     // 複製檔案到 upload 資料夾
     // multer 提供 file 查找文件
     const fileName = `upload/${file.originalname}`
+
     // fs 提供 fs.promises 非同步處理文件內容
-    return fs.promises.readFile(file.path) // file.path 檔案路徑
-      .then(data => fs.promises.writeFile(fileName, data))
-      .then(() => resolve(`/${fileName}`)) // 回傳存儲檔案路徑
-      .catch(err => reject(err))
-  })
+    const data = await fs.readFile(file.path) // file.path 檔案路徑
+
+    await fs.writeFile(fileName, data)
+
+    // 回傳存儲檔案路徑
+    return `/${fileName}`
+  } catch (err) {
+    console.log(err)
+    throw err
+  }
 }
 
-const imgurFileHandler = file => {
-  return new Promise((resolve, reject) => {
-    if (!file) return resolve(null)
+const imgurFileHandler = async (file) => {
+  try {
+    if (!file) return null
 
-    return client.upload({
+    const img = await client.upload({
       image: fs.createReadStream(file.path),
       type: 'stream',
       album: process.env.IMGUR_ALBUM_ID
     })
-      .then(img => resolve(img.data?.link || null))
-      .catch(err => reject(err))
-  })
+
+    return img.data?.link || null
+  } catch (err) {
+    console.log(err)
+    throw err
+  }
 }
 
 module.exports = {
