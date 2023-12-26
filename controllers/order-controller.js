@@ -17,10 +17,6 @@ const orderController = {
           where: req.session.cartId ? { id: req.session.cartId } : { userId }
         })
       ])
-
-      if (req.session.cartId) {
-        req.session.cartId = null
-      }
       console.log('session:', req.session.cartId)
 
       // 購物車不存在或為空的
@@ -168,6 +164,8 @@ const orderController = {
       }))
 
       req.session.cartAmount = userCart.amount
+
+      req.session.cartId = null
 
       // 刪除使用者/暫時性購物車
       await Cart.destroy({ where: { id: cartId } })
